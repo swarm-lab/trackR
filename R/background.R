@@ -1,0 +1,48 @@
+#' @export
+backgrounder <- function(video, n = 10, method = "mean") {
+  if (!isVideo(video))
+    stop("This is not a Video object.")
+
+  if (n > video$nframes())
+    stop("n should be smaller than the total number of frames in the video.")
+
+  frames <- round(seq.int(1, video$nframes() - 2, length.out = n))
+
+  l1 <- c()
+  for (i in 1:n) {
+    l1 <- c(l1, readFrame(video, frames[i]))
+  }
+
+  if (method == "mean") {
+    out <- mean(l1)
+  } else if (method == "median") {
+    l2 <- lapply(l1, as.array)
+
+    l3 <- list()
+    for (i in 1:nchan(l1[[1]])) {
+      l3[[i]] <- simplify2array(lapply(l2, function(m, i) m[, , i], i = i))
+    }
+
+    mat <- array(NA, dim = dim(l1[[1]]))
+    for (i in 1:nchan(l1[[1]])) {
+      mat[, , i] <- applyShiny(l3[[i]], c(1, 2), stats::median.default,
+                               message = paste0("Processing channel ", i,
+                                                " out of ", nchan(l1[[1]])))
+    }
+
+    if (bitdepth(l1[[1]]) == "8U") {
+      mat <- mat * 256
+      out <- changeBitDepth(image(mat), 8)
+    } else {
+      out <- image(mat)
+    }
+  } else {
+    stop("'method' should be 'mean' or 'median'")
+  }
+
+  out
+}
+
+
+
+

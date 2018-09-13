@@ -13,5 +13,8 @@ Imports:
     shiny, 
     shinyBS,
     shinyFiles, 
-    Rvision
+    Rvision,
+    dplyr,
+    readr,
+    clue
 Remotes: swarm-lab/Rvision

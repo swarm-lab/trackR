@@ -18,10 +18,10 @@ Simple video tracking software with Shiny-based GUI.
 }
 \examples{
 # Run trackR in an external window
-trackR()
+\dontrun{trackR()}
 
 # Run trackR inside RStudio
-trackR(launch.browser = rstudioapi::viewer)
+\dontrun{trackR(launch.browser = rstudioapi::viewer)}
 
 }
 \author{

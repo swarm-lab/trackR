@@ -1,19 +1,3 @@
-#' @export
-findBlobs <- function(x, background, mask = NULL, threshold, minSize) {
-  if (!is.null(mask)) {
-    mask <- mask / 255
-    x <- x * mask
-    background <- background * mask
-  }
-  d <- gaussianBlur(background, sigma_x = 3, sigma_y = 3) -
-    gaussianBlur(x, sigma_x = 3, sigma_y = 3)
-  simpleBlobDetector(d, min_threshold = threshold, max_threshold = 255,
-                     min_area = minSize, min_repeatability = 2,
-                     min_dist_between_blobs = minSize, blob_color = 255,
-                     filter_by_convexity = FALSE, filter_by_inertia = FALSE)
-}
-
-#' @export
 pdiff <- function(a, b) {
   nr <- length(a)
   nc <- length(b)
@@ -24,7 +8,6 @@ pdiff <- function(a, b) {
   ma - mb
 }
 
-#' @export
 simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
   if (nrow(past) == 0) {
     current$track <- 1:nrow(current)
@@ -33,12 +16,13 @@ simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
 
   i <- current$frame[1]
   trackCounter <- max(past$track)
-  # past <- dplyr::filter(past, frame > (i - lookBack), frame < i)
 
-  mat <- abs(pdiff(current$x, past$x)) + abs(pdiff(current$y, past$y))
+  mat <- abs(trackR:::pdiff(current$x, past$x)) + abs(trackR:::pdiff(current$y, past$y))
+  mat2 <- abs(trackR:::pdiff(current$frame, past$frame))
   maxMat <- matrix(maxDist * (i - past$frame), nrow = nrow(current),
                    ncol = nrow(past), byrow = TRUE)
   validMat <- mat <= maxMat
+  mat <- mat * mat2
 
   if (diff(dim(mat)) < 0) {
     stop(paste0("Error in image ", i))
@@ -62,7 +46,7 @@ simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
     h[safe] <- 0
 
     newCurrent <- current[!safe, ]
-    newPast <- dplyr::filter(past, !(track %in% tracks[safe]))
+    newPast <- dplyr::filter(past, !(track %in% tracks[safe])) # REMOVE DPLYR DEPENDENCE HERE
 
     if (nrow(newCurrent) > nrow(newPast)) {
       n <- nrow(newCurrent) - nrow(newPast)
@@ -72,10 +56,12 @@ simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
                                            track = NA))
     }
 
-    mat <- abs(pdiff(newCurrent$x, newPast$x)) + abs(pdiff(newCurrent$y, newPast$y))
+    mat <- abs(trackR:::pdiff(newCurrent$x, newPast$x)) + abs(trackR:::pdiff(newCurrent$y, newPast$y))
+    mat2 <- abs(trackR:::pdiff(newCurrent$frame, newPast$frame))
     maxMat <- matrix(maxDist * (i - newPast$frame), nrow = nrow(newCurrent),
                      ncol = nrow(newPast), byrow = TRUE)
     validMat <- mat <= maxMat
+    mat <- mat * mat2
 
     newH <- as.vector(clue::solve_LSAP(mat))
     newTracks <- newPast$track[newH]
@@ -98,16 +84,42 @@ simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
   current
 }
 
-#' @export
-pipeline <- function(video, begin, end, background, mask = NULL, threshold,
-                     minSize, lookBack, maxDist, progress = FALSE,
-                     display = FALSE, scale = 1) {
+blobBGS <- function(x, background, mask = NULL, smoothing, threshold) {
+  dif <- Rvision::gaussianBlur(Rvision::absdiff(x, background), 11, 11, smoothing, smoothing)
+
+  if (Rvision::isImage(mask)) {
+    dif <- dif * (mask / 255)
+  }
+
+  bin <- Rvision::changeColorSpace(dif, "GRAY") > threshold
+  Rvision::connectedComponents(bin, 8, TRUE)
+}
+
+blobTracktor <- function(x, mask = NULL, smoothing, threshold) {
+  blur <- Rvision::gaussianBlur(x, 11, 11, smoothing, smoothing)
+
+  if (Rvision::isImage(mask)) {
+    blur <- blur * (mask / 255)
+  }
+
+  gray <- Rvision::changeColorSpace(blur, "GRAY")
+  bin <- Rvision::adaptiveThreshold(gray, C = threshold)
+  Rvision::connectedComponents(bin, 8, TRUE)
+}
+
+pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothing,
+                     threshold, minSize, maxSize, lookBack, maxDist, blobsizes,
+                     progress = FALSE, display = FALSE, quality = 1, scale = 1) {
 
   n <- (end - begin + 1)
   tracks <- data.frame(id = numeric(n), x = numeric(n), y = numeric(n),
                        size = numeric(n), frame = numeric(n) - 2 * lookBack,
                        track = numeric(n))
   pos <- 0
+  bs <- mean(blobsizes)
+
+  cbPalette <- c("#FFBF80", "#FF8000", "#FFFF99", "#FFFF33", "#B2FF8C", "#33FF00",
+                 "#A6EDFF", "#1AB2FF", "#CCBFFF", "#664CFF", "#FF99BF", "#E61A33")
 
   if (progress) {
     pb <- shiny::Progress$new()
@@ -119,26 +131,91 @@ pipeline <- function(video, begin, end, background, mask = NULL, threshold,
     oldTime <- Sys.time()
   }
 
+  local_bg <- NA
+  local_mask <- NA
+
+  if (quality < 1) {
+    if (Rvision::isImage(background)) {
+      local_bg <- Rvision::resize(background, fx = quality, fy = quality, interpolation = "area")
+    }
+    if (Rvision::isImage(mask)) {
+      local_mask <- Rvision::resize(mask, fx = quality, fy = quality, interpolation = "area")
+    }
+  } else {
+    if (Rvision::isImage(background)) {
+      local_bg <- Rvision::cloneImage(background)
+    }
+    if (Rvision::isImage(mask)) {
+      local_mask <- Rvision::cloneImage(mask)
+    }
+  }
+
+  Rvision::setProp(video, "POS_FRAMES", begin - 1)
+
   for (i in begin:end) {
-    past <- dplyr::filter(tracks, frame > (i - lookBack) & frame < i)
+    past <- dplyr::filter(tracks, frame > (i - lookBack) & frame < i) # REMOVE DPLYR DEPENDENCE HERE
 
-    frame <- readFrame(video, i)
+    if (quality < 1) {
+      frame <- Rvision::resize(Rvision::readNext(video), fx = quality, fy = quality,
+                               interpolation = "area")
+    } else {
+      frame <- Rvision::readNext(video)
+    }
 
-    tmp <- frame %>%
-      findBlobs(., background, mask, threshold, minSize) %>%
-      dplyr::mutate(frame = i, track = NA) %>%
-      {if (length(.$x) > 0)
-        trackR::simpleTracker(., past, lookBack = lookBack, maxDist = maxDist)
-        else . }
-
-    nRows <- nrow(tmp)
-    if (nRows > 0) {
-      if ((pos + nRows) > n) {
-        tracks[(n + 1):(2 * n + nRows), ] <- 0
-        n <- nrow(tracks)
+    if (Rvision::isImage(local_bg)) {
+      if (Rvision::isImage(local_mask)) {
+        cc <- trackR:::blobBGS(frame, local_bg, local_mask, smoothing, threshold)
+      } else {
+        cc <- trackR:::blobBGS(frame, local_bg, NULL, smoothing, threshold)
       }
-      tracks[(pos + 1):(pos + nRows), ] <- tmp
-      pos <- pos + nRows
+
+    } else {
+      if (Rvision::isImage(local_mask)) {
+        cc <- trackR:::blobTracktor(frame, local_mask, smoothing, threshold)
+      } else {
+        cc <- trackR:::blobTracktor(frame, NULL, smoothing, threshold)
+      }
+    }
+
+    if (nrow(cc$table) > 0) {
+      blobs <- do.call(rbind, by(cc$table, cc$table[, "id"],
+                                 function(x) data.frame(id = x[1, "id"],
+                                                        x = mean(x[, "x"]),
+                                                        y = mean(x[, "y"]),
+                                                        size = nrow(x))))
+      blobs <- blobs[blobs$size >= minSize & blobs$size <= maxSize, ]
+
+      if (nrow(blobs) > 0) {
+        fat <- blobs$size > 2 * bs
+        if (any(fat)) {
+          idx <- blobs$id[fat]
+
+          for (j in seq_len(length(idx))) {
+            k <- round(blobs$size[blobs$id == idx[j]] / bs)
+            xy <- cc$table[cc$table$id == idx[j], c("x", "y")]
+            clust <- kmeans(xy, k)$cluster
+
+            blobs <- rbind(blobs[-which(blobs$id == idx[j]), ],
+                           do.call(rbind, by(cbind(xy, clust), clust,
+                                             function(x) data.frame(id = x[1, "clust"] + max(blobs$id),
+                                                                    x = mean(x[, "x"]),
+                                                                    y = mean(x[, "y"]),
+                                                                    size = nrow(x)))))
+          }
+        }
+
+        blobs$frame <- i
+        blobs$track <- NA
+        tmp <- trackR:::simpleTracker(blobs, past, lookBack = lookBack, maxDist = maxDist)
+
+        nRows <- nrow(tmp)
+        if ((pos + nRows) > n) {
+          tracks[(n + 1):(2 * n + nRows), ] <- 0
+          n <- nrow(tracks)
+        }
+        tracks[(pos + 1):(pos + nRows), ] <- tmp
+        pos <- pos + nRows
+      }
     }
 
     if (progress) {
@@ -154,26 +231,27 @@ pipeline <- function(video, begin, end, background, mask = NULL, threshold,
     }
 
     if (display) {
-      tmp <- dplyr::filter(tracks, frame > (i - 2 * fps(video)) & frame <= i)
+      tmp <- dplyr::filter(tracks, track > 0 & frame > (i - fps(video)) & frame <= i) # REMOVE DPLYR DEPENDENCE HERE
 
-      tmp %>%
+      tmp %>% # REMOVE DPLYR DEPENDENCE HERE
         group_by(., track) %>%
         do(., a = if (length(.$x) > 1) {
-          drawLine(frame, .$x[1:(length(.$x) - 1)],
+          Rvision::drawLine(frame, .$x[1:(length(.$x) - 1)],
                    .$y[1:(length(.$x) - 1)],
                    .$x[2:length(.$x)],
-                   .$y[2:length(.$x)], .$track, 2)
+                   .$y[2:length(.$x)], cbPalette[(.$track %% 12) + 1], round(ncol(frame) / 200))
           1
         } else {
-          drawCircle(frame, .$x, .$y, 2, .$track , 2)
+          Rvision::drawCircle(frame, .$x, .$y, 2, .$track, 2)
           0
         }
 
         )
 
-      display(frame, "trackR", 1, nrow(frame) * scale, ncol(frame) * scale)
+      Rvision::display(frame, "trackR", 1, nrow(frame) * scale / quality, ncol(frame) * scale / quality)
     }
   }
 
   tracks[1:pos, ]
 }
+

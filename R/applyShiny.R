@@ -1,4 +1,3 @@
-#' @export
 applyShiny <- function(X, MARGIN, FUN, message = NULL, inc = 0.1, ...) {
   withProgress(message = message, value = 0, {
     unit <- 1 / prod(dim(X)[MARGIN])

@@ -1,20 +1,24 @@
-#' @export
 backgrounder <- function(video, n = 10, method = "mean") {
-  if (!isVideo(video))
+  if (!Rvision::isVideo(video))
     stop("This is not a Video object.")
 
-  if (n > video$nframes())
+  if (n > Rvision::nframes(video))
     stop("n should be smaller than the total number of frames in the video.")
 
-  frames <- round(seq.int(1, video$nframes() - 2, length.out = n))
+  shiny::showNotification("Loading images in memory.", id = "load", duration = NULL)
+
+  frames <- round(seq.int(1, Rvision::nframes(video) - 2, length.out = n))
 
   l1 <- c()
   for (i in 1:n) {
-    l1 <- c(l1, readFrame(video, frames[i]))
+    l1 <- c(l1, Rvision::readFrame(video, frames[i]))
   }
 
+  shiny::removeNotification(id = "load")
+  shiny::showNotification("Calculating background.", id = "calc", duration = NULL)
+
   if (method == "mean") {
-    out <- mean(l1)
+    out <- Rvision::mean(l1)
   } else if (method == "median") {
     l2 <- lapply(l1, as.array)
 
@@ -25,20 +29,22 @@ backgrounder <- function(video, n = 10, method = "mean") {
 
     mat <- array(NA, dim = dim(l1[[1]]))
     for (i in 1:nchan(l1[[1]])) {
-      mat[, , i] <- applyShiny(l3[[i]], c(1, 2), stats::median.default,
+      mat[, , i] <- trackR:::applyShiny(l3[[i]], c(1, 2), stats::median.default,
                                message = paste0("Processing channel ", i,
                                                 " out of ", nchan(l1[[1]])))
     }
 
     if (bitdepth(l1[[1]]) == "8U") {
       mat <- mat * 256
-      out <- changeBitDepth(image(mat), 8)
+      out <- Rvision::changeBitDepth(Rvision::image(mat), 8)
     } else {
-      out <- image(mat)
+      out <- Rvision::image(mat)
     }
   } else {
     stop("'method' should be 'mean' or 'median'")
   }
+
+  shiny::removeNotification(id = "calc")
 
   out
 }

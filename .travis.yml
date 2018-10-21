@@ -1,13 +1,15 @@
 language: R
 sudo: false
 cache: packages
-
 os:
-  - linux
-  - osx
+- linux
+- osx
 after_success: if [ "$TRAVIS_OS_NAME" == "linux" ]; then Rscript -e 'covr::coveralls(type
   = "all")'; fi
-warnings_are_errors: yes
+warnings_are_errors: true
 before_deploy: if [ "$TRAVIS_OS_NAME" == "osx" ]; then rm -f *.tar.gz; fi
-r_build_args: --no-build-vignettes
-r_check_args: --as-cran --ignore-vignettes --no-examples --install-args=--build
+r_build_args: "--no-build-vignettes"
+r_check_args: "--as-cran --ignore-vignettes --no-examples --install-args=--build"
+env:
+  global:
+    secure: RkUfzzqRkoiRKpo+vd34Q2KZYdWRPr14L82zh6gcfJ6avtci6VYqbqYrkqZu2VRjxJd/IdnARV7u6H0rwz7YhPJ7skmpSp6zwYHErn/ZY87o2Nly5G37vMEU9IIMLX/EpI+lgPaF3IVW2ePrmfLUBmQRLvLgwXGu4JlUD3HVJCEysjoiECasQ0xBNUO4/3hwtjSLmzXZXRMhlCv4UYwKGsMjwG2xDHNIo0mW6MnoCtm5OQmod54DjbXNcsYNv/g2j/8M7d/BHuBm0zLPptdwY3laUn46d3g425RkEUnfCD6Ow5k58bKYBKmNqZjf0VCBzPUGi+C9kayewdglzAXSOATGYEhL3/qtbSlxf6gDFkqVpM2fH7Az0X3rzpZx94iyR4v0tQMb1p+Eab1E7sttTNlb1PHxVDJNrZBU+vYBDckaYTozye+mKrU/Xs5DB+pU0QXCeW90ychL43mjkPqOhDuOvZBCuM/hnV1GQDpRKSLJaa8U+59LuyC0iGzfNEhaieGGPwHITqwGgpDll65Kp+2tiFK3v7olDEo9gznphy1aG+7D+0dzZM4K25w96un+SfgEwZNLlOlehOZsay09K7AuXHnv5dbOWT8n9I9rYt1HTGovvAThcC2eJFO7miG3m5Z91IKfopOCenGO1LvQ/MFdoFJ6JKnToOwdz6mSgd0=

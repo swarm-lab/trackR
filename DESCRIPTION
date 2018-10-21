@@ -18,3 +18,9 @@ Imports:
     readr (>= 1.1.1),
     clue (>= 0.3-56)
 Remotes: swarm-lab/Rvision
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+URL: https://swarm-lab.github.io/trackR/, https://github.com/swarm-lab/trackR
+BugReports: https://github.com/swarm-lab/trackR/issues

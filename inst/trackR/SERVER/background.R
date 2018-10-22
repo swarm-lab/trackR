@@ -38,7 +38,7 @@ output$backgroundStatus <- renderUI({
   if (isImage(theBackground())) {
     p("Background loaded.", class = "good")
   } else {
-    p("Background missing (and required).", class = "bad")
+    p("Background missing (but not required).", class = "bad")
   }
 })
 

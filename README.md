@@ -20,7 +20,8 @@ which the objects move is changing throughout the video (e.g. if the lighting
 conditions are not stable).
 
 `trackR` also allows users to exclude parts of the image by using black and 
-white masks that can be easily created using any available image editor. 
+white masks that can be easily created and customized using any available image 
+editor. 
 
 Finally, `trackR` borrows several ideas from [`tracktor`](https://github.com/vivekhsridhar/tracktor), 
 a command-line video tracking software for Python developed by 

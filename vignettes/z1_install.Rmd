@@ -1,6 +1,6 @@
 ---
 author: "Simon Garnier"
-title: "1. Installing trackR"
+title: "Installing trackR"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{pkgdown}

@@ -1,9 +1,10 @@
 ---
-name: Custom issue template
-about: Describe this issue template's purpose here.
+name: Issue and feature request template
+about: This is the template for reporting issues and feature requests
 
 ---
 
+<!--
 Before posting an issue or feature request, please:
 
 * Read the documentation and make sure you have followed all the steps to install and run `trackR`.
@@ -13,9 +14,17 @@ Before posting an issue or feature request, please:
 
 
 This is a template helping you to create an issue which can be processed as quickly as possible. 
-
+-->
 
 ##### System information (version)
+<!-- Example
+- trackR => 0.1
+- Rvision => 0.3.1
+- ROpenCVLite => 0.1.34.3
+- Operating System / Platform => Mac OS Mojave
+- R => 3.5.1
+- CMake => 3.12
+-->
 
 - trackR => :grey_question:
 - Rvision => :grey_question:

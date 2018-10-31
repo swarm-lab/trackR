@@ -37,3 +37,6 @@ if the video is too wide for the screen. It doesn't affect the video or tracking
 quality. 
 + `Video quality` allows you to reduce the resolution of the video. This can be 
 useful to speed up the tracking process, at the expense of the tracking resolution. 
+
+You can use the slider at the bottom of the control panel to navigate through 
+the video. 

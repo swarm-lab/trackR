@@ -3,4 +3,5 @@ pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:
   z1_install: z1_install.html
+  z2_video: z2_video.html
 

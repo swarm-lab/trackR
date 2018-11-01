@@ -99,7 +99,7 @@ the ghost you want to remove (see image below for an example). Close the polygon
 using a right-mouse click. `trackR` will then use an inpainting algorithm to 
 remove the ghost from the background image. 
 
-<center> ![](../man/figures/ghost.png){width=50%} </center>
+<center> ![](../man/figures/ghost.png){width=75%} </center>
 <br>
 
 Repeat this operation as many times as necessary to remove all the unwanted 

@@ -1,0 +1,68 @@
+---
+author: "Simon Garnier"
+title: "5 - Blob tab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Blob detection is a crucial part of the tracking process. Finding good parameters 
+for accurately separating the objects from each other will ensure better tracking 
+results and reduce the amount of manual correction that may be required later. 
+
+The `Blob detection` tab in `trackR` (see screenshot below) contains all the 
+controls to parameterize the blob detection algorithm. 
+
+---
+
+<center> ![](../man/figures/blob.png){width=50%} </center>
+
+---
+
+Three sliders control the parameters of the blob detection algorithm: 
+
++ `Smoothing factor` controls the amount of smoothing applied to the image before
+  segmenting the blobs from the background. Larger amount of smoothing may help
+  better detect objects with complex geometries and avoid breaking them up in 
+  separate blobs. 
++ `Detection threshold` controls how much difference between pixels there should 
+  be to classify them as belonging to the background or to objects. Larger values
+  will reduce the number of object-classified pixels. 
++ `Size range` controls the lower and upper bounds of the size range (in pixels)
+  within which the objects are expected to sit. These values do not need to be 
+  precise, they are mostly meant to filter out very small or very large false 
+  positive objects. 
+  
+Every time you modify one of these three control parameters, the display window
+will update itself to show the contours of the detected objects (see screenshot
+below). We recommend that you parameterize the blob detection algorithm using a 
+video frame in which the objects to track are clearly separated. You can navigate 
+through the video to find such a frame using the `Frame` slider at the bottom of 
+the control panel. 
+
+Note: when using the adaptive thresholding method (see Section 
+[3 - Background tab](https://swarm-lab.github.io/trackR/articles/z3_background.html)),
+the display updating might take some time and the results of the blob detection
+might not appear immediately. Wait a few seconds before making additional changes
+to the parameter values. 
+
+---
+
+<center> ![](../man/figures/blob_bad_good.png){width=75%} </center>
+
+---
+
+Once you have found a set of parameter values that works well for you, hit the 
+`Record blobs` button. This will record the size distribution of the detected 
+blobs. This is important for the tracking algorithm in case two objects are in 
+close contact, and therefore merge into a single, larger blob. 
+
+We recommend that you verify your blob detection parameters with multiple frames 
+throughout the video. You can navigate through the video to find additional test 
+frames using the `Frame` slider at the bottom of the control panel. As before,
+try to find frames in which the objects to track are clearly separated. Adjust 
+the blob detection parameters if necessary (but only the last set will be taken 
+into account), and hit the `Record blobs` button each time you are satisfied with 
+the blobs detected by `trackR`. 

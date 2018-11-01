@@ -28,7 +28,7 @@ observeEvent(input$backgroundFile, {
 observe({
   if (input$computeBackground > 0) {
     isolate({
-      theBackground(backgrounder(theVideo(), n = input$backroundImages,
+      theBackground(trackR:::backgrounder(theVideo(), n = input$backroundImages,
                                  method = input$backgroundType))
     })
   }

@@ -1,0 +1,51 @@
+---
+author: "Simon Garnier"
+title: "4 - Mask tab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In order to improve the tracking performance of `trackR`, it can be useful to 
+exclude some parts of the video (e.g. everything outside the experimental tank 
+or arena). `trackR` uses mask images in order to achieve this. Mask images are 
+black and white images (see example below) in which the black pixels correspond
+to pixels that should be excluded from the analysis. 
+
+---
+
+<center> ![](../man/figures/sample_mask.png){width=50%} </center>
+
+---
+
+`trackR` does not (yet) offer the possibility to create mask images. However 
+mask images are easy to create with any image editing program such as Adobe 
+Photoshop or Gimp. Simply import a frame of the video into your image editing 
+software and replace all the parts of the image you would like to exclude with 
+pure black pixels, and all the parts of the image you would like to keep with 
+pure white pixels. 
+
+Note: the mask image should have the same dimensions as the video. 
+
+Once you have created your mask image, you can load it in `trackR` by clicking 
+on the `Select mask file` button in the `Background` tab (see screenshot below).
+This will bring up a file navigator. Use the file navigator to locate and select 
+the mask image that you would like to use. 
+
+---
+
+<center> ![](../man/figures/mask.png){width=50%} </center>
+
+---
+
+If the image is correctly loaded in `trackR`, the display window should show all 
+the excluded parts as pure black, as shown in the example below on the right 
+side. 
+
+---
+
+<center> ![](../man/figures/mask_before_after.png){width=75%} </center>
+
+---

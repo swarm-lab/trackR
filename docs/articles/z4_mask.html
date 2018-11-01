@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2 - Video tab • trackR</title>
+<title>4 - Mask tab • trackR</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="2 - Video tab">
+<script src="../pkgdown.js"></script><meta property="og:title" content="4 - Mask tab">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -85,39 +85,38 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>2 - Video tab</h1>
+      <h1>4 - Mask tab</h1>
                         <h4 class="author">Simon Garnier</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/master/vignettes/z2_video.Rmd"><code>vignettes/z2_video.Rmd</code></a></small>
-      <div class="hidden name"><code>z2_video.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/master/vignettes/z4_mask.Rmd"><code>vignettes/z4_mask.Rmd</code></a></small>
+      <div class="hidden name"><code>z4_mask.Rmd</code></div>
 
     </div>
 
     
     
-<p>After launching <code>trackR</code>, the first step is to load a video file in memory. In the <code>Video file</code> tab (shown below), click on the <code>Select video file</code> button. This will bring up a file navigator. Use the file navigator to locate and select the video file that you would like to track.</p>
+<p>In order to improve the tracking performance of <code>trackR</code>, it can be useful to exclude some parts of the video (e.g. everything outside the experimental tank or arena). <code>trackR</code> uses mask images in order to achieve this. Mask images are black and white images (see example below) in which the black pixels correspond to pixels that should be excluded from the analysis.</p>
 <hr>
 <center>
-<img src="../man/figures/video_notloaded.png" style="width:50.0%">
+<img src="../man/figures/sample_mask.png" style="width:50.0%">
 </center>
 <hr>
-<p>Once the file is loaded in memory, new control sliders will automatically appear in the <code>Video file</code> tab (see below).</p>
+<p><code>trackR</code> does not (yet) offer the possibility to create mask images. However mask images are easy to create with any image editing program such as Adobe Photoshop or Gimp. Simply import a frame of the video into your image editing software and replace all the parts of the image you would like to exclude with pure black pixels, and all the parts of the image you would like to keep with pure white pixels.</p>
+<p>Note: the mask image should have the same dimensions as the video.</p>
+<p>Once you have created your mask image, you can load it in <code>trackR</code> by clicking on the <code>Select mask file</code> button in the <code>Background</code> tab (see screenshot below). This will bring up a file navigator. Use the file navigator to locate and select the mask image that you would like to use.</p>
 <hr>
 <center>
-<img src="../man/figures/video_loaded.png" style="width:50.0%">
+<img src="../man/figures/mask.png" style="width:50.0%">
 </center>
 <hr>
-<ul>
-<li>
-<code>Video range</code> allows you to exclude parts of the video (at the beginning and end only) from the tracking process. This can be useful to ignore, for instance, the beginning of an experiment during which the animals are habituating to the environment.</li>
-<li>
-<code>Display size</code> allows you to change the size of the display window, for instance if the video is too wide for the screen. It doesn’t affect the video or tracking quality.</li>
-<li>
-<code>Video quality</code> allows you to reduce the resolution of the video. This can be useful to speed up the tracking process, at the expense of the tracking resolution.</li>
-</ul>
-<p>You can use the slider at the bottom of the control panel to navigate through the video.</p>
-  </div>
+<p>If the image is correctly loaded in <code>trackR</code>, the display window should show all the excluded parts as pure black, as shown in the example below on the right side.</p>
+<hr>
+<center>
+<img src="../man/figures/mask_before_after.png" style="width:75.0%">
+</center>
+<hr>
+</div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
       </div>

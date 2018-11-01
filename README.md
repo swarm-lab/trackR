@@ -34,7 +34,7 @@ and [Dominique Roche](http://dominiqueroche.weebly.com/).
 
 + [1 - Installation instructions](https://swarm-lab.github.io/trackR/articles/z1_install.html)
 + [2 - Video tab](https://swarm-lab.github.io/trackR/articles/z2_video.html)
-+ [3 - Background tab]
++ [3 - Background tab](https://swarm-lab.github.io/trackR/articles/z3_background.html)
 + [4 - Mask tab]
 + [5 - Blob tab]
 + [6 - Tracking tab]

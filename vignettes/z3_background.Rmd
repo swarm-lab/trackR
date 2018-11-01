@@ -1,0 +1,110 @@
+---
+author: "Simon Garnier"
+title: "3 - Background tab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+`trackR` uses two different algorithms in order to isolate objects from their 
+surrounding background: 
+
+1. **Background subtraction**: this method consists in subtracting an image 
+  representing a fixed background from each frame of the video. Pixels with high
+  values in the resulting image will correspond to objects moving in front of 
+  the background. 
+2. **Adaptive thresholding**: this method consists in setting all pixels whose 
+  intensities are above a threshold to white and all the remaining pixels to 
+  black. In conventional thresholding, the threshold value is the same for all 
+  pixels. In adaptive thresholding however, the threshold changes dynamically 
+  over the image and is based on the local contrast between each pixel and its 
+  immediate surrounding. This allows for the easy detection of dark objects on a 
+  light background, and vice versa. 
+  
+The first method is usually more precise for object detection, but it requires 
+that the background remains fixed for the entire duration of the experiment. The 
+second method does not require that the background remains fixed, as long as the 
+objects to track are always darker (resp. lighter) than their lighter (resp. 
+darker) background. Which method you should choose will depend on the recording 
+conditions of your experiment.
+
+If you choose to use adaptive thresholding, you can skip this section and move 
+directly to the next step. If you choose background subtraction, please follow 
+the instructions below to load a background image (if you have recorded one) or 
+create one from the video. 
+
+---
+
++ [1 - Using an existing background image ](#using-an-existing-background-image )
++ [2 - Creating a background image from the video](#creating-a-background-image-from-the-video)
++ [3 - Removing ghosts](#removing-ghosts)
+
+---
+
+<center> ![](../man/figures/background.png){width=50%} </center>
+
+---
+
+## 1 - Using an existing background image 
+
+If you have recorded a background image of your experimental setup, or if you 
+have created and saved one following the instructions in the 
+[next section](#creating-a-background-image-from-the-video), you can load it 
+by clicking on the `Select background file or...` button in the `Background` tab 
+(see screenshot above). This will bring up a file navigator. Use the file navigator 
+to locate and select the background image that you would like to use. If the image 
+is correctly loaded in `trackR`, it should appear in the display window. 
+
+Note: the background image should have the same dimensions as the video. 
+
+---
+
+## 2 - Creating a background image from the video
+
+If you do not have recorded a background image or want to create one from the 
+video, you first need to select the number of video frames you would like to use
+for estimating the background. You can do this using the `Number of frames` 
+slider in the `Background` tab (see screenshot above). Selecting more images will 
+usually lead to a more accurate result, but will take longer. 
+
+Once you have selected a number of frames, you need to select the type of 
+algorithms that you would like to use for estimating the background image. Two 
+algorithms are available in `trackR`: 
+
+1. `Mean`: this calculates an average image from the selected video frames. This 
+  is a fast algorithm. However it does not always produce good results.
+2. `Median`: this calculates a median image from the selected video frames. This 
+  usually produces a better result than `Mean`, but will take a significantly
+  longer amount of time. 
+  
+You can select the algorithm using the `Type` dropdown menu. You can then click 
+on the `...Estimate background` button to start the computation of the background
+image. 
+  
+Once the background image is estimated, it should appear in the display window. 
+You can save this image for later use by clicking on the `Save background file`
+button.
+
+---
+
+## 3 - Removing ghosts
+
+In some instance (e.g. when an object does not move for a significant portion of 
+the video), the background image may contain "ghosts". To remove a ghost, click 
+on the `Select ghost for removal` button in the `Background` tab (see screenshot 
+above). Then, use left-mouse clicks in the display window to draw a polygon around 
+the ghost you want to remove (see image below for an example). Close the polygon 
+using a right-mouse click. `trackR` will then use an inpainting algorithm to 
+remove the ghost from the background image. 
+
+<center> ![](../man/figures/ghost.png){width=50%} </center>
+<br>
+
+Repeat this operation as many times as necessary to remove all the unwanted 
+ghosts. 
+
+Note: inpainting is not an exact science and the result of removing ghosts may 
+not be satisfying. In this case, use a more advanced image editing program such 
+as Adobe Photoshop or Gimp to clean up your background image.

@@ -2,10 +2,10 @@ bsCollapsePanel(
   title = actionLink("toggleBackground", "Background"),
   value = "backgroundPanel",
   fluidRow(
-    column(width = 6, shinyFilesButton("backgroundFile", "Select background file",
+    column(width = 6, shinyFilesButton("backgroundFile", "Select background file or...",
                                        "Please select a background image", FALSE, class = "fullWidth")),
     column(width = 6, actionButton("computeBackground", "...Estimate background", width = "100%"))),
-  sliderInput("backroundImages", "Number of images:", min = 0, max = 200,
+  sliderInput("backroundImages", "Number of frames:", min = 0, max = 200,
               value = 10, width = "100%"),
   selectInput("backgroundType", "Type:",
               choices = c("Median" = "median", "Mean" = "mean"), width = "100%"),

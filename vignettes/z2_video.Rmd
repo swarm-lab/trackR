@@ -32,7 +32,7 @@ in the `Video file` tab (see below).
 end only) from the tracking process. This can be useful to ignore, for instance, 
 the beginning of an experiment during which the animals are habituating to the 
 environment. 
-+ `Display size` allows you to change the size of the video display, for instance
++ `Display size` allows you to change the size of the display window, for instance
 if the video is too wide for the screen. It doesn't affect the video or tracking 
 quality. 
 + `Video quality` allows you to reduce the resolution of the video. This can be 

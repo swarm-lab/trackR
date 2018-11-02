@@ -37,7 +37,7 @@ and [Dominique Roche](http://dominiqueroche.weebly.com/).
 + [3 - Background tab](https://swarm-lab.github.io/trackR/articles/z3_background.html)
 + [4 - Mask tab](https://swarm-lab.github.io/trackR/articles/z4_mask.html)
 + [5 - Blob tab](https://swarm-lab.github.io/trackR/articles/z5_blob.html)
-+ [6 - Tracking tab]
++ [6 - Tracking tab](https://swarm-lab.github.io/trackR/articles/z6_tracking.html)
 
 ---
 

@@ -1,0 +1,42 @@
+---
+author: "Simon Garnier"
+title: "6 - Tracking tab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+If you made it all the way here, you are almost ready to start the tracking 
+itself. The `Tracking` tab (shown below) contains a couple of control sliders to
+consider before you can finally get the data you have been patiently waiting for. 
+
+---
+
+<center> ![](../man/figures/tracking.png){width=50%} </center>
+
+---
+
++ `Look back` controls how many past frames the tracking algorithm should take 
+  into account to associate each blob to a track. This is a useful parameter to 
+  take into account if, for instance, the objects tend to disappear for a few 
+  frames from time to time. 
++ `Maximum distance (pixels)` controls the maximum distance in pixels that a blob 
+  can move between two frames to be still considered as belonging to the same 
+  track. 
++ `Display tracks (slower)` controls whether the video with the overlaid tracks 
+  is played as the tracking is happening. If it is, this will slow down the 
+  tracking process, but this can be used to check that the tracking is working 
+  well when looking for the right set of parameters. 
+  
+Once all is set, you can finally click on the `Start tracking` button and let 
+`trackR` works its magic. 
+
+Note: once the tracking is started, it cannot be interrupted without quitting 
+the app and losing all your settings. This is unfortunately a consequence of the 
+current functioning of [Shiny](https://github.com/rstudio/shiny/issues/1398)
+that is not (yet) capable of cleanly stopping functions that are executing. 
+I will implement a mechanism to save and restore your settings in case you need 
+to interrupt the tracking before it ends (and hence have to close `trackR`), but 
+this will not be implemented before at least the next version of `trackR`. 

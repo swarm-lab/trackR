@@ -31,7 +31,8 @@ consider before you can finally get the data you have been patiently waiting for
   well when looking for the right set of parameters. 
   
 Once all is set, you can finally click on the `Start tracking` button and let 
-`trackR` works its magic. 
+`trackR` works its magic. The data will be saved as a CSV file in the same folder
+as the video file. 
 
 Note: once the tracking is started, it cannot be interrupted without quitting 
 the app and losing all your settings. This is unfortunately a consequence of the 

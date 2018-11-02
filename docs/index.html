@@ -123,7 +123,28 @@
 <div id="faq" class="section level2">
 <h2 class="hasAnchor">
 <a href="#faq" class="anchor"></a>FAQ</h2>
-<p>TODO</p>
+<p>–</p>
+<p><strong>How does <code>trackR</code> compare to other video tracking solutions? Did we really need another one?</strong></p>
+<p><code>trackR</code> belongs to the category of the ‘classical’ tracking programs. It relies on good ol’ fashion image processing and simple assignment algorithms (the Hungarian method in this case, plus some k-means clustering trickery inspired by the excellent <a href="https://github.com/vivekhsridhar/tracktor"><code>tracktor</code></a> for Python). <code>trackR</code> does not include (for now) any fancy machine learning methods like those that can be found in the fantastic <a href="http://idtracker.ai/"><code>idtracker.ai</code></a> for instance. The downside is that <code>trackR</code>’s tracking reliability is inferior to the more advanced software (in particular when the objects cross paths); the upside is that it is fast, does not require a beast of a computer to run, and therefore will soon be able to do live tracking for instance.</p>
+<p><code>trackR</code> is more similar in spirit to tracking software such as <a href="http://ctrax.sourceforge.net/"><code>Ctrax</code></a> <a href="https://github.com/vivekhsridhar/tracktor"><code>tracktor</code></a> and <a href="https://en.wikibooks.org/wiki/SwisTrack"><code>SwisTrack</code></a>, and will most likely provide tracking reliability equivalent to these excellent programs. However, it might perform better in situations where the background is not stable, thanks to the possibility of using adaptive thresholding instead of background subtraction for segmenting the images in more difficult situations (a similar feature is offered by <code>tracktor</code>).</p>
+<p>–</p>
+<p><strong>Will something break? Can I use <code>trackR</code> in ‘production’ mode?</strong></p>
+<p>Something will definitely break. This is version 0.1 of the software, there is still a long way to go before it is a fully finished program. This being said, it will work fine in most cases and is certainly usable for simple tracking projects. If you run into an issue, please report it at: <a href="https://github.com/swarm-lab/trackR/issues" class="uri">https://github.com/swarm-lab/trackR/issues</a>.</p>
+<p>–</p>
+<p><strong>What features are in the works for future versions of <code>trackR</code>?</strong></p>
+<p>At the moment, I am considering including the following features in future iterations of <code>trackR</code>:</p>
+<ol>
+<li>Add the possibility to save and restore settings for future use.</li>
+<li>Add the possibility to indicate whether the objects to track are darker or lighter than the background. This will be useful for the adaptive thresholding algorithm that currently works well only to detect objects darker than their background.</li>
+<li>Add a more sophisticated method to re-identify each individual after a crossing event (maybe something that ‘learns’ the features of each individual, a la idtracker.ai).</li>
+<li>Add live tracking using camera feed.</li>
+<li>Add the possibility to feed the tracking data through a custom R script. Currently, the data are saved in a CSV file and the user has to reimport them into R for post-processing. While this is fine for most use cases, it would not work if the user needs some form of live processing of the tracking data.</li>
+<li>Add some sort of GUI for manually correcting tracks.</li>
+</ol>
+<p>–</p>
+<p><strong>How can I help?</strong></p>
+<p><code>trackR</code> is an open-source project, meaning that you can freely modify its code and implement new functionalities. If you have coding skills, you are more than welcome to contribute new code or code improvement by submitting pull requests on the GitHub repository of the project at: <a href="https://github.com/swarm-lab/trackR" class="uri">https://github.com/swarm-lab/trackR</a>. I will do my best to review and integrate them quickly.</p>
+<p>If you do not feel like contributing code, you can also help by submitting bug reports and feature requests using the issue tracker on the GitHub repository of the project at: <a href="https://github.com/swarm-lab/trackR/issues" class="uri">https://github.com/swarm-lab/trackR/issues</a>. These are extremely helpful to catch and correct errors in the code, and to guide the development of <code>trackR</code> by integrating functionalities requested by the community.</p>
 </div>
 </div>
   </div>

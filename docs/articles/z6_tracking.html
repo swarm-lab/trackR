@@ -116,7 +116,7 @@
 <li>
 <code>Display tracks (slower)</code> controls whether the video with the overlaid tracks is played as the tracking is happening. If it is, this will slow down the tracking process, but this can be used to check that the tracking is working well when looking for the right set of parameters.</li>
 </ul>
-<p>Once all is set, you can finally click on the <code>Start tracking</code> button and let <code>trackR</code> works its magic.</p>
+<p>Once all is set, you can finally click on the <code>Start tracking</code> button and let <code>trackR</code> works its magic. The data will be saved as a CSV file in the same folder as the video file.</p>
 <p>Note: once the tracking is started, it cannot be interrupted without quitting the app and losing all your settings. This is unfortunately a consequence of the current functioning of <a href="https://github.com/rstudio/shiny/issues/1398">Shiny</a> that is not (yet) capable of cleanly stopping functions that are executing. I will implement a mechanism to save and restore your settings in case you need to interrupt the tracking before it ends (and hence have to close <code>trackR</code>), but this will not be implemented before at least the next version of <code>trackR</code>.</p>
   </div>
 

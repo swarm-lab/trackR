@@ -10,10 +10,10 @@ observeEvent(input$toggleVideo, {
 })
 
 # Select video
-shinyFileChoose(input, "videoFile", roots = c(home = "~/"))
+shinyFileChoose(input, "videoFile", roots = getVolumes())
 
 observeEvent(input$videoFile, {
-  path <- parseFilePaths(roots = c(home = "~/"), input$videoFile)
+  path <- parseFilePaths(roots = getVolumes(), input$videoFile)
   if (nrow(path) > 0) {
     theFile(path$name)
     thePath(gsub(path$name, "", path$datapath))

@@ -10,10 +10,10 @@ observeEvent(input$toggleMask, {
 })
 
 # Select mask
-shinyFileChoose(input, "maskFile", roots = c(home = "~/"))
+shinyFileChoose(input, "maskFile", roots = getVolumes())
 
 observeEvent(input$maskFile, {
-  path <- parseFilePaths(roots = c(home = "~/"), input$maskFile)
+  path <- parseFilePaths(roots = getVolumes(), input$maskFile)
   if (nrow(path) > 0) {
     toCheck <- tryCatch(Rvision::image(path$datapath),
                         error = function(e) NA)

@@ -10,10 +10,10 @@ observeEvent(input$toggleBackground, {
 })
 
 # Load background
-shinyFileChoose(input, "backgroundFile", roots = c(home = "~/"))
+shinyFileChoose(input, "backgroundFile", roots = getVolumes())
 
 observeEvent(input$backgroundFile, {
-  path <- parseFilePaths(roots = c(home = "~/"), input$backgroundFile)
+  path <- parseFilePaths(roots = getVolumes(), input$backgroundFile)
   if (nrow(path) > 0) {
     toCheck <- tryCatch(Rvision::image(path$datapath),
                     error = function(e) NA)
@@ -86,10 +86,10 @@ observe({
 })
 
 # Save background
-shinyFileSave(input, "saveBackground", roots = c(home = "~/"))
+shinyFileSave(input, "saveBackground", roots = getVolumes())
 
 observeEvent(input$saveBackground, {
-  tmp <- parseSavePath(roots = c(home = "~/"), input$saveBackground)
+  tmp <- parseSavePath(roots = getVolumes(), input$saveBackground)
   isolate({
     if (isImage(theBackground()) & nrow(tmp) > 0) {
       write.Image(theBackground(), tmp$datapath)

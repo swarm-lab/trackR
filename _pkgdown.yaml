@@ -1,3 +1,5 @@
+url: https://swarm-lab.github.io/trackR/
+
 template:
   params:
     bootswatch: yeti

@@ -8,4 +8,7 @@ articles:
   z4_mask: z4_mask.html
   z5_blob: z5_blob.html
   z6_tracking: z6_tracking.html
+urls:
+  reference: https://swarm-lab.github.io/trackR//reference
+  article: https://swarm-lab.github.io/trackR//articles
 

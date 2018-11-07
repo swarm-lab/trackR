@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//index.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//reference/trackR.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//articles/z1_install.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//articles/z2_video.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//articles/z3_background.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//articles/z4_mask.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//articles/z5_blob.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR//articles/z6_tracking.html</loc>
+  </url>
+</urlset>

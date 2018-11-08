@@ -3,6 +3,10 @@ url: https://swarm-lab.github.io/trackR/
 template:
   params:
     bootswatch: yeti
+    docsearch:
+      api_key: 5cc7571ea2edfcf1062359e583eb942a
+      index_name: swarm-lab-trackr
+
 
 authors:
   Simon Garnier:

@@ -21,6 +21,7 @@ This is a template helping you to create an issue which can be processed as quic
 - trackR => 0.1
 - Rvision => 0.3.1
 - ROpenCVLite => 0.1.34.3
+- devtools => 2.0.1
 - Operating System / Platform => Mac OS Mojave
 - R => 3.5.1
 - CMake => 3.12
@@ -29,6 +30,7 @@ This is a template helping you to create an issue which can be processed as quic
 - trackR => :grey_question:
 - Rvision => :grey_question:
 - ROpenCVLite => :grey_question:
+- devtools => :grey_question:
 - Operating System / Platform => :grey_question:
 - R => :grey_question:
 - CMake => :grey_question:

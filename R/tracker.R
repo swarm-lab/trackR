@@ -22,7 +22,7 @@ simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
   maxMat <- matrix(maxDist * (i - past$frame), nrow = nrow(current),
                    ncol = nrow(past), byrow = TRUE)
   validMat <- mat <= maxMat
-  mat <- mat * mat2
+  mat <- mat * log(mat2 + 1)
 
   if (diff(dim(mat)) < 0) {
     stop(paste0("Error in image ", i))
@@ -84,6 +84,43 @@ simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
   current
 }
 
+simplerTracker <- function(current, past, maxDist = 10) {
+  if (nrow(past) == 0) {
+    current$track <- 1:nrow(current)
+    return(current)
+  }
+
+  frames <- seq(max(past$frame), min(past$frame), -1)
+
+  for (f in frames) {
+    if (nrow(past) > 0 & sum(is.na(current$track)) > 0) {
+      tmp <- past[past$frame == f, ]
+
+      if (nrow(tmp) > 0) {
+        mat <- abs(trackR:::pdiff(current$x, tmp$x)) + abs(trackR:::pdiff(current$y, tmp$y))
+        mat[!is.na(current$track), ] <- max(mat) * 2
+
+        if (nrow(mat) > ncol(mat)) {
+          h <- rep(NA, nrow(mat))
+          h[as.vector(clue::solve_LSAP(t(mat)))] <- seq(1, ncol(mat))
+        } else {
+          h <- as.vector(clue::solve_LSAP(mat))
+        }
+        valid <- mat[(h - 1) * nrow(mat) + 1:nrow(mat)] <= (maxDist * (current$frame[1] - f))
+        h[!valid] <- NA
+        current$track[!is.na(h)] <- tmp$track[h[!is.na(h)]]
+
+        past <- past[past$frame != f, ]
+        past <- past[!(past$track %in% tmp$track[h]), ]
+      }
+    } else {
+      break()
+    }
+  }
+
+  current
+}
+
 blobBGS <- function(x, background, mask = NULL, smoothing, threshold) {
   dif <- Rvision::gaussianBlur(Rvision::absdiff(x, background), 11, 11, smoothing, smoothing)
 
@@ -116,7 +153,8 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
                        size = numeric(n), frame = numeric(n) - 2 * lookBack,
                        track = numeric(n))
   pos <- 0
-  bs <- mean(blobsizes)
+  bs <- median(blobsizes)
+  bs_thresh <- bs + 1.5 * IQR(blobsizes)
 
   cbPalette <- c("#FFBF80", "#FF8000", "#FFFF99", "#FFFF33", "#B2FF8C", "#33FF00",
                  "#A6EDFF", "#1AB2FF", "#CCBFFF", "#664CFF", "#FF99BF", "#E61A33")
@@ -186,7 +224,7 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
       blobs <- blobs[blobs$size >= minSize & blobs$size <= maxSize, ]
 
       if (nrow(blobs) > 0) {
-        fat <- blobs$size > 2 * bs
+        fat <- blobs$size > bs_thresh
         if (any(fat)) {
           idx <- blobs$id[fat]
 
@@ -206,7 +244,13 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
 
         blobs$frame <- i
         blobs$track <- NA
-        tmp <- trackR:::simpleTracker(blobs, past, lookBack = lookBack, maxDist = maxDist)
+        # tmp <- trackR:::simpleTracker(blobs, past, lookBack = lookBack, maxDist = maxDist)
+        tmp <- trackR:::simplerTracker(blobs, past, maxDist = maxDist)
+
+        newTrack <- is.na(tmp$track)
+        if (sum(newTrack) > 0) {
+          tmp$track[newTrack] <- seq(max(tracks$track) + 1, max(tracks$track) + sum(newTrack), 1)
+        }
 
         nRows <- nrow(tmp)
         if ((pos + nRows) > n) {

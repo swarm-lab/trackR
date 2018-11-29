@@ -97,7 +97,7 @@ simplerTracker <- function(current, past, maxDist = 10) {
       tmp <- past[past$frame == f, ]
 
       if (nrow(tmp) > 0) {
-        mat <- abs(trackR:::pdiff(current$x, tmp$x)) + abs(trackR:::pdiff(current$y, tmp$y))
+        mat <- abs(pdiff(current$x, tmp$x)) + abs(pdiff(current$y, tmp$y))
         mat[!is.na(current$track), ] <- max(mat) * 2
 
         if (nrow(mat) > ncol(mat)) {
@@ -203,16 +203,16 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
 
     if (Rvision::isImage(local_bg)) {
       if (Rvision::isImage(local_mask)) {
-        cc <- trackR:::blobBGS(frame, local_bg, local_mask, smoothing, threshold)
+        cc <- blobBGS(frame, local_bg, local_mask, smoothing, threshold)
       } else {
-        cc <- trackR:::blobBGS(frame, local_bg, NULL, smoothing, threshold)
+        cc <- blobBGS(frame, local_bg, NULL, smoothing, threshold)
       }
 
     } else {
       if (Rvision::isImage(local_mask)) {
-        cc <- trackR:::blobTracktor(frame, local_mask, smoothing, threshold)
+        cc <- blobTracktor(frame, local_mask, smoothing, threshold)
       } else {
-        cc <- trackR:::blobTracktor(frame, NULL, smoothing, threshold)
+        cc <- blobTracktor(frame, NULL, smoothing, threshold)
       }
     }
 
@@ -246,7 +246,7 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
         blobs$frame <- i
         blobs$track <- NA
         # tmp <- trackR:::simpleTracker(blobs, past, lookBack = lookBack, maxDist = maxDist)
-        tmp <- trackR:::simplerTracker(blobs, past, maxDist = maxDist)
+        tmp <- simplerTracker(blobs, past, maxDist = maxDist)
 
         newTrack <- is.na(tmp$track)
         if (sum(newTrack) > 0) {

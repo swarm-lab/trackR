@@ -29,7 +29,7 @@ backgrounder <- function(video, n = 10, method = "mean") {
 
     mat <- array(NA, dim = dim(l1[[1]]))
     for (i in 1:Rvision::nchan(l1[[1]])) {
-      mat[, , i] <- trackR:::applyShiny(l3[[i]], c(1, 2), stats::median.default,
+      mat[, , i] <- applyShiny(l3[[i]], c(1, 2), stats::median.default,
                                message = paste0("Processing channel ", i,
                                                 " out of ", Rvision::nchan(l1[[1]])))
     }

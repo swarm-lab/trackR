@@ -8,81 +8,81 @@ pdiff <- function(a, b) {
   ma - mb
 }
 
-simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
-  if (nrow(past) == 0) {
-    current$track <- 1:nrow(current)
-    return(current)
-  }
-
-  i <- current$frame[1]
-  trackCounter <- max(past$track)
-
-  mat <- abs(trackR:::pdiff(current$x, past$x)) + abs(trackR:::pdiff(current$y, past$y))
-  mat2 <- abs(trackR:::pdiff(current$frame, past$frame))
-  maxMat <- matrix(maxDist * (i - past$frame), nrow = nrow(current),
-                   ncol = nrow(past), byrow = TRUE)
-  validMat <- mat <= maxMat
-  mat <- mat * log(mat2 + 1)
-
-  if (diff(dim(mat)) < 0) {
-    stop(paste0("Error in image ", i))
-  }
-
-  h <- as.vector(clue::solve_LSAP(mat))
-  tracks <- past$track[h]
-
-  valid <- validMat[(h - 1) * nrow(mat) + 1:nrow(mat)]
-  if (any(!valid)) {
-    nNew <- sum(!valid)
-    tracks[!valid] <- trackCounter + 1:nNew
-    trackCounter <- trackCounter + nNew
-  }
-
-  dup <- duplicated(tracks) | duplicated(tracks, fromLast = TRUE)
-  safe <- !dup
-  h[safe] <- 0
-  while (any(dup)) {
-    safe[which.max(h)] <- TRUE
-    h[safe] <- 0
-
-    newCurrent <- current[!safe, ]
-    newPast <- dplyr::filter(past, !(track %in% tracks[safe])) # REMOVE DPLYR DEPENDENCE HERE
-
-    if (nrow(newCurrent) > nrow(newPast)) {
-      n <- nrow(newCurrent) - nrow(newPast)
-      newPast <- rbind(newPast, data.frame(id = NA, x = rep(-9999, n),
-                                           y = rep(-9999, n), size = NA,
-                                           frame = newCurrent$frame[1],
-                                           track = NA))
-    }
-
-    mat <- abs(trackR:::pdiff(newCurrent$x, newPast$x)) + abs(trackR:::pdiff(newCurrent$y, newPast$y))
-    mat2 <- abs(trackR:::pdiff(newCurrent$frame, newPast$frame))
-    maxMat <- matrix(maxDist * (i - newPast$frame), nrow = nrow(newCurrent),
-                     ncol = nrow(newPast), byrow = TRUE)
-    validMat <- mat <= maxMat
-    mat <- mat * mat2
-
-    newH <- as.vector(clue::solve_LSAP(mat))
-    newTracks <- newPast$track[newH]
-
-    valid <- validMat[(newH - 1) * nrow(mat) + 1:nrow(mat)]
-    if (any(!valid)) {
-      nNew <- sum(!valid)
-      newTracks[!valid] <- trackCounter + 1:nNew
-      trackCounter <- trackCounter + nNew
-    }
-
-    tracks[!safe] <- newTracks
-
-    dup <- duplicated(tracks) | duplicated(tracks, fromLast = TRUE)
-    safe <- !dup
-    h[safe] <- 0
-  }
-
-  current$track <- tracks
-  current
-}
+# simpleTracker <- function(current, past, lookBack = 30, maxDist = 10) {
+#   if (nrow(past) == 0) {
+#     current$track <- 1:nrow(current)
+#     return(current)
+#   }
+#
+#   i <- current$frame[1]
+#   trackCounter <- max(past$track)
+#
+#   mat <- abs(trackR:::pdiff(current$x, past$x)) + abs(trackR:::pdiff(current$y, past$y))
+#   mat2 <- abs(trackR:::pdiff(current$frame, past$frame))
+#   maxMat <- matrix(maxDist * (i - past$frame), nrow = nrow(current),
+#                    ncol = nrow(past), byrow = TRUE)
+#   validMat <- mat <= maxMat
+#   mat <- mat * log(mat2 + 1)
+#
+#   if (diff(dim(mat)) < 0) {
+#     stop(paste0("Error in image ", i))
+#   }
+#
+#   h <- as.vector(clue::solve_LSAP(mat))
+#   tracks <- past$track[h]
+#
+#   valid <- validMat[(h - 1) * nrow(mat) + 1:nrow(mat)]
+#   if (any(!valid)) {
+#     nNew <- sum(!valid)
+#     tracks[!valid] <- trackCounter + 1:nNew
+#     trackCounter <- trackCounter + nNew
+#   }
+#
+#   dup <- duplicated(tracks) | duplicated(tracks, fromLast = TRUE)
+#   safe <- !dup
+#   h[safe] <- 0
+#   while (any(dup)) {
+#     safe[which.max(h)] <- TRUE
+#     h[safe] <- 0
+#
+#     newCurrent <- current[!safe, ]
+#     newPast <- dplyr::filter(past, !(track %in% tracks[safe])) # REMOVE DPLYR DEPENDENCE HERE
+#
+#     if (nrow(newCurrent) > nrow(newPast)) {
+#       n <- nrow(newCurrent) - nrow(newPast)
+#       newPast <- rbind(newPast, data.frame(id = NA, x = rep(-9999, n),
+#                                            y = rep(-9999, n), size = NA,
+#                                            frame = newCurrent$frame[1],
+#                                            track = NA))
+#     }
+#
+#     mat <- abs(trackR:::pdiff(newCurrent$x, newPast$x)) + abs(trackR:::pdiff(newCurrent$y, newPast$y))
+#     mat2 <- abs(trackR:::pdiff(newCurrent$frame, newPast$frame))
+#     maxMat <- matrix(maxDist * (i - newPast$frame), nrow = nrow(newCurrent),
+#                      ncol = nrow(newPast), byrow = TRUE)
+#     validMat <- mat <= maxMat
+#     mat <- mat * mat2
+#
+#     newH <- as.vector(clue::solve_LSAP(mat))
+#     newTracks <- newPast$track[newH]
+#
+#     valid <- validMat[(newH - 1) * nrow(mat) + 1:nrow(mat)]
+#     if (any(!valid)) {
+#       nNew <- sum(!valid)
+#       newTracks[!valid] <- trackCounter + 1:nNew
+#       trackCounter <- trackCounter + nNew
+#     }
+#
+#     tracks[!safe] <- newTracks
+#
+#     dup <- duplicated(tracks) | duplicated(tracks, fromLast = TRUE)
+#     safe <- !dup
+#     h[safe] <- 0
+#   }
+#
+#   current$track <- tracks
+#   current
+# }
 
 simplerTracker <- function(current, past, maxDist = 10) {
   if (nrow(past) == 0) {
@@ -153,8 +153,8 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
                        size = numeric(n), frame = numeric(n) - 2 * lookBack,
                        track = numeric(n))
   pos <- 0
-  bs <- median(blobsizes)
-  bs_thresh <- bs + 1.5 * IQR(blobsizes)
+  bs <- stats::median(blobsizes)
+  bs_thresh <- bs + 1.5 * stats::IQR(blobsizes)
 
   cbPalette <- c("#FFBF80", "#FF8000", "#FFFF99", "#FFFF33", "#B2FF8C", "#33FF00",
                  "#A6EDFF", "#1AB2FF", "#CCBFFF", "#664CFF", "#FF99BF", "#E61A33")
@@ -191,7 +191,8 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
   Rvision::setProp(video, "POS_FRAMES", begin - 1)
 
   for (i in begin:end) {
-    past <- dplyr::filter(tracks, frame > (i - lookBack) & frame < i) # REMOVE DPLYR DEPENDENCE HERE
+    idx <- tracks$frame > (i - lookBack) & tracks$frame < i
+    past <- tracks[idx, ]
 
     if (quality < 1) {
       frame <- Rvision::resize(Rvision::readNext(video), fx = quality, fy = quality,
@@ -231,7 +232,7 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
           for (j in seq_len(length(idx))) {
             k <- round(blobs$size[blobs$id == idx[j]] / bs)
             xy <- cc$table[cc$table$id == idx[j], c("x", "y")]
-            clust <- kmeans(xy, k)$cluster
+            clust <- stats::kmeans(xy, k)$cluster
 
             blobs <- rbind(blobs[-which(blobs$id == idx[j]), ],
                            do.call(rbind, by(cbind(xy, clust), clust,
@@ -266,7 +267,7 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
       new <- floor(100 * (i - begin + 1) / nFrames)
       if (new > old) {
         newTime <- Sys.time()
-        fps <- (i - oldFrame + 1) / as.numeric(difftime(newTime, oldTime, unit = "secs"))
+        fps <- (i - oldFrame + 1) / as.numeric(difftime(newTime, oldTime, units = "secs"))
         old <- new
         oldFrame <- i
         oldTime <- newTime
@@ -275,22 +276,23 @@ pipeline <- function(video, begin, end, background = NULL, mask = NULL, smoothin
     }
 
     if (display) {
-      tmp <- dplyr::filter(tracks, track > 0 & frame > (i - fps(video)) & frame <= i) # REMOVE DPLYR DEPENDENCE HERE
+      idx <- tracks$track > 0 & tracks$frame > (i - Rvision::fps(video)) & tracks$frame <= i
+      tmp <- tracks[idx, ]
 
-      tmp %>% # REMOVE DPLYR DEPENDENCE HERE
-        group_by(., track) %>%
-        do(., a = if (length(.$x) > 1) {
-          Rvision::drawLine(frame, .$x[1:(length(.$x) - 1)],
-                   .$y[1:(length(.$x) - 1)],
-                   .$x[2:length(.$x)],
-                   .$y[2:length(.$x)], cbPalette[(.$track %% 12) + 1], round(ncol(frame) / 200))
-          1
+      for (j in unique(tmp$track)) {
+        idx <- tmp$track == j
+
+        if (length(tmp[idx, ]$x) > 1) {
+          Rvision::drawLine(frame, tmp[idx, ]$x[1:(length(tmp[idx, ]$x) - 1)],
+                            tmp[idx, ]$y[1:(length(tmp[idx, ]$x) - 1)],
+                            tmp[idx, ]$x[2:length(tmp[idx, ]$x)],
+                            tmp[idx, ]$y[2:length(tmp[idx, ]$x)],
+                            cbPalette[(tmp[idx, ]$track %% 12) + 1],
+                            round(ncol(frame) / 200))
         } else {
-          Rvision::drawCircle(frame, .$x, .$y, 2, .$track, 2)
-          0
+          Rvision::drawCircle(frame, tmp[idx, ]$x, tmp[idx, ]$y, 2, tmp[idx, ]$track, 2)
         }
-
-        )
+      }
 
       Rvision::display(frame, "trackR", 1, nrow(frame) * scale / quality, ncol(frame) * scale / quality)
     }

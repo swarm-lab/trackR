@@ -23,18 +23,18 @@ backgrounder <- function(video, n = 10, method = "mean") {
     l2 <- lapply(l1, as.array)
 
     l3 <- list()
-    for (i in 1:nchan(l1[[1]])) {
+    for (i in 1:Rvision::nchan(l1[[1]])) {
       l3[[i]] <- simplify2array(lapply(l2, function(m, i) m[, , i], i = i))
     }
 
     mat <- array(NA, dim = dim(l1[[1]]))
-    for (i in 1:nchan(l1[[1]])) {
+    for (i in 1:Rvision::nchan(l1[[1]])) {
       mat[, , i] <- trackR:::applyShiny(l3[[i]], c(1, 2), stats::median.default,
                                message = paste0("Processing channel ", i,
-                                                " out of ", nchan(l1[[1]])))
+                                                " out of ", Rvision::nchan(l1[[1]])))
     }
 
-    if (bitdepth(l1[[1]]) == "8U") {
+    if (Rvision::bitdepth(l1[[1]]) == "8U") {
       mat <- mat * 256
       out <- Rvision::changeBitDepth(Rvision::image(mat), 8)
     } else {

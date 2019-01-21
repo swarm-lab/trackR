@@ -33,7 +33,12 @@ shinyUI(fluidPage(
         bsCollapsePanel(
           title = NULL,
           value = "controlPanel",
-          htmlOutput("videoSlider")
+          htmlOutput("videoSlider"),
+          column(width = 6, shinyFilesButton("loadSettings", "Load settings",
+                           "Please select a settings file", FALSE, class = "fullWidth")),
+          column(width = 6, shinySaveButton("saveSettings", "Save settings", "Save settings as...",
+                          filetype = list(R = ".Rda"),
+                          class = "fullWidth"))
         )
       )
     )

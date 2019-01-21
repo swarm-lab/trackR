@@ -11,6 +11,10 @@ shinyServer(function(input, output, session) {
   theBlobSizes <- {}
   theSuccess <- reactiveVal(FALSE)
 
+  settings <- list(path = NA, file = NA, quality = NA, size = NA, range = NA,
+                   background = NA, mask = NA, smoothing = NA, threshold = NA,
+                   blob_size = NA, lookback = NA, max_dist = NA)
+
   newDisplay("trackR")
 
   source("SERVER/video.R", local = TRUE)
@@ -23,18 +27,11 @@ shinyServer(function(input, output, session) {
 
   source("SERVER/tracking.R", local = TRUE)
 
-  output$videoSlider <- renderUI({
-    if (isVideo(theVideo()) & !is.null(input$rangePos)) {
-      sliderInput("videoPos", "Frame", width = "100%", value = 1, min = 1,
-                  max = diff(input$rangePos) + 1, step = 1)
-    } else {
-      sliderInput("videoPos", "Frame", width = "100%", value = 1, min = 1,
-                  max = 1, step = 1)
-    }
-  })
+  source("SERVER/control.R", local = TRUE)
 
   # Clean up
   session$onSessionEnded(function() {
     destroyAllDisplays()
   })
 })
+

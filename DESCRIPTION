@@ -1,7 +1,7 @@
 Package: trackR
 Type: Package
 Title: Simple Video Tracking Software
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(person("Simon", "Garnier", email = "garnier@njit.edu", role = c("aut", "cre")))
 Maintainer: Simon Garnier <garnier@njit.edu>
 Description: Simple video tracking software with Shiny-based GUI.

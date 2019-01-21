@@ -20,6 +20,7 @@ observeEvent(input$backgroundFile, {
 
     if (isImage(toCheck)) {
       theBackground(toCheck)
+      settings$background <<- path$datapath
     }
   }
 })

@@ -20,6 +20,7 @@ observeEvent(input$maskFile, {
 
     if (isImage(toCheck)) {
       theMask(toCheck)
+      settings$mask <<- path$datapath
     }
   }
 })

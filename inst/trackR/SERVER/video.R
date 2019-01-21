@@ -29,6 +29,8 @@ observe({
       if (!is.na(nframes(toCheck))) {
         theVideo(toCheck)
         isolate(theImage(readFrame(theVideo(), 1)))
+        settings$path <<- thePath()
+        settings$file <<- theFile()
       }
     }
   }

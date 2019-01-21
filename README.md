@@ -3,7 +3,7 @@
 [![Travis-CI Build Status](https://travis-ci.org/swarm-lab/trackR.svg?branch=master)](https://travis-ci.org/swarm-lab/trackR)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/swarm-lab/trackR?branch=master&svg=true)](https://ci.appveyor.com/project/swarm-lab/trackR)
 
-## Description
+## Description <img src="https://github.com/swarm-lab/trackR/tree/master/docs/reference/figures/logo.png" align="right" alt="" width="120" />
 
 [`trackR`](https://github.com/swarm-lab/trackR) is an object tracker for R based 
 on [OpenCV](https://opencv.org/). It provides an easy-to-use (or so I think) 

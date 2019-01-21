@@ -27,7 +27,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -105,20 +105,21 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
+    
+
+    
+    
 <div id="trackr---a-simple-video-tracking-software-for-r" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#trackr---a-simple-video-tracking-software-for-r" class="anchor"></a>trackR - A simple video tracking software for R</h1></div>
 
 <div id="description" class="section level2">
 <h2 class="hasAnchor">
-<a href="#description" class="anchor"></a>Description</h2>
+<a href="#description" class="anchor"></a>Description <img src="reference/figures/logo.png" align="right" alt="" width="120">
+</h2>
 <p><a href="https://github.com/swarm-lab/trackR"><code>trackR</code></a> is an object tracker for R based on <a href="https://opencv.org/">OpenCV</a>. It provides an easy-to-use (or so I think) graphical interface allowing users to perform basic multi-object video tracking in a range of conditions while maintaining individual identities.</p>
-<p><code>trackR</code> implements two different methods to detect objects in a video:</p>
-<ol>
-<li>Background subtraction, which is used when a background image is provided. Background subtraction is better suited for situations where the environment in which the objects move is stable.</li>
-<li>Adaptive thresholding, which is used when no background image is provided. Adaptive thresholding is better suited for situations where the environment in which the objects move is changing throughout the video (e.g. if the lighting conditions are not stable).</li>
-</ol>
+<p><code>trackR</code> implements two different methods to detect objects in a video: 1. Background subtraction, which is used when a background image is provided. Background subtraction is better suited for situations where the environment in which the objects move is stable. 2. Adaptive thresholding, which is used when no background image is provided. Adaptive thresholding is better suited for situations where the environment in which the objects move is changing throughout the video (e.g. if the lighting conditions are not stable).</p>
 <p><code>trackR</code> also allows users to exclude parts of the image by using black and white masks that can be easily created and customized using any available image editor.</p>
 <p>Finally, <code>trackR</code> borrows several ideas from <a href="https://github.com/vivekhsridhar/tracktor"><code>tracktor</code></a>, a command-line video tracking software for Python developed by <a href="https://vhsridhar.wordpress.com/">Vivek Sridhar</a>, <a href="http://www.simongingins.com/">Simon Gingins</a>, and <a href="http://dominiqueroche.weebly.com/">Dominique Roche</a>.</p>
 <hr>
@@ -149,7 +150,7 @@
 <p>–</p>
 <p><strong>What features are in the works for future versions of <code>trackR</code>?</strong></p>
 <p>At the moment, I am considering including the following features in future iterations of <code>trackR</code>:</p>
-<ol>
+<ol style="list-style-type: decimal">
 <li>Add the possibility to save and restore settings for future use.</li>
 <li>Add the possibility to indicate whether the objects to track are darker or lighter than the background. This will be useful for the adaptive thresholding algorithm that currently works well only to detect objects darker than their background.</li>
 <li>Add a more sophisticated method to re-identify each individual after a crossing event (maybe something that ‘learns’ the features of each individual, a la idtracker.ai).</li>
@@ -189,7 +190,7 @@
 </ul>
 </div>
 
-  <div class="dev-status">
+      <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://travis-ci.org/swarm-lab/trackR"><img src="https://travis-ci.org/swarm-lab/trackR.svg?branch=master" alt="Travis-CI Build Status"></a></li>
@@ -197,7 +198,9 @@
 </ul>
 </div>
 </div>
+
 </div>
+
 
       <footer><div class="copyright">
   <p>Developed by <a href="http://www.theswarmlab.com">Simon Garnier</a>.</p>

@@ -7,7 +7,6 @@ template:
       api_key: 5cc7571ea2edfcf1062359e583eb942a
       index_name: swarm-lab-trackr
 
-
 authors:
   Simon Garnier:
     href: http://www.theswarmlab.com

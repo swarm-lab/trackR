@@ -1,3 +1,7 @@
+---
+output: github_document
+---
+
 # trackR - A simple video tracking software for R
 
 [![Travis-CI Build Status](https://travis-ci.org/swarm-lab/trackR.svg?branch=master)](https://travis-ci.org/swarm-lab/trackR)

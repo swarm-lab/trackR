@@ -83,7 +83,7 @@ If you run into an issue, please report it at: https://github.com/swarm-lab/trac
 At the moment, I am considering including the following features in future 
 iterations of `trackR`:
 
-1. Add the possibility to save and restore settings for future use. 
+1. ~~Add the possibility to save and restore settings for future use.~~ [DONE] 
 2. Add the possibility to indicate whether the objects to track are darker or 
   lighter than the background. This will be useful for the adaptive thresholding 
   algorithm that currently works well only to detect objects darker than their 

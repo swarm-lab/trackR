@@ -8,3 +8,6 @@ docs
 scripts
 trackR.mp4
 LICENSE
+index.Rmd
+logo.*
+pkgdown

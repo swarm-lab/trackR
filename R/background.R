@@ -34,12 +34,14 @@ backgrounder <- function(video, n = 10, method = "mean") {
                                                 " out of ", Rvision::nchan(l1[[1]])))
     }
 
-    if (Rvision::bitdepth(l1[[1]]) == "8U") {
-      mat <- mat * 256
-      out <- Rvision::changeBitDepth(Rvision::image(mat), 8)
-    } else {
-      out <- Rvision::image(mat)
-    }
+    out <- Rvision::image(mat)
+
+    # if (Rvision::bitdepth(l1[[1]]) == "8U") {
+    #   mat <- mat * 256
+    #   out <- Rvision::changeBitDepth(Rvision::image(mat), 8)
+    # } else {
+    #   out <- Rvision::image(mat)
+    # }
   } else {
     stop("'method' should be 'mean' or 'median'")
   }

@@ -4,9 +4,12 @@
 \alias{trackR}
 \title{Simple Video Tracking Software}
 \usage{
-trackR(...)
+trackR(tracker = "classic", ...)
 }
 \arguments{
+\item{tracker}{A character string indicating the tracking algorithm to use
+(see 'Details').}
+
 \item{...}{Arguments passed to \link[shiny]{runApp}.}
 }
 \value{
@@ -15,6 +18,9 @@ This function does not return anything. A file is saved if the
 }
 \description{
 Simple video tracking software with Shiny-based GUI.
+}
+\details{
+TODO
 }
 \examples{
 # Run trackR in an external window

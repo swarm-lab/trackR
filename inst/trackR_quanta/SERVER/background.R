@@ -29,8 +29,12 @@ observeEvent(input$backgroundFile, {
 observe({
   if (input$computeBackground > 0) {
     isolate({
-      theBackground(trackR:::classicBackgrounder(theVideo(), n = input$backroundImages,
-                                                 method = input$backgroundType))
+      theBackground(trackR:::backgrounderQuanta(theVideo(), n = 100,
+                                                quant = switch(input$backgroundType,
+                                                               "darker" = 0.025,
+                                                               "lighter" = 0.975),
+                                                start = input$rangePos[1],
+                                                end = input$rangePos[2])[[1]])
     })
   }
 })
@@ -39,9 +43,16 @@ output$backgroundStatus <- renderUI({
   if (isImage(theBackground())) {
     p("Background loaded.", class = "good")
   } else {
-    p("Background missing (but not required).", class = "bad")
+    p("Background missing (and required).", class = "bad")
   }
 })
+
+output$backgroundStatusTracking <-
+  output$backgroundStatusBlob <- renderUI({
+    if (!isImage(theBackground())) {
+      p("Background missing (and required).", class = "bad")
+    }
+  })
 
 # Display background
 observe({

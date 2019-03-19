@@ -1,3 +1,4 @@
+#' @export
 pdiff <- function(a, b) {
   nr <- length(a)
   nc <- length(b)
@@ -9,6 +10,7 @@ pdiff <- function(a, b) {
 }
 
 
+#' @export
 simplerTracker <- function(current, past, maxDist = 10) {
   if (nrow(past) == 0) {
     current$track <- 1:nrow(current)
@@ -47,6 +49,7 @@ simplerTracker <- function(current, past, maxDist = 10) {
 }
 
 
+#' @export
 applyShiny <- function(X, MARGIN, FUN, message = NULL, inc = 0.1, ...) {
   shiny::withProgress(message = message, value = 0, {
     unit <- 1 / prod(dim(X)[MARGIN])

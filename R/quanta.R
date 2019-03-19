@@ -1,3 +1,4 @@
+#' @export
 backgrounderQuanta <- function(video, n = 100, quant = c(0.025, 0.975), start = NULL, end = NULL) {
   if (!Rvision::isVideo(video))
     stop("This is not a Video object.")
@@ -9,7 +10,7 @@ backgrounderQuanta <- function(video, n = 100, quant = c(0.025, 0.975), start = 
     start <- 1
 
   if (is.null(end))
-    end <- nframes(video) - 2
+    end <- nframes(video)
 
   shiny::showNotification("Loading images in memory.", id = "load", duration = NULL)
 
@@ -43,6 +44,7 @@ backgrounderQuanta <- function(video, n = 100, quant = c(0.025, 0.975), start = 
 }
 
 
+#' @export
 blobQuanta <- function(x, background, mask = NULL, smoothing, type) {
   if (type == "darker") {
     dif <- gaussianBlur(x, 11, 11, smoothing, smoothing) <
@@ -61,6 +63,7 @@ blobQuanta <- function(x, background, mask = NULL, smoothing, type) {
 }
 
 
+#' @export
 pipelineQuanta <- function(video, begin, end, background, mask = NULL, smoothing,
                            type, minSize, maxSize, lookBack, maxDist, blobsizes,
                            progress = FALSE, display = FALSE, quality = 1, scale = 1) {

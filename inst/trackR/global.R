@@ -1,6 +1,0 @@
-library(shiny)
-library(shinyBS)
-library(shinyFiles)
-library(Rvision)
-library(readr)
-library(trackR)

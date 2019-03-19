@@ -1,3 +1,4 @@
+#' @export
 backgrounderClassic <- function(video, n = 10, method = "mean", start = NULL, end = NULL) {
   if (!Rvision::isVideo(video))
     stop("This is not a Video object.")
@@ -9,7 +10,7 @@ backgrounderClassic <- function(video, n = 10, method = "mean", start = NULL, en
     start <- 1
 
   if (is.null(end))
-    end <- nframes(video) - 2
+    end <- nframes(video)
 
   shiny::showNotification("Loading images in memory.", id = "load", duration = NULL)
 
@@ -46,6 +47,7 @@ backgrounderClassic <- function(video, n = 10, method = "mean", start = NULL, en
 }
 
 
+#' @export
 blobClassic <- function(x, background, mask = NULL, smoothing, threshold) {
   dif <- Rvision::gaussianBlur(Rvision::absdiff(x, background), 11, 11, smoothing, smoothing)
 
@@ -58,6 +60,7 @@ blobClassic <- function(x, background, mask = NULL, smoothing, threshold) {
 }
 
 
+#' @export
 pipelineClassic <- function(video, begin, end, background, mask = NULL, smoothing,
                             threshold, minSize, maxSize, lookBack, maxDist, blobsizes,
                             progress = FALSE, display = FALSE, quality = 1, scale = 1) {

@@ -1,3 +1,4 @@
+#' @export
 blobTracktor <- function(x, mask = NULL, smoothing, threshold) {
   blur <- Rvision::gaussianBlur(x, 11, 11, smoothing, smoothing)
 
@@ -11,6 +12,7 @@ blobTracktor <- function(x, mask = NULL, smoothing, threshold) {
 }
 
 
+#' @export
 pipelineTracktor <- function(video, begin, end, mask = NULL, smoothing,
                              threshold, minSize, maxSize, lookBack, maxDist, blobsizes,
                              progress = FALSE, display = FALSE, quality = 1, scale = 1) {

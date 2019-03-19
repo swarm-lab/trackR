@@ -40,13 +40,13 @@ observeEvent(input$computeTracks, {
                            input$blobSize[2], input$lookBack, input$maxDist,
                            theBlobSizes, TRUE, input$showTracks,
                            input$videoQuality, input$videoSize)
-    write_csv(out, paste0(thePath(), "tracks.csv"))
+    write_csv(out, paste0(sub(basename(theBookmarks$videoPath), "", theBookmarks$videoPath), "tracks.csv"))
     theSuccess(TRUE)
   })
 })
 
 output$trackingStatus <- renderUI({
   if (theSuccess()) {
-    isolate({ p(paste0("Tracks saved in ", thePath(), "tracks.csv"), class = "good") })
+    isolate({ p(paste0("Tracks saved in ", sub(basename(theBookmarks$videoPath), "", theBookmarks$videoPath), "tracks.csv"), class = "good") })
   }
 })

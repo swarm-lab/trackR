@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • trackR</title>
+<title>Create/Display Video with Track Overlay — trackPlayer • trackR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -43,7 +43,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Create/Display Video with Track Overlay — trackPlayer" />
+
+<meta property="og:description" content="Basic function to display and/or save a video with tracks
+ overlaid on top." />
 
 <meta property="og:image" content="https://swarm-lab.github.io/trackR/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -63,7 +66,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -146,48 +149,73 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Create/Display Video with Track Overlay</h1>
+    <small class="dont-index">Source: <a href='https://github.com/swarm-lab/trackR/blob/master/R/trackR.R'><code>R/trackR.R</code></a></small>
+    <div class="hidden name"><code>trackPlayer.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Basic function to display and/or save a video with tracks
+ overlaid on top.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="trackPlayer.html">trackPlayer()</a></code> </p>
-        </td>
-        <td><p>Create/Display Video with Track Overlay</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="trackR.html">trackR()</a></code> </p>
-        </td>
-        <td><p>Simple Video Tracking Software</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>trackPlayer</span>(<span class='no'>video</span>, <span class='no'>tracks</span>, <span class='kw'>delay</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>show</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>save</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>video</th>
+      <td><p>A character string indicating the path to the original video.</p></td>
+    </tr>
+    <tr>
+      <th>tracks</th>
+      <td><p>A character string indicating the path to the tracks file.</p></td>
+    </tr>
+    <tr>
+      <th>delay</th>
+      <td><p>The duration in seconds of the track overlay (default: 10).</p></td>
+    </tr>
+    <tr>
+      <th>show</th>
+      <td><p>A boolean indicating whether the video with tracks overlay should
+be displayed in separate window (default: FALSE). Note: on Mac, the window
+will open behind all the other windows and might be hidden.</p></td>
+    </tr>
+    <tr>
+      <th>save</th>
+      <td><p>A boolean indication whether the video with tracks overlay should
+be saved (default: TRUE). If TRUE, then a file named "tracks.*" will be
+saved at the location of the original window.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>This function does not return anything.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'># TODO
+
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
+    <h2>Author</h2>
+    <p>Simon Garnier, <a href='mailto:garnier@njit.edu'>garnier@njit.edu</a></p>
   </div>
 </div>
 

@@ -19,9 +19,11 @@
 #'       each pixel corresponds to the lower (if the objects are generally darker
 #'       than the background) or upper (if the objects are generally lighter than
 #'       the background) 2.5 percentile of \code{n} images taken at regular
-#'       intervals throughout the video. \code{"quanta"} should work better than
-#'       \code{"classic"} in situations were the background is constant but not
-#'       homogenous (e.g. if the background has different shades).}
+#'       intervals throughout the video.  A pixel outside of these bounds in a
+#'       given image would be considered as being part of an object.
+#'       \code{"quanta"} should work better than \code{"classic"} in situations
+#'       were the background is constant but not homogenous (e.g. if the
+#'       background has different shades).}
 #'     \item{\code{"tracktor"}:}{This algorithm uses adaptive thresholding to
 #'       segment the objects in the image. It is a liberal implementation of the
 #'       \href{https://github.com/vivekhsridhar/tracktor}{tracktor} algorithm

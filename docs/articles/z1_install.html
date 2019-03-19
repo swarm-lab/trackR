@@ -79,6 +79,9 @@
     <li>
       <a href="../articles/z6_tracking.html">6 - Tracking tab</a>
     </li>
+    <li>
+      <a href="../articles/z7_settings.html">7 - Save/load settings</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -181,8 +184,15 @@
 <h2 class="hasAnchor">
 <a href="#launching-trackr" class="anchor"></a>3 - Launching <code>trackR</code>
 </h2>
+<p>To launch <code>trackR</code> using classic background subtraction, type:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(trackR)
-<span class="kw"><a href="../reference/trackR.html">trackR</a></span>()</code></pre></div>
+<span class="kw"><a href="../reference/trackR.html">trackR</a></span>(<span class="st">"classic"</span>) </code></pre></div>
+<p>To launch <code>trackR</code> using quantized background subtraction, type:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(trackR)
+<span class="kw"><a href="../reference/trackR.html">trackR</a></span>(<span class="st">"quanta"</span>) </code></pre></div>
+<p>To launch <code>trackR</code> using <a href="https://github.com/vivekhsridhar/tracktor">“tracktor”</a> segmentation, type:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(trackR)
+<span class="kw"><a href="../reference/trackR.html">trackR</a></span>(<span class="st">"tracktor"</span>) </code></pre></div>
 </div>
   </div>
 

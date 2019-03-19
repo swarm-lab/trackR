@@ -8,6 +8,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<mark>**This page applies to `trackR("classic")`, `trackR("quanta")`, and 
+`trackR("tracktor")`.**</mark>
+
+---
+
 After launching `trackR`, the first step is to load a video file in memory. In 
 the `Video file` tab (shown below), click on the `Select video file` button. This 
 will bring up a file navigator. Use the file navigator to locate and select the 

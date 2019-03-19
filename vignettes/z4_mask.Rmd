@@ -8,6 +8,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<mark>**This page applies to `trackR("classic")`, `trackR("quanta")`, and 
+`trackR("tracktor")`.**</mark>
+
+---
+
 In order to improve the tracking performance of `trackR`, it can be useful to 
 exclude some parts of the video (e.g. everything outside the experimental tank 
 or arena). `trackR` uses mask images in order to achieve this. Mask images are 

@@ -79,6 +79,9 @@
     <li>
       <a href="../articles/z6_tracking.html">6 - Tracking tab</a>
     </li>
+    <li>
+      <a href="../articles/z7_settings.html">7 - Save/load settings</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -118,6 +121,8 @@
 
     
     
+<p><mark><strong>This page applies to <code><a href="../reference/trackR.html">trackR("classic")</a></code>, <code><a href="../reference/trackR.html">trackR("quanta")</a></code>, and <code><a href="../reference/trackR.html">trackR("tracktor")</a></code>.</strong></mark></p>
+<hr>
 <p>If you made it all the way here, you are almost ready to start the tracking itself. The <code>Tracking</code> tab (shown below) contains a couple of control sliders to consider before you can finally get the data you have been patiently waiting for.</p>
 <hr>
 <center>
@@ -133,7 +138,6 @@
 <code>Display tracks (slower)</code> controls whether the video with the overlaid tracks is played as the tracking is happening. If it is, this will slow down the tracking process, but this can be used to check that the tracking is working well when looking for the right set of parameters.</li>
 </ul>
 <p>Once all is set, you can finally click on the <code>Start tracking</code> button and let <code>trackR</code> works its magic. The data will be saved as a CSV file in the same folder as the video file.</p>
-<p>Note: once the tracking is started, it cannot be interrupted without quitting the app and losing all your settings. This is unfortunately a consequence of the current functioning of <a href="https://github.com/rstudio/shiny/issues/1398">Shiny</a> that is not (yet) capable of cleanly stopping functions that are executing. I will implement a mechanism to save and restore your settings in case you need to interrupt the tracking before it ends (and hence have to close <code>trackR</code>), but this will not be implemented before at least the next version of <code>trackR</code>.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

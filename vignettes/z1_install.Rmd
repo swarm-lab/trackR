@@ -104,7 +104,24 @@ This step may take some time if it is the first time that you are installing the
 
 ## 3 - Launching `trackR`
 
+To launch `trackR` using classic background subtraction, type:
+
 ```r
 library(trackR)
-trackR()
+trackR("classic") 
+```
+
+To launch `trackR` using quantized background subtraction, type:
+
+```r
+library(trackR)
+trackR("quanta") 
+```
+
+To launch `trackR` using ["tracktor"](https://github.com/vivekhsridhar/tracktor) 
+segmentation, type:
+
+```r
+library(trackR)
+trackR("tracktor") 
 ```

@@ -79,6 +79,9 @@
     <li>
       <a href="../articles/z6_tracking.html">6 - Tracking tab</a>
     </li>
+    <li>
+      <a href="../articles/z7_settings.html">7 - Save/load settings</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -118,36 +121,41 @@
 
     
     
-<p><code>trackR</code> uses two different algorithms in order to isolate objects from their surrounding background:</p>
+<p><mark><strong>This page applies to <code><a href="../reference/trackR.html">trackR("classic")</a></code> and <code><a href="../reference/trackR.html">trackR("quanta")</a></code>. Skip it if you’re using <code><a href="../reference/trackR.html">trackR("tracktor")</a></code>.</strong></mark></p>
+<hr>
+<p><code>trackR</code> can use two different background subtraction methods in order to isolate objects from their surrounding background:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Background subtraction</strong>: this method consists in subtracting an image representing a fixed background from each frame of the video. Pixels with high values in the resulting image will correspond to objects moving in front of the background.</li>
+<strong>“Classic” background subtraction</strong>: this method consists in subtracting an image representing a fixed background from each frame of the video. Pixels with high difference values in the resulting image will correspond to objects moving in front of the background.</li>
 <li>
-<strong>Adaptive thresholding</strong>: this method consists in setting all pixels whose intensities are above a threshold to white and all the remaining pixels to black. In conventional thresholding, the threshold value is the same for all pixels. In adaptive thresholding however, the threshold changes dynamically over the image and is based on the local contrast between each pixel and its immediate surrounding. This allows for the easy detection of dark objects on a light background, and vice versa.</li>
+<strong>“Quantized” background subtraction</strong>: this method consists in identifying pixels that are significantly lighter or darker than the usual shade at their location in the image. This is accomplished by estimating for each pixel the lower and upper bounds of the confidence interval of its distribution of shades.<br>
+If for a given image the pixel value falls outside of one of these bounds, then the pixel is considered as belonging to an object and not to the background.</li>
 </ol>
-<p>The first method is usually more precise for object detection, but it requires that the background remains fixed for the entire duration of the experiment. The second method does not require that the background remains fixed, as long as the objects to track are always darker (resp. lighter) than their lighter (resp. darker) background. Which method you should choose will depend on the recording conditions of your experiment.</p>
-<p>If you choose to use adaptive thresholding, you can skip this section and move directly to the next step. If you choose background subtraction, please follow the instructions below to load a background image (if you have recorded one) or create one from the video.</p>
+<p>For instructions on “classic” background subtraction, go to <a href="#classic-background-subtraction">“Classic” background subtraction</a>.</p>
+<p>For instructions on “quantized” background subtraction, go to <a href="#quantized-background-subtraction">“Quantized” background subtraction</a></p>
 <hr>
+<div id="classic-background-subtraction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#classic-background-subtraction" class="anchor"></a>1 - “Classic” background subtraction</h2>
 <ul>
-<li><a href="#using-an-existing-background-image">1 - Using an existing background image</a></li>
-<li><a href="#creating-a-background-image-from-the-video">2 - Creating a background image from the video</a></li>
-<li><a href="#removing-ghosts">3 - Removing ghosts</a></li>
+<li><a href="#classic1">1 - Using an existing background image</a></li>
+<li><a href="#classic2">2 - Creating a background image from the video</a></li>
+<li><a href="#classic3">3 - Removing ghosts</a></li>
 </ul>
-<hr>
 <center>
-<img src="../man/figures/background.png" style="width:50.0%">
+<img src="../man/figures/background_classic.png" style="width:50.0%">
 </center>
 <hr>
-<div id="using-an-existing-background-image" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-an-existing-background-image" class="anchor"></a>1 - Using an existing background image</h2>
-<p>If you have recorded a background image of your experimental setup, or if you have created and saved one following the instructions in the <a href="#creating-a-background-image-from-the-video">next section</a>, you can load it by clicking on the <code>Select background file or...</code> button in the <code>Background</code> tab (see screenshot above). This will bring up a file navigator. Use the file navigator to locate and select the background image that you would like to use. If the image is correctly loaded in <code>trackR</code>, it should appear in the display window.</p>
+<div id="classic1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#classic1" class="anchor"></a>1 - Using an existing background image</h3>
+<p>If you have recorded a background image of your experimental setup, or if you have created and saved one following the instructions in the <a href="#classic1">next section</a>, you can load it by clicking on the <code>Select background  file or...</code> button in the <code>Background</code> tab (see screenshot above). This will bring up a file navigator. Use the file navigator to locate and select the background image that you would like to use. If the image is correctly loaded in <code>trackR</code>, it should appear in the display window.</p>
 <p>Note: the background image should have the same dimensions as the video.</p>
 <hr>
 </div>
-<div id="creating-a-background-image-from-the-video" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-a-background-image-from-the-video" class="anchor"></a>2 - Creating a background image from the video</h2>
+<div id="classic2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#classic2" class="anchor"></a>2 - Creating a background image from the video</h3>
 <p>If you do not have recorded a background image or want to create one from the video, you first need to select the number of video frames you would like to use for estimating the background. You can do this using the <code>Number of frames</code> slider in the <code>Background</code> tab (see screenshot above). Selecting more images will usually lead to a more accurate result, but will take longer.</p>
 <p>Once you have selected a number of frames, you need to select the type of algorithms that you would like to use for estimating the background image. Two algorithms are available in <code>trackR</code>:</p>
 <ol style="list-style-type: decimal">
@@ -160,9 +168,50 @@
 <p>Once the background image is estimated, it should appear in the display window. You can save this image for later use by clicking on the <code>Save background file</code> button.</p>
 <hr>
 </div>
-<div id="removing-ghosts" class="section level2">
+<div id="classic3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#classic3" class="anchor"></a>3 - Removing ghosts</h3>
+<p>In some instance (e.g. when an object does not move for a significant portion of the video), the background image may contain “ghosts”. To remove a ghost, click on the <code>Select ghost for removal</code> button in the <code>Background</code> tab (see screenshot above). Then, use left-mouse clicks in the display window to draw a polygon around the ghost you want to remove (see image below for an example). Close the polygon using a right-mouse click. <code>trackR</code> will then use an inpainting algorithm to remove the ghost from the background image.</p>
+<hr>
+<center>
+<img src="../man/figures/ghost.png" style="width:75.0%">
+</center>
+<hr>
+<p>Repeat this operation as many times as necessary to remove all the unwanted ghosts.</p>
+<p>Note: inpainting is not an exact science and the result of removing ghosts may not be satisfying. In this case, use a more advanced image editing program such as Adobe Photoshop or Gimp to clean up your background image.</p>
+<hr>
+</div>
+</div>
+<div id="quantized-background-subtraction" class="section level2">
 <h2 class="hasAnchor">
-<a href="#removing-ghosts" class="anchor"></a>3 - Removing ghosts</h2>
+<a href="#quantized-background-subtraction" class="anchor"></a>2 - “Quantized” background subtraction</h2>
+<ul>
+<li><a href="#quanta1">1 - Using an existing background image</a></li>
+<li><a href="#quanta2">2 - Creating a background image from the video</a></li>
+<li><a href="#quanta3">3 - Removing ghosts</a></li>
+</ul>
+<center>
+<img src="../man/figures/background_quanta.png" style="width:50.0%">
+</center>
+<hr>
+<div id="quanta1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#quanta1" class="anchor"></a>1 - Using an existing background image</h3>
+<p>If you have created and saved a background image following the instructions in the <a href="#quanta2">next section</a>, you can load it by clicking on the <code>Select background  file or...</code> button in the <code>Background</code> tab (see screenshot above). This will bring up a file navigator. Use the file navigator to locate and select the background image that you would like to use. If the image is correctly loaded in <code>trackR</code>, it should appear in the display window.</p>
+<hr>
+</div>
+<div id="quanta2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#quanta2" class="anchor"></a>2 - Creating a background image from the video</h3>
+<p>If you want to create a background image from the video, you first need to select the number of video frames you would like to use for estimating the background. You can do this using the <code>Number of frames</code> slider in the <code>Background</code> tab (see screenshot above). Selecting more images will usually lead to a more accurate result, but will take longer.</p>
+<p>Once you have selected a number of frames, you need to select the type of object that you would like to track. If the objects are generally darker than the background, select <code>Objects darker than the background</code> in the <code>type</code> dropdown menu. Otherwise, select <code>Objects lighter than the background</code>.</p>
+<p>You can then click on the <code>...Estimate background</code> button to start the computation of the background image.</p>
+<p>Once the background image is estimated, it should appear in the display window. You can save this image for later use by clicking on the <code>Save background file</code> button.</p>
+<hr>
+</div>
+<div id="quanta3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#quanta3" class="anchor"></a>3 - Removing ghosts</h3>
 <p>In some instance (e.g. when an object does not move for a significant portion of the video), the background image may contain “ghosts”. To remove a ghost, click on the <code>Select ghost for removal</code> button in the <code>Background</code> tab (see screenshot above). Then, use left-mouse clicks in the display window to draw a polygon around the ghost you want to remove (see image below for an example). Close the polygon using a right-mouse click. <code>trackR</code> will then use an inpainting algorithm to remove the ghost from the background image.</p>
 <hr>
 <center>
@@ -172,6 +221,7 @@
 <p>Repeat this operation as many times as necessary to remove all the unwanted ghosts.</p>
 <p>Note: inpainting is not an exact science and the result of removing ghosts may not be satisfying. In this case, use a more advanced image editing program such as Adobe Photoshop or Gimp to clean up your background image.</p>
 </div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -179,9 +229,8 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#using-an-existing-background-image">1 - Using an existing background image</a></li>
-      <li><a href="#creating-a-background-image-from-the-video">2 - Creating a background image from the video</a></li>
-      <li><a href="#removing-ghosts">3 - Removing ghosts</a></li>
+<li><a href="#classic-background-subtraction">1 - “Classic” background subtraction</a></li>
+      <li><a href="#quantized-background-subtraction">2 - “Quantized” background subtraction</a></li>
       </ul>
 </div>
       </div>

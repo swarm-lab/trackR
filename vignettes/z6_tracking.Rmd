@@ -8,6 +8,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<mark>**This page applies to `trackR("classic")`, `trackR("quanta")`, and 
+`trackR("tracktor")`.**</mark>
+
+---
+
 If you made it all the way here, you are almost ready to start the tracking 
 itself. The `Tracking` tab (shown below) contains a couple of control sliders to
 consider before you can finally get the data you have been patiently waiting for. 
@@ -33,11 +38,3 @@ consider before you can finally get the data you have been patiently waiting for
 Once all is set, you can finally click on the `Start tracking` button and let 
 `trackR` works its magic. The data will be saved as a CSV file in the same folder
 as the video file. 
-
-Note: once the tracking is started, it cannot be interrupted without quitting 
-the app and losing all your settings. This is unfortunately a consequence of the 
-current functioning of [Shiny](https://github.com/rstudio/shiny/issues/1398)
-that is not (yet) capable of cleanly stopping functions that are executing. 
-I will implement a mechanism to save and restore your settings in case you need 
-to interrupt the tracking before it ends (and hence have to close `trackR`), but 
-this will not be implemented before at least the next version of `trackR`. 

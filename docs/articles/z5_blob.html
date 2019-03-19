@@ -79,6 +79,9 @@
     <li>
       <a href="../articles/z6_tracking.html">6 - Tracking tab</a>
     </li>
+    <li>
+      <a href="../articles/z7_settings.html">7 - Save/load settings</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -118,6 +121,8 @@
 
     
     
+<p><mark><strong>This page applies to <code><a href="../reference/trackR.html">trackR("classic")</a></code>, <code><a href="../reference/trackR.html">trackR("quanta")</a></code>, and <code><a href="../reference/trackR.html">trackR("tracktor")</a></code>.</strong></mark></p>
+<hr>
 <p>Blob detection is a crucial part of the tracking process. Finding good parameters for accurately separating the objects from each other will ensure better tracking results and reduce the amount of manual correction that may be required later.</p>
 <p>The <code>Blob detection</code> tab in <code>trackR</code> (see screenshot below) contains all the controls to parameterize the blob detection algorithm.</p>
 <hr>
@@ -130,12 +135,12 @@
 <li>
 <code>Smoothing factor</code> controls the amount of smoothing applied to the image before segmenting the blobs from the background. Larger amount of smoothing may help better detect objects with complex geometries and avoid breaking them up in separate blobs.</li>
 <li>
-<code>Detection threshold</code> controls how much difference between pixels there should be to classify them as belonging to the background or to objects. Larger values will reduce the number of object-classified pixels.</li>
+<code>Detection threshold</code> controls how much difference between pixels there should be to classify them as belonging to the background or to objects. Larger values will reduce the number of object-classified pixels. Note: this option is not available if you are using <code><a href="../reference/trackR.html">trackR("quanta")</a></code> as it is not necessary in this case.</li>
 <li>
 <code>Size range</code> controls the lower and upper bounds of the size range (in pixels) within which the objects are expected to sit. These values do not need to be precise, they are mostly meant to filter out very small or very large false positive objects.</li>
 </ul>
 <p>Every time you modify one of these three control parameters, the display window will update itself to show the contours of the detected objects (see screenshot below). We recommend that you parameterize the blob detection algorithm using a video frame in which the objects to track are clearly separated. You can navigate through the video to find such a frame using the <code>Frame</code> slider at the bottom of the control panel.</p>
-<p>Note: when using the adaptive thresholding method (see Section <a href="https://swarm-lab.github.io/trackR/articles/z3_background.html">3 - Background tab</a>), the display updating might take some time and the results of the blob detection might not appear immediately. Wait a few seconds before making additional changes to the parameter values.</p>
+<p>Note: when using <code><a href="../reference/trackR.html">trackR("tracktor")</a></code>, the display updating might take some time if too many blobs are detected and the results of the blob detection might not appear immediately. Wait a few seconds before making additional changes to the parameter values.</p>
 <hr>
 <center>
 <img src="../man/figures/blob_bad_good.png" style="width:75.0%">

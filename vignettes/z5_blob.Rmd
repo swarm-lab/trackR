@@ -8,6 +8,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<mark>**This page applies to `trackR("classic")`, `trackR("quanta")`, and 
+`trackR("tracktor")`.**</mark>
+
+---
+
 Blob detection is a crucial part of the tracking process. Finding good parameters 
 for accurately separating the objects from each other will ensure better tracking 
 results and reduce the amount of manual correction that may be required later. 
@@ -29,7 +34,9 @@ Three sliders control the parameters of the blob detection algorithm:
   separate blobs. 
 + `Detection threshold` controls how much difference between pixels there should 
   be to classify them as belonging to the background or to objects. Larger values
-  will reduce the number of object-classified pixels. 
+  will reduce the number of object-classified pixels. Note: this option is not 
+  available if you are using `trackR("quanta")` as it is not necessary in this 
+  case. 
 + `Size range` controls the lower and upper bounds of the size range (in pixels)
   within which the objects are expected to sit. These values do not need to be 
   precise, they are mostly meant to filter out very small or very large false 
@@ -42,11 +49,10 @@ video frame in which the objects to track are clearly separated. You can navigat
 through the video to find such a frame using the `Frame` slider at the bottom of 
 the control panel. 
 
-Note: when using the adaptive thresholding method (see Section 
-[3 - Background tab](https://swarm-lab.github.io/trackR/articles/z3_background.html)),
-the display updating might take some time and the results of the blob detection
-might not appear immediately. Wait a few seconds before making additional changes
-to the parameter values. 
+Note: when using `trackR("tracktor")`, the display updating might take some time 
+if too many blobs are detected and the results of the blob detection might not 
+appear immediately. Wait a few seconds before making additional changes to the 
+parameter values. 
 
 ---
 

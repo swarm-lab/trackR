@@ -73,6 +73,28 @@ trackR <- function(tracker = "classic", ...) {
   shiny::runApp(app_path, ...)
 }
 
+#' @title Fix Tracking Errors
+#'
+#' @description Simple Shiny-based GUI to fix a posteriori common tracking errors,
+#'  such as removing unwanted tracks, fixing swapped track IDs and reconnecting
+#'  tracks.
+#'
+#' @param ... Arguments passed to \link[shiny]{runApp}.
+#'
+#' @return This function does not return anything. A file is saved if the
+#'  save button is used in the app.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' # Run trackFixer in an external window
+#' \dontrun{trackFixer()}
+#'
+#' @export
+trackFixer <- function(...) {
+  shiny::runApp(paste0(find.package("trackR"), "/trackFixer"), ...)
+}
+
 
 #' @title Create/Display Video with Track Overlay
 #'

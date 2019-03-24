@@ -1,0 +1,45 @@
+.bad {
+  color: white;
+  background-color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.good {
+  color: white;
+  background-color: green;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.halfWidth {
+  width: 50%;
+}
+
+.quarterWidth {
+  width: 25%;
+}
+
+#reassignTrackDialog .modal-footer{
+  display: none;
+}
+
+#removeTrackDialog  .modal-footer{
+  display: none;
+}
+
+#swapTrackDialog  .modal-footer{
+  display: none;
+}
+
+.shiny-notification {
+  overflow-wrap: break-word;
+}
+
+#shiny-notification-panel {
+  width: 100%;
+}

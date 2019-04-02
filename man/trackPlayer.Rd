@@ -2,30 +2,19 @@
 % Please edit documentation in R/trackR.R
 \name{trackPlayer}
 \alias{trackPlayer}
-\title{Create/Display Video with Track Overlay}
+\title{Display and Export Video with Track Overlay}
 \usage{
-trackPlayer(video, tracks, delay = 10, show = FALSE, save = TRUE)
+trackPlayer(...)
 }
 \arguments{
-\item{video}{A character string indicating the path to the original video.}
-
-\item{tracks}{A character string indicating the path to the tracks file.}
-
-\item{delay}{The duration in seconds of the track overlay (default: 10).}
-
-\item{show}{A boolean indicating whether the video with tracks overlay should
-be displayed in separate window (default: FALSE). Note: on Mac, the window
-will open behind all the other windows and might be hidden.}
-
-\item{save}{A boolean indication whether the video with tracks overlay should
-be saved (default: TRUE). If TRUE, then a file named "tracks.*" will be
-saved at the location of the original window.}
+\item{...}{Arguments passed to \link[shiny]{runApp}.}
 }
 \value{
-This function does not return anything.
+This function does not return anything. A file is saved if the
+ export button is used in the app.
 }
 \description{
-Basic function to display and/or save a video with tracks
+Simple Shiny-based GUI to display and export a video with tracks
  overlaid on top.
 }
 \examples{

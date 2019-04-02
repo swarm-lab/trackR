@@ -1,0 +1,29 @@
+.bad {
+  color: white;
+  background-color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.good {
+  color: white;
+  background-color: green;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.halfWidth {
+  width: 50%;
+}
+
+.quarterWidth {
+  width: 25%;
+}
+
+#exportFile {
+  margin-left: 25%;
+}

@@ -447,7 +447,8 @@ server <- function(input, output, session) {
 
   output$removeModal <- renderUI({
     if (is.data.frame(theTracks())) {
-      idx <- !theTracks()$ignore & theTracks()$frame == input$videoPos
+      idx <- !theTracks()$ignore & theTracks()$frame > (input$videoPos - 1 * fps(theVideo())) &
+        theTracks()$frame <= input$videoPos
       ids <- c("", sort(unique(theTracks()$track_fixed[idx])))
     } else {
       ids <- ""
@@ -609,6 +610,6 @@ server <- function(input, output, session) {
   session$onSessionEnded(function() {
     destroyAllDisplays()
   })
-  }
+}
 
-  shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server)

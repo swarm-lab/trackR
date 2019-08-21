@@ -94,8 +94,8 @@ observe({
                          id1 <- c(nrow(x), 1:(nrow(x) - 1))
                          id2 <- c(2:nrow(x), 1)
 
-                         drawLine(img, x[id1, "x"], -x[id1, "y"] + nrow(img),
-                                  x[id2, "x"], -x[id2, "y"] + nrow(img),
+                         drawLine(img, x[id1, "x"], x[id1, "y"],
+                                  x[id2, "x"], x[id2, "y"],
                                   thickness = 3)
                        }
 

@@ -305,9 +305,10 @@ server <- function(input, output, session) {
       for (j in sort(unique(tmp$track_fixed))) {
         idx <- tmp$track_fixed == j
         m <- which.max(tmp[idx, ]$frame)
-        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20, "grey50", -1)
-        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 8 else 16),
-                 tmp[idx, ]$y[m] - 8, font_scale = 0.8, thickness = 3, color = "white")
+        d <- max(dim(img)) / 720
+        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20 * d, "grey50", -1)
+        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 8 * d else 16 * d),
+                 tmp[idx, ]$y[m] - 8 * d, font_scale = 0.8 * d, thickness = 3 * d, color = "white")
       }
 
       display(theImage(), "trackFixer", 1,
@@ -365,14 +366,18 @@ server <- function(input, output, session) {
                        for (j in sort(unique(tmp$track_fixed))) {
                          idx <- tmp$track_fixed == j
                          m <- which.max(tmp[idx, ]$frame)
-                         drawCircle(theFrame, tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20, "grey50", -1)
-                         drawText(theFrame, j, tmp[idx, ]$x[m] - (if (j < 10) 8 else 16),
-                                  tmp[idx, ]$y[m] - 8, font_scale = 0.8, thickness = 3, color = "white")
+                         d <- max(dim(img)) / 720
+                         drawCircle(theFrame, tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20 * d, "grey50", -1)
+                         drawText(theFrame, j, tmp[idx, ]$x[m] - (if (j < 10) 8 * d else 16 * d),
+                                  tmp[idx, ]$y[m] - 8 * d, font_scale = 0.8 * d, thickness = 3 * d, color = "white")
                        }
 
                        writeFrame(vw, theFrame)
-                       theFrame <- readNext(theVideo())
-                       setProgress(value = i + 1)
+
+                       if (i != input$rangePos[2]) {
+                         theFrame <- readNext(theVideo())
+                         setProgress(value = i + 1)
+                       }
                      }
 
                      release(vw)

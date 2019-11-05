@@ -212,8 +212,11 @@ server <- function(input, output, session) {
                           error = function(e) NA)
 
       if (all(c("x", "y", "frame", "track") %in% names(toCheck))) {
-        toCheck$ignore <- FALSE
-        toCheck$track_fixed <- toCheck$track
+        if (any(!(c("ignore", "track_fixed") %in% names(toCheck)))) {
+          print("plop")
+          toCheck$ignore <- FALSE
+          toCheck$track_fixed <- toCheck$track
+        }
         theTracks(toCheck)
         tracksLoaded(tracksLoaded() + 1)
       }
@@ -269,10 +272,10 @@ server <- function(input, output, session) {
   observeEvent(input$lengthFilter, {
     if (is.data.frame(theTracks())) {
       isolate({
-        tab <- table(theTracks()$track_fixed)
+        tab <- table(theTracks()$track_fixed[theTracks()$ignore == FALSE])
         toIgnore <- as.numeric(names(tab)[tab < input$lengthFilter])
         tmp <- theTracks()
-        tmp$ignore <- tmp$track_fixed %in% toIgnore
+        tmp$ignore[tmp$track_fixed %in% toIgnore] <- TRUE
         theTracks(tmp)
       })
     }
@@ -370,9 +373,10 @@ server <- function(input, output, session) {
       for (j in sort(unique(tmp$track_fixed))) {
         idx <- tmp$track_fixed == j
         m <- which.max(tmp[idx, ]$frame)
-        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20, "grey50", -1)
-        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 8 else 16),
-                 tmp[idx, ]$y[m] - 8, font_scale = 0.8, thickness = 3, color = "white")
+        d <- max(dim(img)) / 720
+        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20 * d, "grey50", -1)
+        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 8 * d else 16 * d),
+                 tmp[idx, ]$y[m] - 8 * d, font_scale = 0.8 * d, thickness = 3 * d, color = "white")
       }
 
       display(theImage(), "trackFixer", 1,

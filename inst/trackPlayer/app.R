@@ -305,7 +305,7 @@ server <- function(input, output, session) {
       for (j in sort(unique(tmp$track_fixed))) {
         idx <- tmp$track_fixed == j
         m <- which.max(tmp[idx, ]$frame)
-        d <- max(dim(img)) / 720
+        d <- max(dim(theImage())) / 720
         drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20 * d, "grey50", -1)
         drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 8 * d else 16 * d),
                  tmp[idx, ]$y[m] - 8 * d, font_scale = 0.8 * d, thickness = 3 * d, color = "white")

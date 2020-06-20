@@ -10,7 +10,7 @@ backgrounderClassic <- function(video, n = 10, method = "mean", start = NULL, en
     start <- 1
 
   if (is.null(end))
-    end <- nframes(video)
+    end <- nframes(video) - 1
 
   shiny::showNotification("Loading images in memory.", id = "load", duration = NULL)
 

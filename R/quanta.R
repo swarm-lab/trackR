@@ -10,7 +10,7 @@ backgrounderQuanta <- function(video, n = 100, quant = c(0.025, 0.975), start = 
     start <- 1
 
   if (is.null(end))
-    end <- nframes(video)
+    end <- nframes(video) - 1
 
   shiny::showNotification("Loading images in memory.", id = "load", duration = NULL)
 

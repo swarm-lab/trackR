@@ -27,15 +27,15 @@ simplerTracker <- function(current, past, maxDist = 10) {
         mat <- abs(pdiff(current$x, tmp$x)) + abs(pdiff(current$y, tmp$y))
         mat[!is.na(current$track), ] <- max(mat) * 2
 
-        # if (nrow(mat) > ncol(mat)) {
-        #   h <- rep(NA, nrow(mat))
-        #   h[as.vector(clue::solve_LSAP(t(mat)))] <- seq(1, ncol(mat))
-        # } else {
-        #   h <- as.vector(clue::solve_LSAP(mat))
-        # }
+        if (nrow(mat) > ncol(mat)) {
+          h <- rep(NA, nrow(mat))
+          h[as.vector(clue::solve_LSAP(t(sqrt(mat))))] <- seq(1, ncol(mat))
+        } else {
+          h <- as.vector(clue::solve_LSAP(sqrt(mat)))
+        }
 
-        h <- RcppHungarian::HungarianSolver(sqrt(mat))$pairs[, 2]
-        h[h == 0] <- NA
+        # h <- RcppHungarian::HungarianSolver(sqrt(mat))$pairs[, 2]
+        # h[h == 0] <- NA
 
         valid <- mat[(h - 1) * nrow(mat) + 1:nrow(mat)] <= (maxDist * (current$frame[1] - f))
         h[!valid] <- NA

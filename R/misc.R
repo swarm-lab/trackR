@@ -34,7 +34,7 @@ simplerTracker <- function(current, past, maxDist = 10) {
         #   h <- as.vector(clue::solve_LSAP(mat))
         # }
 
-        h <- RcppHungarian::HungarianSolver(mat)$pairs[, 2]
+        h <- RcppHungarian::HungarianSolver(sqrt(mat))$pairs[, 2]
         h[h == 0] <- NA
 
         valid <- mat[(h - 1) * nrow(mat) + 1:nrow(mat)] <= (maxDist * (current$frame[1] - f))

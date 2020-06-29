@@ -49,17 +49,17 @@ ui <- function(request) {
 
 server <- function(input, output, session) {
 
-  moduleServer("controls")
+  moduleSVR("controls")
 
-  moduleServer("video")
+  moduleSVR("video")
 
-  moduleServer("backgroundClassic")
+  moduleSVR("backgroundClassic")
 
-  moduleServer("mask")
+  moduleSVR("mask")
 
-  moduleServer("blobClassic")
+  moduleSVR("blobClassic")
 
-  moduleServer("trackingClassic")
+  moduleSVR("trackingClassic")
 
   setBookmarkExclude(bookmarkExclude)
 

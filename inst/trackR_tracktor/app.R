@@ -47,15 +47,15 @@ ui <- function(request) {
 
 server <- function(input, output, session) {
 
-  moduleServer("controls")
+  moduleSVR("controls")
 
-  moduleServer("video")
+  moduleSVR("video")
 
-  moduleServer("mask")
+  moduleSVR("mask")
 
-  moduleServer("blobTracktor")
+  moduleSVR("blobTracktor")
 
-  moduleServer("trackingTracktor")
+  moduleSVR("trackingTracktor")
 
   setBookmarkExclude(bookmarkExclude)
 

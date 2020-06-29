@@ -10,7 +10,7 @@ moduleUI <- function(module) {
 
 
 #' @export
-moduleServer <- function(module) {
+moduleSVR <- function(module) {
   base <- system.file("modules", package = "trackR")
 
   if (!file.exists(paste0(base, "/", module, "Server.R")))

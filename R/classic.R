@@ -1,5 +1,5 @@
 #' @export
-backgrounderClassic <- function(video, n = 10, method = "mean", start = NULL, end = NULL) {
+backgrounderClassic <- function(video, n = 10, method = "median", start = NULL, end = NULL) {
   if (!Rvision::isVideo(video))
     stop("This is not a Video object.")
 
@@ -35,7 +35,7 @@ backgrounderClassic <- function(video, n = 10, method = "mean", start = NULL, en
       med[, , i] <- matrixStats::rowMedians(sapply(l1, function(x) x[][, , i]))
       shiny::removeNotification(id = "layer")
     }
-
+    mode(med) <- "integer"
     out <- Rvision::image(med)
   } else {
     stop("'method' should be 'mean' or 'median'")

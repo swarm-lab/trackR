@@ -37,6 +37,10 @@ backgrounderQuanta <- function(video, n = 100, quant = c(0.025, 0.975), start = 
     }
   }
 
+  for (j in 1:length(out)) {
+    mode(out[[j]]) <- "integer"
+  }
+
   shiny::removeNotification(id = "layer")
   shiny::removeNotification(id = "calc")
 

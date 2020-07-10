@@ -8,7 +8,7 @@ blobTracktor <- function(x, mask = NULL, smoothing, threshold) {
 
   gray <- Rvision::changeColorSpace(blur, "GRAY")
   bin <- Rvision::adaptiveThreshold(gray, C = threshold)
-  Rvision::connectedComponents(bin, 8, TRUE)
+  Rvision::connectedComponents(bin, 8)
 }
 
 

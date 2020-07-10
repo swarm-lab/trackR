@@ -56,7 +56,7 @@ blobClassic <- function(x, background, mask = NULL, smoothing, threshold) {
   }
 
   bin <- Rvision::changeColorSpace(dif, "GRAY") > threshold
-  Rvision::connectedComponents(bin, 8, TRUE)
+  Rvision::connectedComponents(bin, 8)
 }
 
 

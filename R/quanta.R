@@ -63,7 +63,7 @@ blobQuanta <- function(x, background, mask = NULL, smoothing, type) {
   }
 
   bin <- Rvision::changeColorSpace(dif, "GRAY")
-  Rvision::connectedComponents(bin, 8, TRUE)
+  Rvision::connectedComponents(bin, 8)
 }
 
 

@@ -13,7 +13,7 @@ pdiff <- function(a, b) {
 #' @export
 simplerTracker <- function(current, past, maxDist = 10) {
   if (nrow(past) == 0) {
-    current$track <- 1:nrow(current)
+    current$track <- NA # 1:nrow(current)
     return(current)
   }
 

@@ -306,9 +306,9 @@ server <- function(input, output, session) {
         idx <- tmp$track_fixed == j
         m <- which.max(tmp[idx, ]$frame)
         d <- max(dim(theImage())) / 720
-        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20 * d, "grey50", -1)
-        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 8 * d else 16 * d),
-                 tmp[idx, ]$y[m] - 8 * d, font_scale = 0.8 * d, thickness = 3 * d, color = "white")
+        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 10 * d, "grey50", -1)
+        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 4 * d else 8 * d),
+                 tmp[idx, ]$y[m] - 4 * d, font_scale = 0.4 * d, thickness = 1.5 * d, color = "white")
       }
 
       display(theImage(), "trackFixer", 1,
@@ -327,17 +327,17 @@ server <- function(input, output, session) {
       path <- parseFilePaths(roots = getVolumes(), input$videoFile)
       shinySaveButton("exportFile", "Export video with tracks", "Save file as...",
                       filetype = list(video = tools::file_ext(path$datapath)),
-                      class = "halfWidth")
+                      class = "fullWidth")
     } else {
       disabled(shinySaveButton("exportFile", "Export video with tracks", "Save file as...",
-                               class = "halfWidth"))
+                               class = "fullWidth"))
     }
   })
 
   observeEvent(input$exportFile, {
     if (is.list(input$exportFile)) {
       path <- parseSavePath(roots = getVolumes(), input$exportFile)
-      vw <- videoWriter(path$datapath,  codec(theVideo()), fps(theVideo()),
+      vw <- videoWriter(path$datapath, "AVC1", fps(theVideo()),
                         nrow(theVideo()), ncol(theVideo()))
 
       withProgress(message = "Preparing video",
@@ -366,10 +366,10 @@ server <- function(input, output, session) {
                        for (j in sort(unique(tmp$track_fixed))) {
                          idx <- tmp$track_fixed == j
                          m <- which.max(tmp[idx, ]$frame)
-                         d <- max(dim(img)) / 720
-                         drawCircle(theFrame, tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20 * d, "grey50", -1)
-                         drawText(theFrame, j, tmp[idx, ]$x[m] - (if (j < 10) 8 * d else 16 * d),
-                                  tmp[idx, ]$y[m] - 8 * d, font_scale = 0.8 * d, thickness = 3 * d, color = "white")
+                         d <- max(dim(theFrame)) / 720
+                         drawCircle(theFrame, tmp[idx, ]$x[m], tmp[idx, ]$y[m], 10 * d, "grey50", -1)
+                         drawText(theFrame, j, tmp[idx, ]$x[m] - (if (j < 10) 4 * d else 8 * d),
+                                  tmp[idx, ]$y[m] - 4 * d, font_scale = 0.4 * d, thickness = 1.5 * d, color = "white")
                        }
 
                        writeFrame(vw, theFrame)

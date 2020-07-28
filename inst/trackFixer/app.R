@@ -373,9 +373,9 @@ server <- function(input, output, session) {
         idx <- tmp$track_fixed == j
         m <- which.max(tmp[idx, ]$frame)
         d <- input$videoSize * max(dim(theImage())) / 720
-        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 20 * d, "grey50", -1)
-        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 8 * d else 16 * d),
-                 tmp[idx, ]$y[m] - 8 * d, font_scale = 0.8 * d, thickness = 3 * d, color = "white")
+        drawCircle(theImage(), tmp[idx, ]$x[m], tmp[idx, ]$y[m], 10 * d, "grey50", -1)
+        drawText(theImage(), j, tmp[idx, ]$x[m] - (if (j < 10) 4 * d else 8 * d),
+                 tmp[idx, ]$y[m] - 4 * d, font_scale = 0.4 * d, thickness = 1.5 * d, color = "white")
       }
 
       display(theImage(), "trackFixer", 1,

@@ -1,13 +1,31 @@
+.vrtc-tab-panel-menu.vrtc-tab-panel-menu-right {
+  width: 50px;
+  float: right;
+}
+
+.vrtc-tab-panel.tab-content {
+  width: calc(100% - 50px);
+  float: left;
+  padding-right: 20px;
+  padding-left: 0;
+}
+
+.vrtc-tab-panel-container {
+  width: 100%;
+  height: 100%;
+  float: left;
+}
+
 .bad {
   color: white;
-  background-color: red;
+  background-color: #461311;
   margin-top: 10px;
   text-align: center;
 }
 
 .good {
   color: white;
-  background-color: green;
+  background-color: #114628;
   margin-top: 10px;
   text-align: center;
 }
@@ -24,6 +42,55 @@
   width: 25%;
 }
 
-#exportFile {
-  margin-left: 25%;
+#reassignTrackDialog .modal-footer{
+  display: none;
+}
+
+#removeTrackDialog  .modal-footer{
+  display: none;
+}
+
+#swapTrackDialog  .modal-footer{
+  display: none;
+}
+
+.shiny-notification {
+  overflow-wrap: break-word;
+}
+
+#shiny-notification-panel {
+  width: 100%;
+}
+
+.module-title {
+  line-height: 41px;
+  color: #ffffff;
+  font-size: 24px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #22478a;
+  border-radius: 4px;
+}
+
+.irs-single, .irs-bar-edge, .irs-bar, .irs-from, .irs-to {
+  background-color: #22478a!important;
+  border-top-color: #22478a!important;
+  border-bottom-color: #22478a!important;
+}
+
+hr.hr-text {
+  border: none;
+  height: 1px;
+  background: #f0f0f0;
+}
+
+hr.hr-text:after {
+  content: attr(data-content);
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  padding: 1rem;
+  background-color: white;
 }

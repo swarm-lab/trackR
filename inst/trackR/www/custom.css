@@ -34,32 +34,31 @@
   width: 100%;
 }
 
-.halfWidth {
-  width: 50%;
-}
-
-.quarterWidth {
-  width: 25%;
-}
-
-#reassignTrackDialog .modal-footer{
-  display: none;
-}
-
-#removeTrackDialog  .modal-footer{
-  display: none;
-}
-
-#swapTrackDialog  .modal-footer{
-  display: none;
-}
-
-.shiny-notification {
-  overflow-wrap: break-word;
-}
-
-#shiny-notification-panel {
+.settingsTable {
   width: 100%;
+}
+
+.settingsTable td:empty {
+  width: 10px;
+}
+
+.settingsTable tr:empty {
+  height: 10px;
+}
+
+.vrtc-tab-panel.tab-settings {
+    width: 100%;
+    float: left;
+    padding-right: 20px;
+    padding-left: 0;
+}
+
+div.vrtc-tab-panel-settings {
+    background-color: #ffffff;
+    /* border: 1px solid #eeeeee; */
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .module-title {
@@ -94,3 +93,17 @@ hr.hr-text:after {
   padding: 1rem;
   background-color: white;
 }
+
+#darkButton_x {
+  text-align: center;
+}
+
+#showTracks_x {
+  text-align: center;
+}
+
+#settings-tabbable .col-sm-1.vrtc-tab-panel-menu.vrtc-tab-panel-menu-right {
+  display: none;
+}
+
+

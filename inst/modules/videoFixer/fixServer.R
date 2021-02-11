@@ -68,10 +68,8 @@ observeEvent(theFixedVideoPath(), {
         h_frame <- Rvision::imhist(frame)[, 1:frame$nchan() + 1]
         cdf_frame <- apply(h_frame, 2, cumsum)
 
-        for (j in 1:256) {
-          for (k in 1:target$nchan()) {
-            map[j, k] <- which.min(abs(cdf_frame[j, k] - cdf_target[, k])) - 1
-          }
+        for (j in 1:target$nchan()) {
+          map[, j] <- apply(abs(outer(cdf_frame[, j], cdf_target[, j], "-")), 1, which.min) - 1
         }
 
         Rvision::LUT(frame, map, TRUE)

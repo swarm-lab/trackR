@@ -14,7 +14,7 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
     shiny (>= 1.1.0),
-    shinyBS (>= 0.61),
+    shinyWidgets (>= 0.5.7),
     shinyFiles (>= 0.7.1),
     shinyjs (>= 1.0),
     ROpenCVLite (>= 0.1.34.3),

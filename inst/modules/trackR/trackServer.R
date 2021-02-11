@@ -112,7 +112,7 @@ observeEvent(theTracksPath(), {
       blobs <- data.table::data.table(x = shape[, 1],
                                       y = shape[, 2],
                                       n = shape[, 6],
-                                      frame = frame(theVideo()),
+                                      frame = theVideo()$frame(),
                                       id = 1:nrow(shape),
                                       track = NA,
                                       width = shape[, 3],
@@ -120,7 +120,7 @@ observeEvent(theTracksPath(), {
                                       angle = shape[, 5])
 
       if (nrow(blobs) > 0) {
-        memory <- memory[frame >= (frame(theVideo()) - memory_length)]
+        memory <- memory[frame >= (theVideo()$frame() - memory_length)]
         blobs <- simplerTracker(blobs, memory, maxDist = input$maxDist_x)
         newTrack <- is.na(blobs$track)
 

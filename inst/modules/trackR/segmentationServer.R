@@ -12,8 +12,8 @@ toOptim <- function(par, images) {
   out <- sapply(images, function(image) {
     bw <- Rvision::inRange(image, c(par[1:3], 0))
     md <- Rvision::medianBlur(bw, 1)
-    signal <- sum(md * bw)
-    noise <- sum(bw) - signal
+    signal <- Rvision::sum(md * bw)
+    noise <- Rvision::sum(bw) - signal
     signal / (noise + 1)
   })
 
@@ -28,11 +28,11 @@ observeEvent(input$optimizeThresholds_x, {
     frame_pos <- round(seq.int(input$rangePos_x[1], input$rangePos_x[2],
                                length.out = input$thresholdImages_x))
 
-    m_bg <- sum(theBackground() * (theMask() / 255))
+    m_bg <- Rvision::sum(theBackground() * (theMask() / 255))
 
     frames <- lapply(frame_pos, function(i) {
       frame <- Rvision::readFrame(theVideo(), i)
-      m_fr <- sum(frame * (theMask() / 255))
+      m_fr <- Rvision::sum(frame * (theMask() / 255))
       r <- mean(m_bg / m_fr)
 
       if (input$darkButton_x == "Darker") {

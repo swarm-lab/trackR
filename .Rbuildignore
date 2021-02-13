@@ -1,9 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.travis.yml
 .github
 _pkgdown.yaml
-appveyor.yml
 docs
 scripts
 trackR.mp4
@@ -12,3 +10,4 @@ index.Rmd
 logo.*
 pkgdown
 old
+^\.github$

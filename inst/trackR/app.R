@@ -2,7 +2,6 @@ library(shiny)
 library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
-library(data.table)
 
 Rvision::newDisplay("trackR")
 jscode <- "shinyjs.replace = function(url) { location.replace(url); }"

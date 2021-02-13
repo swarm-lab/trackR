@@ -25,7 +25,8 @@ Imports:
     Rfast (>= 2.0.0),
     Rfast2 (>= 0.0.8),
     rgenoud (>= 5.8-3.0),
-    mvoutlier (>= 2.0.9)
+    mvoutlier (>= 2.0.9),
+    CEC (>= 0.10.2)
 Remotes: 
     github::swarm-lab/ROpenCVLite,
     github::swarm-lab/Rvision

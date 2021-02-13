@@ -69,6 +69,8 @@ observe({
 # Add polygon
 observeEvent(input$polyButton_x, {
   if (Rvision::isImage(theMask())) {
+    toggleAll("OFF")
+
     displayMask <- Rvision::cloneImage(theMask())
     Rvision::setTo(displayMask, theMask(), "green", in_place = TRUE)
     Rvision::setTo(displayMask, Rvision::invert(theMask()), "red", in_place = TRUE)
@@ -95,12 +97,16 @@ observeEvent(input$polyButton_x, {
     } else {
       theMask(Rvision::setTo(theMask(), Rvision::invert(ROI$mask), "black"))
     }
+
+    toggleAll("ON")
   }
 })
 
 # Add Ellipse
 observeEvent(input$ellButton_x, {
   if (Rvision::isImage(theMask())) {
+    toggleAll("OFF")
+
     displayMask <- Rvision::cloneImage(theMask())
     Rvision::setTo(displayMask, theMask(), "green", in_place = TRUE)
     Rvision::setTo(displayMask, Rvision::invert(theMask()), "red", in_place = TRUE)
@@ -154,6 +160,8 @@ observeEvent(input$ellButton_x, {
     } else {
       theMask(Rvision::setTo(theMask(), Rvision::invert(ellMask), "black"))
     }
+
+    toggleAll("ON")
   }
 })
 

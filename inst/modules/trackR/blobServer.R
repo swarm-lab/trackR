@@ -82,8 +82,6 @@ observeEvent(input$optimizeBlobs_x, {
       }
     }
 
-
-
     tot_summ[, outlier := mvoutlier::pcout(
       cbind(scale(width), scale(height), scale(density)))$wfinal01 == 0]
 

@@ -154,7 +154,7 @@ observe({
         }
 
         toDisplay <- Rvision::cloneImage(theImage())
-        if (nrow(shape) > 1) {
+        if (length(shape) > 0) {
           Rvision::drawRotatedRectangle(toDisplay, shape[, 1], shape[, 2],
                                         shape[, 3], shape[, 4],
                                         shape[, 5], color = "green",

@@ -154,10 +154,12 @@ observe({
         }
 
         toDisplay <- Rvision::cloneImage(theImage())
-        Rvision::drawRotatedRectangle(toDisplay, shape[, 1], shape[, 2],
-                                      shape[, 3], shape[, 4],
-                                      shape[, 5], color = "green",
-                                      thickness = 2)
+        if (nrow(shape) > 1) {
+          Rvision::drawRotatedRectangle(toDisplay, shape[, 1], shape[, 2],
+                                        shape[, 3], shape[, 4],
+                                        shape[, 5], color = "green",
+                                        thickness = 2)
+        }
 
         Rvision::display(
           Rvision::resize(toDisplay, fx = input$videoQuality_x,

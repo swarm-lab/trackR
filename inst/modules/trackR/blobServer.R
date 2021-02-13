@@ -61,9 +61,12 @@ observeEvent(input$optimizeBlobs_x, {
       nz <- data.table::as.data.table(Rvision::connectedComponents(bw > 63, 8)$table)
       nz <- nz[, if(.N >= 5) .SD, by = .(id)]
       nz_summ <- nz[, data.table::as.data.table(kbox(cbind(x, y))), by = .(id)]
-      nz_summ[, area := (width / 2) * (height / 2) * pi]
-      nz_summ[, density := n / area]
-      tot_summ <- data.table::rbindlist(list(tot_summ, nz_summ))
+
+      if (nrow(nz_summ) > 0) {
+        nz_summ[, area := (width / 2) * (height / 2) * pi]
+        nz_summ[, density := n / area]
+        tot_summ <- data.table::rbindlist(list(tot_summ, nz_summ))
+      }
 
       new_check <- floor(100 * i / n)
       if (new_check > (old_check + 5)) {
@@ -78,6 +81,8 @@ observeEvent(input$optimizeBlobs_x, {
                                round(fps, digits = 2), "fps"))
       }
     }
+
+
 
     tot_summ[, outlier := mvoutlier::pcout(
       cbind(scale(width), scale(height), scale(density)))$wfinal01 == 0]

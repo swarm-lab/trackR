@@ -1,5 +1,4 @@
-#' @export
-pdiff <- function(a, b) {
+.pdiff <- function(a, b) {
   a - matrix(b, nrow = length(a), ncol = length(b), byrow = TRUE)
 }
 
@@ -18,7 +17,7 @@ simplerTracker <- function(current, past, maxDist = 10) {
       tmp <- past[past$frame == f, ]
 
       if (nrow(tmp) > 0) {
-        mat <- abs(pdiff(current$x, tmp$x)) + abs(pdiff(current$y, tmp$y))
+        mat <- abs(.pdiff(current$x, tmp$x)) + abs(.pdiff(current$y, tmp$y))
         mat[!is.na(current$track), ] <- max(mat) * 2
 
         if (nrow(mat) > ncol(mat)) {
@@ -53,6 +52,7 @@ simplerTracker <- function(current, past, maxDist = 10) {
          ((relx * sina + rely * cosa) / (height / 2)) ^ 2)
 }
 
+
 #' @export
 optimEllipse <- function(x, y) {
   d <- Rfast::Dist(cbind(x, y))
@@ -67,6 +67,32 @@ optimEllipse <- function(x, y) {
   out <- opt$par
   out[5] <- 180 * out[5] / pi
   out
+}
+
+
+.xyangle <- function(x, y, directed = FALSE) {
+  if (missing(y)) {
+    y <- x[, 2]
+    x <- x[, 1]
+  }
+  out <- atan2(y, x)
+  if (!directed)
+    out <- out%%pi
+  out
+}
+
+
+#' @export
+ellipse <- function(x, y, width, height, angle, npoints = 100) {
+  angle <- angle * pi / 180
+  segment <- c(0, 2 * pi)
+  z <- seq(segment[1], segment[2], length = npoints + 1)
+  xx <- (width / 2) * cos(z)
+  yy <- (height / 2) * sin(z)
+  alpha <- .xyangle(xx, yy, directed = TRUE)
+  rad <- sqrt(xx^2 + yy^2)
+  cbind(x = rad * cos(alpha + angle) + x,
+        y = rad * sin(alpha + angle) + y)
 }
 
 
@@ -90,29 +116,6 @@ optimEllipse <- function(x, y) {
     angle = (180 * alpha / pi) + 90)
 }
 
-.xyangle <- function(x, y, directed = FALSE) {
-  if (missing(y)) {
-    y <- x[, 2]
-    x <- x[, 1]
-  }
-  out <- atan2(y, x)
-  if (!directed)
-    out <- out%%pi
-  out
-}
-
-#' @export
-ellipse <- function(x, y, width, height, angle, npoints = 100) {
-  angle <- angle * pi / 180
-  segment <- c(0, 2 * pi)
-  z <- seq(segment[1], segment[2], length = npoints + 1)
-  xx <- (width / 2) * cos(z)
-  yy <- (height / 2) * sin(z)
-  alpha <- .xyangle(xx, yy, directed = TRUE)
-  rad <- sqrt(xx^2 + yy^2)
-  cbind(x = rad * cos(alpha + angle) + x,
-        y = rad * sin(alpha + angle) + y)
-}
 
 #' @export
 kbox <- function(x, centers = 1, iter.max = 10, split = FALSE, split.width = Inf,
@@ -213,6 +216,7 @@ kbox <- function(x, centers = 1, iter.max = 10, split = FALSE, split.width = Inf
     t(sh)
   }
 }
+
 
 
 #' @export

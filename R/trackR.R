@@ -1,3 +1,29 @@
+#' @title Fix Video Recording Errors
+#'
+#' @description Simple Shiny-based GUI to fix certain common video recording
+#'  errors in behavioral experiment, such as frame shifting, and color and light
+#'  variations.
+#'
+#' @param ... Arguments passed to \link[shiny]{runApp}.
+#'
+#' @return This function does not return anything. A file is saved if the
+#'  export button is used in the app.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' # Run videoFixer in an external window
+#' \dontrun{videoFixer()}
+#'
+#' # Run videoFixer classic inside RStudio
+#' \dontrun{videoFixer(launch.browser = rstudioapi::viewer)}
+#'
+#' @export
+videoFixer <- function(...) {
+  shiny::runApp(paste0(find.package("trackR"), "/videoFixer"), ...)
+}
+
+
 #' @title Simple Video Tracking Software
 #'
 #' @description Simple video tracking software with Shiny-based GUI.
@@ -21,6 +47,7 @@ trackR <- function(...) {
   shiny::runApp(paste0(find.package("trackR"), "/trackR"), ...)
 }
 
+
 #' @title Fix Tracking Errors
 #'
 #' @description Simple Shiny-based GUI to fix a posteriori common tracking errors,
@@ -37,6 +64,9 @@ trackR <- function(...) {
 #' @examples
 #' # Run trackFixer in an external window
 #' \dontrun{trackFixer()}
+#'
+#' # Run trackFixer classic inside RStudio
+#' \dontrun{trackFixer(launch.browser = rstudioapi::viewer)}
 #'
 #' @export
 trackFixer <- function(...) {
@@ -57,14 +87,13 @@ trackFixer <- function(...) {
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
 #' @examples
-#' # TODO
+#' # Run trackPlayer in an external window
+#' \dontrun{trackPlayer()}
+#'
+#' # Run trackPlayer classic inside RStudio
+#' \dontrun{trackPlayer(launch.browser = rstudioapi::viewer)}
 #'
 #' @export
 trackPlayer <- function(...) {
   shiny::runApp(paste0(find.package("trackR"), "/trackPlayer"), ...)
-}
-
-#' @export
-videoFixer <- function(...) {
-  shiny::runApp(paste0(find.package("trackR"), "/videoFixer"), ...)
 }

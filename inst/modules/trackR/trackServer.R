@@ -107,7 +107,7 @@ observeEvent(theTracksPath(), {
         shape <- rbind(shape, cl)
       }
 
-      centers <- shape[, 1:2]
+      centers <- shape[, 1:2, drop = FALSE]
 
       blobs <- data.table::data.table(x = shape[, 1],
                                       y = shape[, 2],

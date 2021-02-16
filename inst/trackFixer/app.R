@@ -73,7 +73,7 @@ ui <- function(request) {
     fluidPage(
 
       tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+        tags$link(rel = "stylesheet", type = "text/css", href = "trackFixer.css")
       ),
 
       useShinyjs(),

@@ -22,6 +22,9 @@ Simple Shiny-based GUI to fix a posteriori common tracking errors,
 # Run trackFixer in an external window
 \dontrun{trackFixer()}
 
+# Run trackFixer classic inside RStudio
+\dontrun{trackFixer(launch.browser = rstudioapi::viewer)}
+
 }
 \author{
 Simon Garnier, \email{garnier@njit.edu}

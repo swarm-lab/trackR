@@ -86,7 +86,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">trackR</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.3.2</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.5.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -135,7 +135,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/swarm-lab/trackR/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -167,16 +167,11 @@
     <p>Simple video tracking software with Shiny-based GUI.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>trackR</span>(<span class='kw'>tracker</span> <span class='kw'>=</span> <span class='st'>"classic"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>trackR</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>tracker</th>
-      <td><p>A character string indicating the tracking algorithm to use
-(see 'Details').</p></td>
-    </tr>
     <tr>
       <th>...</th>
       <td><p>Arguments passed to <a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a>.</p></td>
@@ -187,56 +182,18 @@
 
     <p>This function does not return anything. A file is saved if the
  tracking is successfully completed.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p><code>trackR</code> provides three different tracking algorithms:</p><dl'>
-    <dt><code>"classic"</code>:</dt><dd><p>This algorithm uses basic background subtraction
-      to segment the objects in the image. A background image can be provided
-      by the user or can be computed as the mean or median of <code>n</code> images
-      taken at regular intervals throughout the video. <code>"classic"</code> should
-      work well in most lab situations with a constant and homogenous background.</p></dd>
-    <dt><code>"quanta"</code>:</dt><dd><p>This algorithm uses quantized background subtraction
-      to segment the objects in the image. In a quantized background image,
-      each pixel corresponds to the lower (if the objects are generally darker
-      than the background) or upper (if the objects are generally lighter than
-      the background) 2.5 percentile of <code>n</code> images taken at regular
-      intervals throughout the video.  A pixel outside of these bounds in a
-      given image would be considered as being part of an object.
-      <code>"quanta"</code> should work better than <code>"classic"</code> in situations
-      were the background is constant but not homogenous (e.g. if the
-      background has different shades).</p></dd>
-    <dt><code>"tracktor"</code>:</dt><dd><p>This algorithm uses adaptive thresholding to
-      segment the objects in the image. It is a liberal implementation of the
-      <a href='https://github.com/vivekhsridhar/tracktor'>tracktor</a> algorithm
-      developed for Python by Vivek Hari Sridhar, Dominique G. Roche and Simon
-      Gingins. <code>"tracktor"</code> should work better than <code>"classic"</code> and
-      <code>"quanta"</code> in situations were the background is not constant (e.g.
-      when the environment changes over time). See <em>"Sridhar, V. H., Roche,
-      D. G., and Gingins, S. (2019). Tracktor: Image-based automated tracking
-      of animal movement and behaviour. Methods Ecol. Evol. 10, 691.
-      doi:10.1111/2041-210X.13166"</em> for more details.</p></dd>
- 
-</dl>
-
+    <p>Simon Garnier, <a href='mailto:garnier@njit.edu'>garnier@njit.edu</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Run trackR classic in an external window</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) <span class='fu'>trackR</span>(<span class='st'>"classic"</span>)
-
-<span class='co'># Run trackR quanta in an external window</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) <span class='fu'>trackR</span>(<span class='st'>"quanta"</span>)
-
-<span class='co'># Run trackR tracktor in an external window</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) <span class='fu'>trackR</span>(<span class='st'>"tracktor"</span>)
+    <pre class="examples"><div class='input'><span class='co'># Run trackR in an external window</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='fu'>trackR</span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># Run trackR classic inside RStudio</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) <span class='fu'>trackR</span>(<span class='st'>"classic"</span>, <span class='kw'>launch.browser</span> <span class='kw'>=</span> <span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/rstudioapi/man/viewer.html'>viewer</a></span>)
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='fu'>trackR</span><span class='op'>(</span>launch.browser <span class='op'>=</span> <span class='fu'>rstudioapi</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/rstudioapi/man/viewer.html'>viewer</a></span><span class='op'>)</span>
 
-<span class='co'># Run trackR quanta inside RStudio</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) <span class='fu'>trackR</span>(<span class='st'>"quanta"</span>, <span class='kw'>launch.browser</span> <span class='kw'>=</span> <span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/rstudioapi/man/viewer.html'>viewer</a></span>)
-
-<span class='co'># Run trackR tracktor inside RStudio</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) <span class='fu'>trackR</span>(<span class='st'>"tracktor"</span>, <span class='kw'>launch.browser</span> <span class='kw'>=</span> <span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/rstudioapi/man/viewer.html'>viewer</a></span>)</div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -252,7 +209,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

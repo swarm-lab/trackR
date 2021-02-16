@@ -18,7 +18,11 @@ Simple Shiny-based GUI to display and export a video with tracks
  overlaid on top.
 }
 \examples{
-# TODO
+# Run trackPlayer in an external window
+\dontrun{trackPlayer()}
+
+# Run trackPlayer classic inside RStudio
+\dontrun{trackPlayer(launch.browser = rstudioapi::viewer)}
 
 }
 \author{

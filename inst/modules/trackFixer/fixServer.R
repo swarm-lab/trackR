@@ -312,10 +312,10 @@ observeEvent(input$okMerge, {
   id2 <- as.integer(input$mergeID2)
 
   if (!is.na(id1) & !is.na(id2)) {
-    idx <- theTracks()$track == id1 | theTracks()$track == id2
+    idx <- theTracks()$track_fixed == id1 | theTracks()$track_fixed == id2
     orig <- theTracks()[idx]
     fixed <- orig[, {
-      ix <- track == id1
+      ix <- track_fixed == id1
 
       if (.N == 2) {
         pts <- rbind(ellipse(x[1], y[1], width[1], height[1], angle[1]),

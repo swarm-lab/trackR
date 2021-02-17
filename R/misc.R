@@ -2,7 +2,23 @@
   a - matrix(b, nrow = length(a), ncol = length(b), byrow = TRUE)
 }
 
-
+#' @title A Simple Tracker
+#'
+#' @description Given a set of current x/y positions, this function attempts to
+#'  find which trajectory they belong to in a set of past tracked positions
+#'  using the Hungarian method.
+#'
+#' @param current A data frame with at least 4 columns: x, y, frame, and track.
+#'
+#' @param past A data frame with at least 4 columns: x, y, frame, and track.
+#'
+#' @param maxDist The maximum distance between two successive positions
+#'  belonging to the same trajectory.
+#'
+#' @return A data frame with at least 4 columns: x, y, frame, and track.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
 #' @export
 simplerTracker <- function(current, past, maxDist = 10) {
   if (nrow(past) == 0) {
@@ -44,15 +60,30 @@ simplerTracker <- function(current, past, maxDist = 10) {
 
 
 .dist2ellipse <- function(x, y, cx, cy, width, height, angle) {
-  relx <- -pdiff(cx, x)
-  rely <- -pdiff(cy, y)
+  relx <- -.pdiff(cx, x)
+  rely <- -.pdiff(cy, y)
   cosa <- cos(-angle)
   sina <- sin(-angle)
   sqrt(((relx * cosa - rely * sina) / (width / 2)) ^ 2 +
          ((relx * sina + rely * cosa) / (height / 2)) ^ 2)
 }
 
-
+#' @title Fit an Ellipse
+#'
+#' @description Given a set of x/y positions, this function attempts to find the
+#'  best fitting ellipse that goes through these points.
+#'
+#' @param x,y Vectors of x and x positions.
+#'
+#' @return A vector with 5 elements: the x and y coordinated of the center of
+#'  the ellipse, the width and height of the ellipse, and the angle of the
+#'  ellipse relative to the y axis.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' optimEllipse(rnorm(100), rnorm(100))
+#'
 #' @export
 optimEllipse <- function(x, y) {
   d <- Rfast::Dist(cbind(x, y))
@@ -81,7 +112,30 @@ optimEllipse <- function(x, y) {
   out
 }
 
-
+#' @title Points on an Ellipse
+#'
+#' @description This functions computes \code{npoints} regularly spaced along an
+#'  ellipse.
+#'
+#' @param x,y Numeric values corresponding to the coordinates of the center of
+#'  the ellipse.
+#'
+#' @param width,height Numeric values corresponding to the width and height of
+#'  the ellipse.
+#'
+#' @param angle Numeric value corresponding to the angle of the ellipse relative
+#'  to the y axis.
+#'
+#' @param npoints The number of points to compute.
+#'
+#' @return A matrix with two columns corresponding to the x and y coordinates of
+#'  the points.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' plot(ellipse(0, 0, 30, 50, 33), asp = 1)
+#'
 #' @export
 ellipse <- function(x, y, width, height, angle, npoints = 100) {
   angle <- angle * pi / 180
@@ -117,6 +171,56 @@ ellipse <- function(x, y, width, height, angle, npoints = 100) {
 }
 
 
+#' @title Customized Cross-Entropy Clustering
+#'
+#' @description This function performs cross-entropy clustering on a data matrix.
+#'  It is based on \code{\link[CEC]{cec}} but is limited to 2D matrices and
+#'  implements its own splitting process.
+#'
+#' @param x A numeric matrix with two columns.
+#'
+#' @param centers Either a matrix of initial centers or the number of initial
+#'  centers.
+#'
+#' @param iter.max Maximum number of iterations at each clustering.
+#'
+#' @param split Enables split mode. This mode discovers new clusters after
+#'  initial clustering, by trying to split single clusters into two.
+#'
+#' @param split.width The maximum authorized width of a cluster. If a cluster is
+#'  wider than \code{split.width}, the function will attempt to split it in two.
+#'
+#' @param split.height The maximum authorized height of a cluster. If a cluster
+#'  is higher than \code{split.height}, the function will attempt to split it in
+#'  two.
+#'
+#' @param split.density The minimum authorized density of a cluster. If a
+#'  cluster is less dense than \code{split.density}, the function will attempt
+#'  to split it in two.
+#'
+#' @param min.size The minimum authorized size (in number of items) of a cluster.
+#'  If a cluster is smaller than \code{min.size}, the function will attempt to
+#'  split it in two.
+#'
+#' @param split.sensitivity The minimum amount of improvement in the cost
+#'  function of the cross-entropy clustering for a splitting event to be
+#'  considered valid.
+#'
+#' @return A matrix with 6 columns: x and y coordinates of the centers of the
+#'  clusters, width, height, and angle of the covariance ellipse best describing
+#'  each cluster, and the number of element in each cluster.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' x <- c(rnorm(25, 4), rnorm(25, -2))
+#' y <- c(rnorm(25, 2), rnorm(25, -3))
+#' k <- kbox(cbind(x, y), 2)
+#' plot(x, y, asp = 1)
+#' apply(k, 1, function(k) {
+#'   lines(ellipse(k[1], k[2], k[3], k[4], k[5]))
+#' })
+#'
 #' @export
 kbox <- function(x, centers = 1, iter.max = 10, split = FALSE, split.width = Inf,
                  split.height = Inf, split.density = 0, min.size = 0,
@@ -218,7 +322,27 @@ kbox <- function(x, centers = 1, iter.max = 10, split = FALSE, split.width = Inf
 }
 
 
-
+#' @title Fast Approximate Minimum Volume Enclosing Ellipsoid
+#'
+#' @description Given a set of current x/y positions, this function computes an
+#'  approximation of their minimum volume enclosing ellipsoid.
+#'
+#' @param x A matrix with two columns corresponding to the x and y positions for
+#'  which to compute the ellipsoid.
+#'
+#' @return A vector with 5 elements: the x and y coordinated of the center of
+#'  the ellipsoid, the width and height of the ellipsoid, and the angle of the
+#'  ellipsoid relative to the y axis.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' x <- rnorm(25, 4)
+#' y <- rnorm(25, 2)
+#' ell <- amvee(cbind(x, y))
+#' plot(x, y, asp = 1)
+#' lines(ellipse(ell[1], ell[2], ell[3], ell[4], ell[5]))
+#'
 #' @export
 amvee <- function(x) {
   chull <- Rvision::convexHull(x[, 1], x[, 2])

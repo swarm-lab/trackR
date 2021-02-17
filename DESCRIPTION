@@ -28,7 +28,6 @@ Imports:
     mvoutlier (>= 2.0.9),
     CEC (>= 0.10.2)
 Remotes: 
-    github::swarm-lab/ROpenCVLite,
     github::swarm-lab/Rvision
 Suggests: 
     knitr,

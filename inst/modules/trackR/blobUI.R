@@ -9,10 +9,10 @@ verticalTabPanel(
 
   actionButton("optimizeBlobs_x", "Automatically optimize blob parameters", width = "100%"),
 
-  p(style = "padding-bottom: 10px;"),
-
-  sliderInput("blobImages_x", "Number of frames for estimating blob parameters:",
-              min = 1, max = 200, value = 100, width = "100%"),
+  # p(style = "padding-bottom: 10px;"),
+  #
+  # sliderInput("blobImages_x", "Number of frames for estimating blob parameters:",
+  #             min = 1, max = 200, value = 100, width = "100%"),
 
   hr(class = "hr-text", `data-content` = "Or set them manually"),
 

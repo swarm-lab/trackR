@@ -33,7 +33,7 @@ observeEvent(input$optimizeBlobs_x, {
 
     frame_pos <- round(seq.int(input$rangePos_x[1],
                                input$rangePos_x[2],
-                               length.out = input$blobImages_x))
+                               length.out = 100)) # input$blobImages_x))
     tot_summ <- NULL
     m_bg <- Rvision::sum(theBackground() * (theMask() / 255))
 

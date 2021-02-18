@@ -26,7 +26,7 @@ observeEvent(input$optimizeThresholds_x, {
 
     showNotification("Loading images in memory.", id = "load", duration = NULL)
     frame_pos <- round(seq.int(input$rangePos_x[1], input$rangePos_x[2],
-                               length.out = input$thresholdImages_x))
+                               length.out = 20))# input$thresholdImages_x))
 
     m_bg <- Rvision::sum(theBackground() * (theMask() / 255))
 

@@ -40,9 +40,9 @@ observeEvent(theVideoPath(), {
 })
 
 output$videoStatus <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
-    p("Video loaded.", class = "good")
-  } else {
+  if (!Rvision::isVideo(theVideo())) {
+  #   p("Video loaded.", class = "good")
+  # } else {
     p("Video missing (and required).", class = "bad")
   }
 })

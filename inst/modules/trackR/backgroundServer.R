@@ -1,5 +1,6 @@
 theBackgroundPath <- reactiveVal()
 theBackground <- reactiveVal()
+refreshBackground <- reactiveVal(0)
 
 # Load background
 shinyFileChoose(input, "backgroundFile_x", roots = volumes, session = session,
@@ -9,20 +10,23 @@ observeEvent(input$backgroundFile_x, {
   path <- parseFilePaths(volumes, input$backgroundFile_x)
   if (nrow(path) > 0) {
     theBackgroundPath(path$datapath)
+    refreshBackground(refreshBackground() + 1)
   }
 })
 
-observeEvent(theBackgroundPath(), {
-  toCheck <- tryCatch(Rvision::image(theBackgroundPath()),
-                      error = function(e) NA)
+observeEvent(refreshBackground(), {
+  if (refreshBackground() > 0) {
+    toCheck <- tryCatch(Rvision::image(theBackgroundPath()),
+                        error = function(e) NA)
 
-  if (Rvision::isImage(toCheck)) {
-    theBackground(Rvision::changeColorSpace(toCheck, "BGR"))
-    ix <- sapply(volumes, grepl, x = theBackgroundPath())
-    volume <- volumes[ix]
-    dir <- dirname(theBackgroundPath())
-    defaultRoot(names(volumes)[ix])
-    defaultPath(gsub(volume, "", dir))
+    if (Rvision::isImage(toCheck)) {
+      theBackground(Rvision::changeColorSpace(toCheck, "BGR"))
+      ix <- sapply(volumes, grepl, x = theBackgroundPath())
+      volume <- volumes[ix]
+      dir <- dirname(theBackgroundPath())
+      defaultRoot(names(volumes)[ix])
+      defaultPath(gsub(volume, "", dir))
+    }
   }
 })
 
@@ -76,6 +80,8 @@ observe({
 # Remove ghosts
 observeEvent(input$ghostButton_x, {
   if (Rvision::isImage(theBackground())) {
+    toggleAll("OFF")
+
     showNotification("Use left click to draw the ROI. Use right click to close
                        it and return the result.", id = "bg_notif", duration = NULL,
                      type = "message")
@@ -94,6 +100,8 @@ observeEvent(input$ghostButton_x, {
     removeNotification(id = "bg_notif")
 
     theBackground(Rvision::inpaint(theBackground(), ROI$mask, method = "Telea"))
+
+    toggleAll("ON")
   }
 })
 

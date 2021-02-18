@@ -8,14 +8,14 @@ verticalTabPanel(
 
   tags$label("Adjust lighting to match reference image",
              class = "control-label"),
-  switchInput(inputId = "lightToggle_x", value = TRUE,
+  switchInput(inputId = "lightToggle_x", value = FALSE,
               onLabel = "YES", offLabel = "NO"),
 
   hr(),
 
   tags$label("Correct camera shift to match reference image",
              class = "control-label"),
-  switchInput(inputId = "perspToggle_x", value = TRUE,
+  switchInput(inputId = "perspToggle_x", value = FALSE,
               onLabel = "YES", offLabel = "NO"),
 
   hr(),

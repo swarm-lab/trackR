@@ -10,20 +10,22 @@ verticalTabPanel(
 
   hr(),
 
-  actionButton("resetMask_x", "Reset mask", width = "100%"),
+  tags$table(style = "width: 100%; margin-bottom: 10px;",
+             tags$tr(
+               actionButton("includeAll_x", "Include all", width = "50%"),
+               actionButton("excludeAll_x", "Exclude all", width = "50%")
+             )
+  ),
 
-  hr(),
+  tags$table(style = "width: 100%; margin-bottom: 10px;",
+             tags$tr(
+               actionButton("polyButton_x", "Add polygon ROI", width = "50%"),
+               actionButton("ellButton_x", "Add ellipse ROI", width = "50%")
+             )
+  ),
 
-  actionButton("polyButton_x", "Add polygon ROI", width = "100%"),
-
-  p(style = "padding-bottom: 10px;"),
-
-  actionButton("ellButton_x", "Add ellipse ROI", width = "100%"),
-
-  p(style = "padding-bottom: 10px;"),
-
-  awesomeRadio(inputId = "incButton_x", label = "ROI type",
-               choices=c("Including", "Excluding", "Inverse"), selected = "Including",
+  awesomeRadio(inputId = "incButton_x", label = NULL,
+               choices=c("Including", "Excluding"), selected = "Including",
                inline = TRUE, checkbox = TRUE, width = "100%"),
 
   hr(),

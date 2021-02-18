@@ -1,4 +1,5 @@
 theMaskPath <- reactiveVal()
+refreshMask <- reactiveVal(0)
 
 # Select mask
 shinyFileChoose(input, "maskFile_x", roots = volumes, session = session,
@@ -8,20 +9,23 @@ observeEvent(input$maskFile_x, {
   path <- parseFilePaths(volumes, input$maskFile_x)
   if (nrow(path) > 0) {
     theMaskPath(path$datapath)
+    refreshMask(refreshMask() + 1)
   }
 })
 
-observeEvent(theMaskPath(), {
-  toCheck <- tryCatch(Rvision::image(theMaskPath()),
-                      error = function(e) NA)
+observeEvent(refreshMask(), {
+  if (refreshMask() > 0) {
+    toCheck <- tryCatch(Rvision::image(theMaskPath()),
+                        error = function(e) NA)
 
-  if (Rvision::isImage(toCheck)) {
-    theMask(Rvision::changeColorSpace(toCheck, "BGR"))
-    ix <- sapply(volumes, grepl, x = theMaskPath())
-    volume <- volumes[ix]
-    dir <- dirname(theMaskPath())
-    defaultRoot(names(volumes)[ix])
-    defaultPath(gsub(volume, "", dir))
+    if (Rvision::isImage(toCheck)) {
+      theMask(Rvision::changeColorSpace(toCheck, "BGR"))
+      ix <- sapply(volumes, grepl, x = theMaskPath())
+      volume <- volumes[ix]
+      dir <- dirname(theMaskPath())
+      defaultRoot(names(volumes)[ix])
+      defaultPath(gsub(volume, "", dir))
+    }
   }
 })
 
@@ -46,7 +50,7 @@ observe({
             Rvision::resize(displayMask, fx = input$videoQuality_x,
                             fy = input$videoQuality_x,
                             interpolation = "area"),
-            c(0.85, 0.15)
+            c(0.75, 0.25)
           ),
           "trackR", 25,
           nrow(displayMask) * input$videoSize_x,
@@ -83,7 +87,7 @@ observeEvent(input$polyButton_x, {
       suppressMessages(ROI <- Rvision::selectROI(displayMask, "trackR", 1, TRUE))
     } else {
       suppressMessages(ROI <- Rvision::selectROI(
-        Rvision::addWeighted(theImage(), displayMask, c(0.85, 0.15)),
+        Rvision::addWeighted(theImage(), displayMask, c(0.75, 0.25)),
         "trackR", input$videoSize_x, TRUE)
       )
     }
@@ -94,8 +98,6 @@ observeEvent(input$polyButton_x, {
       theMask(Rvision::setTo(theMask(), ROI$mask, "white"))
     } else if (input$incButton_x == "Excluding") {
       theMask(Rvision::setTo(theMask(), ROI$mask, "black"))
-    } else {
-      theMask(Rvision::setTo(theMask(), Rvision::invert(ROI$mask), "black"))
     }
 
     toggleAll("ON")
@@ -120,7 +122,7 @@ observeEvent(input$ellButton_x, {
     if (is.null(input$videoSize_x)) {
       tmpImage <- Rvision::cloneImage(displayMask)
     } else {
-      tmpImage <- Rvision::addWeighted(theImage(), displayMask, c(0.85, 0.15))
+      tmpImage <- Rvision::addWeighted(theImage(), displayMask, c(0.75, 0.25))
     }
 
     r <- 0.01 * min(nrow(tmpImage), ncol(tmpImage))
@@ -157,18 +159,22 @@ observeEvent(input$ellButton_x, {
       theMask(Rvision::setTo(theMask(), ellMask, "white"))
     } else if (input$incButton_x == "Excluding") {
       theMask(Rvision::setTo(theMask(), ellMask, "black"))
-    } else {
-      theMask(Rvision::setTo(theMask(), Rvision::invert(ellMask), "black"))
     }
 
     toggleAll("ON")
   }
 })
 
-# Reset mask
-observeEvent(input$resetMask_x, {
+# Include/exclude all
+observeEvent(input$includeAll_x, {
   if (Rvision::isImage(theMask())) {
     theMask(Rvision::ones(nrow(theMask()), ncol(theMask())) * 255)
+  }
+})
+
+observeEvent(input$excludeAll_x, {
+  if (Rvision::isImage(theMask())) {
+    theMask(Rvision::zeros(nrow(theMask()), ncol(theMask())))
   }
 })
 
@@ -188,7 +194,8 @@ observeEvent(input$saveMask_x, {
 
 # Bookmark
 setBookmarkExclude(c(session$getBookmarkExclude(), "saveMask_x", "maskFile_x",
-                     "polyButton_x", "incButton_x", "ellButton_x", "resetMask_x"))
+                     "polyButton_x", "incButton_x", "ellButton_x", "includeAll_x",
+                     "excludeAll_x"))
 
 onBookmark(function(state) {
   state$values$theMaskPath <- theMaskPath()

@@ -24,16 +24,6 @@ observeEvent(theTracksPath(), {
 
     showNotification("Tracking.", id = "tracking", duration = NULL)
 
-    # pipeline(theVideo(), theBackground(), theMask(), input$maxDist_x,
-    #          input$lookBack_x, input$rangePos_x, input$speedup_x,
-    #          input$blobWidth_x, input$blobHeight_x,
-    #          input$blobDensity_x / (input$speedup_x ^ 2),
-    #          input$blobArea_x / (input$speedup_x ^ 2),
-    #          input$darkButton_x == "Darker",
-    #          c(input$blueThreshold_x, input$greenThreshold_x, input$redThreshold_x),
-    #          input$showTracks_x == "Yes", input$videoQuality_x, input$videoSize_x,
-    #          theTracksPath())
-
     max_dist <- input$maxDist_x
     memory <- data.table::data.table(x = double(), y = double(), n = double(),
                                      frame = double(), id = integer(), track = integer(),
@@ -42,7 +32,16 @@ observeEvent(theTracksPath(), {
     mt <- 0
     n <- diff(input$rangePos_x) + 1
     sc <- max(dim(theBackground())) / 720
+
     mask <- theMask() / 255
+    background <- theBackground()
+
+    if (input$videoQuality_x < 1) {
+      mask <- Rvision::resize(mask, fx = input$videoQuality_x,
+                              fy = input$videoQuality_x)
+      background <- Rvision::resize(background, fx = input$videoQuality_x,
+                                    fy = input$videoQuality_x)
+    }
 
     pb <- Progress$new()
     pb$set(message = "Computing: ", value = 0, detail = "0%")
@@ -63,10 +62,15 @@ observeEvent(theTracksPath(), {
         frame <- Rvision::readNext(theVideo())
       }
 
+      if (input$videoQuality_x < 1) {
+        frame <- Rvision::resize(frame, fx = input$videoQuality_x,
+                                 fy = input$videoQuality_x)
+      }
+
       if (input$darkButton_x == "Darker") {
-        d <- (theBackground() - frame) * mask
+        d <- (background - frame) * mask
       } else {
-        d <- (frame - theBackground()) * mask
+        d <- (frame - background) * mask
       }
 
       bw <- Rvision::inRange(d, c(input$blueThreshold_x, input$greenThreshold_x,

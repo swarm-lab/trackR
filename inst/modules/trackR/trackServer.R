@@ -24,18 +24,25 @@ observeEvent(theTracksPath(), {
 
     showNotification("Tracking.", id = "tracking", duration = NULL)
 
+    # pipeline(theVideo(), theBackground(), theMask(), input$maxDist_x,
+    #          input$lookBack_x, input$rangePos_x, input$speedup_x,
+    #          input$blobWidth_x, input$blobHeight_x,
+    #          input$blobDensity_x / (input$speedup_x ^ 2),
+    #          input$blobArea_x / (input$speedup_x ^ 2),
+    #          input$darkButton_x == "Darker",
+    #          c(input$blueThreshold_x, input$greenThreshold_x, input$redThreshold_x),
+    #          input$showTracks_x == "Yes", input$videoQuality_x, input$videoSize_x,
+    #          theTracksPath())
+
     max_dist <- input$maxDist_x
     memory <- data.table::data.table(x = double(), y = double(), n = double(),
                                      frame = double(), id = integer(), track = integer(),
                                      width = double(), height = double(), angle = double())
     memory_length <- input$lookBack_x
     mt <- 0
-
-    m_bg <- Rvision::sum(theBackground())
-
     n <- diff(input$rangePos_x) + 1
-
     sc <- max(dim(theBackground())) / 720
+    mask <- theMask() / 255
 
     pb <- Progress$new()
     pb$set(message = "Computing: ", value = 0, detail = "0%")
@@ -46,8 +53,8 @@ observeEvent(theTracksPath(), {
     speedup <- input$speedup_x
     max_width <- input$blobWidth_x
     max_height <- input$blobHeight_x
-    min_density <- input$blobDensity_x / input$speedup_x ^ 2
-    min_size <- input$blobArea_x / input$speedup_x ^ 2
+    min_density <- input$blobDensity_x / (input$speedup_x ^ 2)
+    min_size <- input$blobArea_x / (input$speedup_x ^ 2)
 
     for (i in 1:n) {
       if (i == 1) {
@@ -56,13 +63,10 @@ observeEvent(theTracksPath(), {
         frame <- Rvision::readNext(theVideo())
       }
 
-      m_fr <- Rvision::sum(frame)
-      r <- mean(m_bg / m_fr)
-
       if (input$darkButton_x == "Darker") {
-        d <- (theBackground() - (frame * r)) * (theMask() / 255)
+        d <- (theBackground() - frame) * mask
       } else {
-        d <- ((frame * r) - theBackground()) * (theMask() / 255)
+        d <- (frame - theBackground()) * mask
       }
 
       bw <- Rvision::inRange(d, c(input$blueThreshold_x, input$greenThreshold_x,
@@ -135,9 +139,9 @@ observeEvent(theTracksPath(), {
           if (file.exists(theTracksPath())) {
             unlink(theTracksPath())
           }
-          readr::write_csv(blobs[, -"id"], theTracksPath(), append = FALSE)
+          data.table::fwrite(blobs[, -"id"], theTracksPath(), append = FALSE)
         } else {
-          readr::write_csv(blobs[, -"id"], theTracksPath(), append = TRUE)
+          data.table::fwrite(blobs[, -"id"], theTracksPath(), append = TRUE)
         }
 
         if (input$showTracks_x == "Yes") {
@@ -170,6 +174,7 @@ observeEvent(theTracksPath(), {
     }
 
     pb$close()
+
     removeNotification(id = "tracking")
     toggleAll("ON")
   }

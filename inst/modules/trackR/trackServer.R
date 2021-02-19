@@ -139,13 +139,23 @@ observeEvent(theTracksPath(), {
 
         memory <- rbind(memory, blobs)
 
+        to_write <- blobs[, -"id"]
+
+        if (input$videoQuality_x < 1) {
+          to_write[, c("x", "y", "n", "width", "height") := .(x / input$videoQuality_x,
+                                                              y / input$videoQuality_x,
+                                                              n / (input$videoQuality_x ^ 2),
+                                                              width / input$videoQuality_x,
+                                                              height / input$videoQuality_x)]
+        }
+
         if (i == 1) {
           if (file.exists(theTracksPath())) {
             unlink(theTracksPath())
           }
-          data.table::fwrite(blobs[, -"id"], theTracksPath(), append = FALSE)
+          data.table::fwrite(to_write, theTracksPath(), append = FALSE)
         } else {
-          data.table::fwrite(blobs[, -"id"], theTracksPath(), append = TRUE)
+          data.table::fwrite(to_write, theTracksPath(), append = TRUE)
         }
 
         if (input$showTracks_x == "Yes") {

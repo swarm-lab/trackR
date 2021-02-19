@@ -85,7 +85,7 @@ backgrounder <- function(video, n = 10, method = "median", prob = 0.025,
       } else if (method == "quant") {
         med[, , i] <- Rfast2::rowQuantile(sapply(l, function(x) x[][, , i]), probs = prob)
       } else {
-        stop("'method' should be one of 'mean', 'median', 'min', 'max', or 'quantile'")
+        stop("'method' should be one of 'mean', 'median', 'min', 'max', or 'quant'")
       }
 
       if (shiny::isRunning()) {

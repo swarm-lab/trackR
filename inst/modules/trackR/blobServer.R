@@ -35,7 +35,6 @@ observeEvent(input$optimizeBlobs_x, {
                                input$rangePos_x[2],
                                length.out = 100)) # input$blobImages_x))
     tot_summ <- NULL
-    m_bg <- Rvision::sum(theBackground() * (theMask() / 255))
 
     pb <- Progress$new()
     pb$set(message = "Computing: ", value = 0, detail = "0%")
@@ -46,13 +45,15 @@ observeEvent(input$optimizeBlobs_x, {
 
     for (i in 1:n) {
       frame <- Rvision::readFrame(theVideo(), frame_pos[i])
-      m_fr <- Rvision::sum(frame * (theMask() / 255))
-      r <- mean(m_bg / m_fr)
 
       if (input$darkButton_x == "Darker") {
-        d <- (theBackground() - (frame * r)) * (theMask() / 255)
+        d <- Rvision::resize((theBackground() - frame) * (theMask() / 255),
+                             fx = input$videoQuality_x, fy = input$videoQuality_x,
+                             interpolation = "area")
       } else {
-        d <- ((frame * r) - theBackground()) * (theMask() / 255)
+        d <- Rvision::resize((frame - theBackground()) * (theMask() / 255),
+                             fx = input$videoQuality_x, fy = input$videoQuality_x,
+                             interpolation = "area")
       }
 
       bw <- Rvision::inRange(d, c(input$blueThreshold_x, input$greenThreshold_x,
@@ -108,13 +109,14 @@ observe({
       Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
     } else {
       if (Rvision::isImage(theBackground())) {
-        m_bg <- Rvision::sum(theBackground() * (theMask() / 255))
-        m_fr <- Rvision::sum(theImage() * (theMask() / 255))
-        r <- mean(m_bg / m_fr)
         if (input$darkButton_x == "Darker") {
-          d <- (theBackground() - (theImage() * r)) * (theMask() / 255)
+          d <- Rvision::resize((theBackground() - theImage()) * (theMask() / 255),
+                               fx = input$videoQuality_x, fy = input$videoQuality_x,
+                               interpolation = "area")
         } else {
-          d <- ((theImage() * r) - theBackground()) * (theMask() / 255)
+          d <- Rvision::resize((theImage() - theBackground()) * (theMask() / 255),
+                               fx = input$videoQuality_x, fy = input$videoQuality_x,
+                               interpolation = "area")
         }
 
         bw <- Rvision::boxFilter(
@@ -156,7 +158,8 @@ observe({
           shape <- rbind(shape, cl)
         }
 
-        toDisplay <- Rvision::cloneImage(theImage())
+        toDisplay <- Rvision::resize(theImage(), fx = input$videoQuality_x,
+                                    fy = input$videoQuality_x, interpolation = "area")
         if (length(shape) > 0) {
           Rvision::drawRotatedRectangle(toDisplay, shape[, 1], shape[, 2],
                                         shape[, 3], shape[, 4],
@@ -165,8 +168,7 @@ observe({
         }
 
         Rvision::display(
-          Rvision::resize(toDisplay, fx = input$videoQuality_x,
-                          fy = input$videoQuality_x, interpolation = "area"),
+          toDisplay,
           "trackR", 25,
           nrow(toDisplay) * input$videoSize_x,
           ncol(toDisplay) * input$videoSize_x)

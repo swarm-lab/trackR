@@ -104,5 +104,3 @@ reports and feature requests using the issue tracker on the GitHub repository of
 the project at: https://github.com/swarm-lab/trackR/issues. These are extremely 
 helpful to catch and correct errors in the code, and to guide the development of 
 `trackR` by integrating functionalities requested by the community. 
-
----

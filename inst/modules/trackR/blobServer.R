@@ -119,6 +119,8 @@ observe({
                                interpolation = "area")
         }
 
+        sc <- max(dim(d) / 720)
+
         bw <- Rvision::boxFilter(
           Rvision::inRange(d, c(input$blueThreshold_x,
                                 input$greenThreshold_x,
@@ -164,7 +166,7 @@ observe({
           Rvision::drawRotatedRectangle(toDisplay, shape[, 1], shape[, 2],
                                         shape[, 3], shape[, 4],
                                         shape[, 5], color = "green",
-                                        thickness = 2)
+                                        thickness = 1.5 * sc)
         }
 
         Rvision::display(

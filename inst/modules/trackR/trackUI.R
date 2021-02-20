@@ -7,6 +7,14 @@ verticalTabPanel(
 
   htmlOutput("trackingStatus", container = p, class = "good"),
 
+  actionButton("scale_x", "Set scale", width = "100%"),
+
+  p(),
+
+  htmlOutput("scaleStatus", container = p),
+
+  hr(),
+
   sliderInput("speedup_x", "Speed-up:", min = 1, max = 5, step = 1, value = 4,
               width = "100%"),
 

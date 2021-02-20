@@ -80,13 +80,15 @@ observe({
                                interpolation = "area")
         }
 
+        sc <- max(dim(d) / 720)
+
         bw <- Rvision::inRange(d, c(input$blueThreshold_x, input$greenThreshold_x,
                                     input$redThreshold_x, 0))
         ct <- Rvision::findContours(Rvision::boxFilter(bw) > 63, method = "none")
         toDisplay <- Rvision::resize(theImage(), fx = input$videoQuality_x,
                                      fy = input$videoQuality_x, interpolation = "area")
 
-        Rvision::drawCircle(toDisplay, ct$contours$x, ct$contours$y, 2, "green", -1)
+        Rvision::drawCircle(toDisplay, ct$contours$x, ct$contours$y, sc, "green", -1)
 
         Rvision::display(
           toDisplay,

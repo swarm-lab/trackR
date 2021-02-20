@@ -1,4 +1,5 @@
 theTracksPath <- reactiveVal()
+scalePX <- reactiveVal()
 
 # Status
 output$trackingStatus <- renderUI({
@@ -6,6 +7,106 @@ output$trackingStatus <- renderUI({
     p("Video missing (and required).", class = "bad")
   } else if (!Rvision::isImage(theBackground())) {
     p("Background missing (and required).", class = "bad")
+  }
+})
+
+output$scaleStatus <- renderUI({
+  if (!is.null(scalePX()) & !is.null(input$scaleREAL)) {
+    if (!is.na(input$scaleREAL)) {
+      p(paste0("1 ", input$unitReal, " = ", round(scalePX() / input$scaleREAL, 2), " pixels"),
+        style = "text-align: center;")
+    } else {
+      p("No set scale (optional)", style = "text-align: center;")
+    }
+  } else {
+    p("No set scale (optional)", style = "text-align: center;")
+  }
+})
+
+# Scale
+observeEvent(input$scale_x, {
+  if (Rvision::isImage(theImage())) {
+    toggleAll("OFF")
+
+    displayScale <- Rvision::cloneImage(theImage())
+
+    showNotification("Select 2 reference points.",
+                     id = "scale_notif", duration = NULL,
+                     type = "message")
+
+    POI <- data.frame()
+
+    r <- 0.01 * min(nrow(displayScale), ncol(displayScale))
+
+    for (i in 1:2) {
+      POI <- rbind(POI, Rvision::click(displayScale, input$videoSize_x, "trackR"))
+      if (i == 2)
+        Rvision::drawLine(displayScale, pt1_x = POI$x[1], pt1_y = POI$y[1],
+                          pt2_x = POI$x[2], pt2_y = POI$y[2], thickness = r / 2,
+                          color = "white")
+      Rvision::drawCircle(displayScale, x = POI$x, y = POI$y,
+                          radius = r * 1.5, thickness = -1, color = "white")
+      Rvision::drawCircle(displayScale, x = POI$x, y = POI$y,
+                          radius = r, thickness = -1, color = "red")
+      Rvision::display(displayScale, window_name = "trackR", delay = 25,
+                       height = nrow(displayScale) * input$videoSize_x,
+                       width = ncol(displayScale) * input$videoSize_x)
+    }
+
+    scalePX(sqrt(diff(POI$x) ^ 2 + diff(POI$y) ^ 2))
+
+    removeNotification(id = "scale_notif")
+
+    toggleAll("ON")
+  }
+})
+
+observeEvent(scalePX(), {
+  if (!is.null(scalePX())) {
+    units <- c("µm", "mm", "cm", "dm", "m", "km", "parsec")
+
+    showModal(
+      modalDialog(
+        title = "Set scale",
+        easyClose = TRUE,
+
+        tags$table(
+          style = "width: 100%;",
+          tags$tr(
+            tags$td(numericInput("scaleREAL", "Distance between the 2 reference points",
+                                 NA, 0, Inf, width = "100%")),
+            tags$td(style = "width: 10px;"),
+            tags$td(selectInput("unitReal", "Unit", units, selected = "cm", width = "100px"),
+                    style = "padding-top: 4px;")
+          )
+        ),
+
+        footer = tagList(
+          modalButton("Cancel"),
+          actionButton("okScale", "Set Scale")
+        )
+      )
+    )
+  }
+})
+
+observeEvent(input$okScale, {
+  removeModal(session)
+})
+
+# Display
+observe({
+  if (input$main == "6") {
+    if (Rvision::isImage(theImage()) & !is.null(input$videoSize_x)) {
+      Rvision::display(
+        Rvision::resize(theImage(), fx = input$videoQuality_x,
+                        fy = input$videoQuality_x, interpolation = "area"),
+        "trackR", 25,
+        nrow(theImage()) * input$videoSize_x,
+        ncol(theImage()) * input$videoSize_x)
+    } else {
+      Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
+    }
   }
 })
 
@@ -147,6 +248,13 @@ observeEvent(theTracksPath(), {
                                                               n / (input$videoQuality_x ^ 2),
                                                               width / input$videoQuality_x,
                                                               height / input$videoQuality_x)]
+        }
+
+        if (!is.null(scalePX()) & !is.null(input$scaleREAL)) {
+          if (!is.na(input$scaleREAL)) {
+            to_write[, paste0(c("x", "y"), "_", input$unitReal) := .(x * input$scaleREAL / scalePX(),
+                                                                     y * input$scaleREAL / scalePX())]
+          }
         }
 
         if (i == 1) {

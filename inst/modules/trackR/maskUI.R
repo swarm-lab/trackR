@@ -10,19 +10,29 @@ verticalTabPanel(
 
   hr(),
 
-  tags$table(style = "width: 100%; margin-bottom: 10px;",
-             tags$tr(
-               actionButton("includeAll_x", "Include all", width = "50%"),
-               actionButton("excludeAll_x", "Exclude all", width = "50%")
-             )
+  tags$table(
+    tags$tr(
+      tags$td(actionButton("includeAll_x", "Include all", width = "100%"),
+              style = "width: 49%;"),
+      tags$td(),
+      tags$td(actionButton("excludeAll_x", "Exclude all", width = "100%"),
+              style = "width: 49%;")
+    ),
+
+    tags$tr(),
+
+    tags$tr(
+      tags$td(actionButton("polyButton_x", "Add polygon ROI", width = "100%"),
+              style = "width: 49%;"),
+      tags$td(),
+      tags$td(actionButton("ellButton_x", "Add ellipse ROI", width = "100%"),
+              style = "width: 49%;")
+    ),
+
+    class = "settingsTable"
   ),
 
-  tags$table(style = "width: 100%; margin-bottom: 10px;",
-             tags$tr(
-               actionButton("polyButton_x", "Add polygon ROI", width = "50%"),
-               actionButton("ellButton_x", "Add ellipse ROI", width = "50%")
-             )
-  ),
+  p(),
 
   awesomeRadio(inputId = "incButton_x", label = NULL,
                choices=c("Including", "Excluding"), selected = "Including",

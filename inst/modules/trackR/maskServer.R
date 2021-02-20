@@ -44,12 +44,8 @@ observe({
       } else {
         Rvision::display(
           Rvision::addWeighted(
-            Rvision::resize(theImage(), fx = input$videoQuality_x,
-                            fy = input$videoQuality_x,
-                            interpolation = "area"),
-            Rvision::resize(displayMask, fx = input$videoQuality_x,
-                            fy = input$videoQuality_x,
-                            interpolation = "area"),
+            theImage(),
+            displayMask,
             c(0.75, 0.25)
           ),
           "trackR", 25,

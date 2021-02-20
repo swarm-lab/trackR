@@ -58,8 +58,7 @@ observe({
                          ncol(theBackground()))
       } else {
         Rvision::display(
-          Rvision::resize(theBackground(), fx = input$videoQuality_x,
-                          fy = input$videoQuality_x, interpolation = "area"),
+          theBackground(),
           "trackR", 25,
           nrow(theBackground()) * input$videoSize_x,
           ncol(theBackground()) * input$videoSize_x)

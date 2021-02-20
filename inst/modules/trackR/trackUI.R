@@ -7,7 +7,17 @@ verticalTabPanel(
 
   htmlOutput("trackingStatus", container = p, class = "good"),
 
-  actionButton("scale_x", "Set scale", width = "100%"),
+  tags$table(
+    tags$tr(
+      tags$td(actionButton("scale_x", "Set scale", width = "100%"),
+              style = "width: 49%;"),
+      tags$td(),
+      tags$td(actionButton("origin_x", "Set origin", width = "100%"),
+              style = "width: 49%;")
+    ),
+
+    class = "settingsTable"
+  ),
 
   p(),
 

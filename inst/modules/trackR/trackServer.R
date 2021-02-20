@@ -1,5 +1,6 @@
 theTracksPath <- reactiveVal()
 scalePX <- reactiveVal()
+origin <- reactiveVal(c(1, 1))
 
 # Status
 output$trackingStatus <- renderUI({
@@ -11,15 +12,52 @@ output$trackingStatus <- renderUI({
 })
 
 output$scaleStatus <- renderUI({
+  if (!is.null(origin)) {
+    origin_st <- paste0("Origin: [", origin()[1], ",", origin()[2], "]. ")
+  } else {
+    origin_st <- "No set origin (optional). "
+  }
+
+  scale_st <- "No set scale (optional)."
+
   if (!is.null(scalePX()) & !is.null(input$scaleREAL)) {
     if (!is.na(input$scaleREAL)) {
-      p(paste0("1 ", input$unitReal, " = ", round(scalePX() / input$scaleREAL, 2), " pixels"),
-        style = "text-align: center;")
-    } else {
-      p("No set scale (optional)", style = "text-align: center;")
+      scale_st <- paste0("1 ", input$unitReal, " = ", round(scalePX() / input$scaleREAL, 2), " pixels.")
     }
-  } else {
-    p("No set scale (optional)", style = "text-align: center;")
+  }
+
+  p(paste0(origin_st, scale_st), style = "text-align: center;")
+})
+
+# Origin
+observeEvent(input$origin_x, {
+  if (Rvision::isImage(theImage())) {
+    toggleAll("OFF")
+
+    displayOrigin <- Rvision::cloneImage(theImage())
+
+    showNotification("Select 2 reference points.",
+                     id = "origin_notif", duration = NULL,
+                     type = "message")
+
+    POI <- data.frame()
+
+    r <- 0.01 * min(nrow(displayOrigin), ncol(displayOrigin))
+
+    POI <- rbind(POI, Rvision::click(displayOrigin, input$videoSize_x, "trackR"))
+    Rvision::drawCircle(displayOrigin, x = POI$x, y = POI$y,
+                        radius = r * 1.5, thickness = -1, color = "white")
+    Rvision::drawCircle(displayOrigin, x = POI$x, y = POI$y,
+                        radius = r, thickness = -1, color = "red")
+    Rvision::display(displayOrigin, window_name = "trackR", delay = 25,
+                     height = nrow(displayOrigin) * input$videoSize_x,
+                     width = ncol(displayOrigin) * input$videoSize_x)
+
+    origin(c(POI$x, POI$y))
+
+    removeNotification(id = "origin_notif")
+
+    toggleAll("ON")
   }
 })
 
@@ -241,6 +279,7 @@ observeEvent(theTracksPath(), {
         memory <- rbind(memory, blobs)
 
         to_write <- blobs[, -"id"]
+        data.table::setcolorder(to_write, c("frame", "track", "x", "y", "width", "height", "angle", "n"))
 
         if (input$videoQuality_x < 1) {
           to_write[, c("x", "y", "n", "width", "height") := .(x / input$videoQuality_x,
@@ -252,8 +291,11 @@ observeEvent(theTracksPath(), {
 
         if (!is.null(scalePX()) & !is.null(input$scaleREAL)) {
           if (!is.na(input$scaleREAL)) {
-            to_write[, paste0(c("x", "y"), "_", input$unitReal) := .(x * input$scaleREAL / scalePX(),
-                                                                     y * input$scaleREAL / scalePX())]
+            to_write[, paste0(c("x", "y", "width", "height"), "_", input$unitReal) :=
+                       .((x - origin()[1]) * input$scaleREAL / scalePX(),
+                         (y - origin()[2]) * input$scaleREAL / scalePX(),
+                         width * input$scaleREAL / scalePX(),
+                         height * input$scaleREAL / scalePX())]
           }
         }
 
@@ -303,4 +345,5 @@ observeEvent(theTracksPath(), {
 })
 
 # Bookmark
-setBookmarkExclude(c(session$getBookmarkExclude(), "computeTracks_x"))
+setBookmarkExclude(c(session$getBookmarkExclude(), "computeTracks_x", "scale_x",
+                     "origin_x", "okScale"))

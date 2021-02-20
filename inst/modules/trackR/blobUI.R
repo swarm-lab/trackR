@@ -1,13 +1,13 @@
 verticalTabPanel(
   title = "5",
   box_height = "100%",
-  p("Blob module", class = "module-title"),
+  p("Separation module", class = "module-title"),
 
   hr(),
 
   htmlOutput("blobStatus", container = p, class = "good"),
 
-  actionButton("optimizeBlobs_x", "Automatically optimize blob parameters", width = "100%"),
+  actionButton("optimizeBlobs_x", "Automatically optimize object parameters", width = "100%"),
 
   # p(style = "padding-bottom: 10px;"),
   #

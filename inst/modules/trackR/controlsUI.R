@@ -6,11 +6,13 @@ verticalTabPanel(
     tags$tr(
       tags$td(shinySaveButton("saveSettings_x", "Save settings", "Save settings as...",
                               filetype = list(R = c("Rds", "rds")),
-                              class = "fullWidth")),
+                              class = "fullWidth"),
+              style = "width: 49%;"),
       tags$td(),
       tags$td(shinyFilesButton("loadSettings_x", "Load settings",
                                "Please select a settings file", FALSE,
-                               class = "fullWidth"))
+                               class = "fullWidth"),
+              style = "width: 49%;")
     ),
 
     tags$tr(),

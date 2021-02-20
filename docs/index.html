@@ -66,22 +66,10 @@
       <a href="articles/z1_install.html">1 - Installing trackR</a>
     </li>
     <li>
-      <a href="articles/z2_video.html">2 - Video tab</a>
+      <a href="articles/z2_videoFixer.html">2 - Preparing videos (optional)</a>
     </li>
     <li>
-      <a href="articles/z3_background.html">3 - Background tab</a>
-    </li>
-    <li>
-      <a href="articles/z4_mask.html">4 - Mask tab</a>
-    </li>
-    <li>
-      <a href="articles/z5_blob.html">5 - Blob tab</a>
-    </li>
-    <li>
-      <a href="articles/z6_tracking.html">6 - Tracking tab</a>
-    </li>
-    <li>
-      <a href="articles/z7_settings.html">7 - Save/load settings</a>
+      <a href="articles/z3_trackR.html">3 - Tracking videos</a>
     </li>
   </ul>
 </li>
@@ -111,25 +99,18 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="trackr---a-simple-video-tracking-software-for-r" class="section level1">
+<div id="trackr---multi-object-tracking-with-r-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#trackr---a-simple-video-tracking-software-for-r" class="anchor"></a>trackR - A simple video tracking software for R</h1></div>
+<a href="#trackr---multi-object-tracking-with-r-" class="anchor"></a>trackR - Multi-object tracking with R <img src="reference/figures/logo.png" align="right" width="120">
+</h1></div>
 
-<div id="description-" class="section level2">
+<div id="description" class="section level2">
 <h2 class="hasAnchor">
-<a href="#description-" class="anchor"></a>Description <img src="https://github.com/swarm-lab/trackR/tree/master/docs/reference/figures/logo.png" align="right" alt="" width="120">
-</h2>
-<p><a href="https://github.com/swarm-lab/trackR"><code>trackR</code></a> is an object tracker for R based on <a href="https://opencv.org/">OpenCV</a>. It provides an easy-to-use (or so I think) graphical interface allowing users to perform multi-object video tracking in a range of conditions while maintaining individual identities.</p>
-<p><code>trackR</code> implements three different methods to detect objects in a video:</p>
-<ol>
-<li>
-<strong>Background subtraction</strong>: This algorithm uses basic background subtraction to segment the objects in the image. A background image can be provided by the user or can be computed as the mean or median of <code>n</code> images taken at regular intervals throughout the video. This method should work well in most lab situations with a constant and homogenous background.</li>
-<li>
-<strong>Quantized background subtraction</strong>: This algorithm uses quantized background subtraction to segment the objects in the image. In a quantized background image, each pixel corresponds to the lower (if the objects are generally darker than the background) or upper (if the objects are generally lighter than the background) 2.5 percentile of <code>n</code> images taken at regular intervals throughout the video. A pixel outside of these bounds in a given image would be considered as being part of an object. This method should work better than the previous one in situations were the background is constant but not homogenous (e.g. if the background has different shades).</li>
-<li>
-<strong>Adaptive thresholding</strong>: This algorithm uses adaptive thresholding to segment the objects in the image. It is a liberal implementation of the <a href="https://github.com/vivekhsridhar/tracktor">tracktor</a> algorithm developed for Python by <a href="https://vhsridhar.wordpress.com/">Vivek Sridhar</a>, <a href="http://dominiqueroche.weebly.com/">Dominique Roche</a> and <a href="http://www.simongingins.com/">Simon Gingins</a>. This method should work better than the other two in situations were the background is not constant (e.g. when the environment changes over time). See <em>Sridhar, V. H., Roche, D. G., and Gingins, S. (2019). Tracktor: Image-based automated tracking of animal movement and behaviour. Methods Ecol. Evol. 10, 691. <a href="doi:10.1111/2041-210X.13166" class="uri">doi:10.1111/2041-210X.13166</a> </em> for more details.</li>
-</ol>
-<p><code>trackR</code> also allows users to exclude parts of the image by using black and white masks that can be easily created and customized using any available image editor.</p>
+<a href="#description" class="anchor"></a>Description</h2>
+<p><a href="https://github.com/swarm-lab/trackR"><code>trackR</code></a> is an object tracker for R based on <a href="https://opencv.org/">OpenCV</a>. It provides an easy-to-use (or so we think) graphical interface allowing users to perform multi-object video tracking in a range of conditions while maintaining individual identities.</p>
+<p><code>trackR</code> uses RGB-channel-specific background subtraction to segment objects in a video. A background image can be provided by the user or can be computed by <code>trackR</code> automatically in most situations. Overlapping objects are then separated using cross-entropy clustering, an automated classification method that provides good computing performance while being able to handle various types of object shapes (see <a href="https://github.com/azureblue/cec">the CEC package for R</a> for more information on cross-entropy clustering). Most of the tracking parameters can be automatically estimated by <code>trackR</code> or can be set manually by the user.</p>
+<p><code>trackR</code> also allows users to exclude parts of the image by using masks that can be easily created and customized directly within the app.</p>
+<p>Finally, <code>trackR</code> provides several convenience apps to correct common errors that occurs during video recording, to manually inspect and fix tracking errors, and to export publication-ready videos showing the moving objects with their track overlaid on top of them.</p>
 <hr>
 </div>
 <div id="quick-start-guides" class="section level2">
@@ -137,11 +118,8 @@
 <a href="#quick-start-guides" class="anchor"></a>Quick start guides</h2>
 <ul>
 <li><a href="https://swarm-lab.github.io/trackR/articles/z1_install.html">1 - Installation instructions</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z2_video.html">2 - Video tab</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z3_background.html">3 - Background tab</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z4_mask.html">4 - Mask tab</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z5_blob.html">5 - Blob tab</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z6_tracking.html">6 - Tracking tab</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html">2 - Preparing videos (optional)</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z3_trackR.html">3 - Tracking videos</a></li>
 </ul>
 <hr>
 </div>
@@ -150,27 +128,31 @@
 <a href="#faq" class="anchor"></a>FAQ</h2>
 <p>–</p>
 <p><strong>How does <code>trackR</code> compare to other video tracking solutions? Did we really need another one?</strong></p>
-<p><code>trackR</code> belongs to the category of the ‘classical’ tracking programs. It relies on good ol’ fashion image processing and simple assignment algorithms (the Hungarian method in this case, plus some k-means clustering trickery inspired by the excellent <a href="https://github.com/vivekhsridhar/tracktor"><code>tracktor</code></a> for Python). <code>trackR</code> does not include (for now) any fancy machine learning methods like those that can be found in the fantastic <a href="http://idtracker.ai/"><code>idtracker.ai</code></a> for instance. The downside is that <code>trackR</code>’s tracking reliability is inferior to the more advanced software (in particular when the objects cross paths); the upside is that it is fast, does not require a beast of a computer to run, and therefore will soon be able to do live tracking for instance.</p>
-<p><code>trackR</code> is more similar in spirit to tracking software such as <a href="http://ctrax.sourceforge.net/"><code>Ctrax</code></a> <a href="https://github.com/vivekhsridhar/tracktor"><code>tracktor</code></a> and the sadly defunct <a href="https://en.wikibooks.org/wiki/SwisTrack"><code>SwisTrack</code></a>. It will most likely provide tracking reliability equivalent to these excellent programs. However, <code>trackR</code> provides multiple algorithms to segment the objects from the background (see above) and should therefore be capable of handling a wider variety of situations. It is also coded in a way that should facilitate the addition of other segmentation and tracking algorithms in the future in order to broaden even further its range of applicability.</p>
+<p><code>trackR</code> belongs to the category of the ‘classical’ tracking programs. It relies on good ol’ fashion image processing, robust cross-entropy clustering, and simple, yet efficient, assignment algorithms (the Hungarian method in this case). <code>trackR</code> does not include (for now) any fancy machine learning methods like those that can be found in the fantastic <a href="http://idtracker.ai/"><code>idtracker.ai</code></a> for instance. The downside is that <code>trackR</code>’s tracking reliability is inferior to the more advanced software (in particular when the objects cross paths); the upside is that it is fast and does not require a beast of a computer to run.</p>
+<p><code>trackR</code> is more similar in spirit to tracking software such as <a href="http://ctrax.sourceforge.net/"><code>Ctrax</code></a>, <a href="https://github.com/vivekhsridhar/tracktor"><code>tracktor</code></a>, and the sadly defunct <a href="https://en.wikibooks.org/wiki/SwisTrack"><code>SwisTrack</code></a>. It will most likely provide tracking reliability equivalent to these excellent programs. However, we believe that <code>trackR</code>’s object segmentation and separation algorithms are generally more robust and should therefore be capable of handling a wider variety of situations.</p>
 <p>–</p>
 <p><strong>Will something break? Can I use <code>trackR</code> in ‘production’ mode?</strong></p>
-<p>Something will definitely break. This is version 0.3 of the software, there is still a long way to go before it is a fully finished program. This being said, it will work fine in most cases and is certainly usable for most tracking projects. If you run into an issue, please report it at: <a href="https://github.com/swarm-lab/trackR/issues" class="uri">https://github.com/swarm-lab/trackR/issues</a>.</p>
+<p>Something will definitely break. This is version 0.5 of the software, there is still a long way to go before it is a fully finished program. This being said, it will work fine in most cases and is certainly usable for most tracking projects. If you run into an issue, please report it at: <a href="https://github.com/swarm-lab/trackR/issues" class="uri">https://github.com/swarm-lab/trackR/issues</a>.</p>
 <p>–</p>
 <p><strong>What features are in the works for future versions of <code>trackR</code>?</strong></p>
 <p>At the moment, I am considering including the following features in future iterations of <code>trackR</code>:</p>
 <ol>
 <li>
 <del>Add the possibility to save and restore settings for future use.</del> [DONE]</li>
-<li>Add the possibility to indicate whether the objects to track are darker or lighter than the background. This will be useful for the adaptive thresholding algorithm that currently works well only to detect objects darker than their background.</li>
-<li>Add a more sophisticated method to re-identify each individual after a crossing event (maybe something that ‘learns’ the features of each individual, a la idtracker.ai).</li>
-<li>Add live tracking using camera feed.</li>
-<li>Add the possibility to feed the tracking data through a custom R script. Currently, the data are saved in a CSV file and the user has to reimport them into R for post-processing. While this is fine for most use cases, it would not work if the user needs some form of live processing of the tracking data.</li>
-<li>Add some sort of GUI for manually correcting tracks.</li>
+<li>
+<del>Add the possibility to indicate whether the objects to track are darker or lighter than the background.</del> [DONE]</li>
+<li>Add live tracking using camera feed. [LONG TERM GOAL]</li>
+<li>Add the possibility to feed the tracking data through a custom R script. Currently, the data are saved in a CSV file and the user has to re-import them into R for post-processing. While this is fine for most use cases, it would not work if the user needs some form of live processing of the tracking data. [LONG TERM GOAL]</li>
+<li>
+<del>Add some sort of GUI for manually correcting tracks.</del> [DONE]</li>
+<li>Add AI-powered track correction. [IN PROGRESS]</li>
+<li>Add app to automatically compute classic statistics on trajectories for users that do not want to/cannot run their own data analysis pipeline. [LONG TERM GOAL]</li>
 </ol>
 <p>–</p>
 <p><strong>How can I help?</strong></p>
 <p><code>trackR</code> is an open-source project, meaning that you can freely modify its code and implement new functionalities. If you have coding skills, you are more than welcome to contribute new code or code improvement by submitting pull requests on the GitHub repository of the project at: <a href="https://github.com/swarm-lab/trackR" class="uri">https://github.com/swarm-lab/trackR</a>. I will do my best to review and integrate them quickly.</p>
 <p>If you do not feel like contributing code, you can also help by submitting bug reports and feature requests using the issue tracker on the GitHub repository of the project at: <a href="https://github.com/swarm-lab/trackR/issues" class="uri">https://github.com/swarm-lab/trackR/issues</a>. These are extremely helpful to catch and correct errors in the code, and to guide the development of <code>trackR</code> by integrating functionalities requested by the community.</p>
+<hr>
 </div>
 </div>
   </div>

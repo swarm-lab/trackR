@@ -3,7 +3,7 @@ author: "Simon Garnier"
 title: "1 - Installing trackR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pkgdown}
+  %\VignetteIndexEntry{1 - Installing trackR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,111 +17,45 @@ All installation steps are described below.
 
 ---
 
-+ [1 - Before installing ](#before-installing )
-  + [1.1 - Windows](#windows)
-  + [1.2 - Mac](#mac)
-  + [1.3 - Linux](#linux)
-  + [1.4 - Mac, Linux and Windows](#mac-linux-and-windows)
++ [1 - Installing `OpenCV`](#installing-opencv)
 + [2 - Installing `trackR`](#installing-trackr)
-+ [3 - Launching `trackR`](#launching-trackr)
-  
+
 ---
 
-## 1 - Before installing 
+## 1 - Installing `OpenCV`
 
-### 1.1 - Windows
+`trackR` uses the powerful computer-vision library [`OpenCV`](https://www.opencv.org) 
+in order to load and process videos and images. Installing `OpenCV` can be a 
+daunting task if you are not used to compiling complex software from source. 
+For this reason, we have created [`ROpenCVLite`](https://CRAN.R-project.org/package=ROpenCVLite), 
+a helper `R` package that will take care of this process for you.
 
-Before installing `trackR`, you will need to install the latest versions of
-[`CMake`](https://cmake.org/) and [`Rtools`](https://cran.r-project.org/bin/windows/Rtools/). 
+Please go to [https://swarm-lab.github.io/ROpenCVLite/articles/install.html](https://swarm-lab.github.io/ROpenCVLite/articles/install.html) 
+and follow the instructions there to install `OpenCV` on your system. There are 
+slight differences between the installation processes for Mac, Windows, and 
+Linux, so make sure to follow those that are for your operating system. The 
+installation process should be straightforward (just a few buttons or links to 
+click here and there) but the compilation of OpenCV will take some time (10 to 
+20 minutes depending on your machine and operating system). Make yourself a nice 
+cup of tea or coffee and relax in the meantime. 
 
-Download `CMake` for Windows at [https://cmake.org/download/](https://cmake.org/download/).
-
-Download the latest "frozen" version of `Rtools` at 
-[https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/).
-
-In both cases, make sure to tell the installer to add `CMake` and `Rtools` to 
-your "PATH".
-
-### 1.2 - Mac
-
-Before installing `trackR`, you will need to install the latest version of
-[`CMake`](https://cmake.org/).
-
-Download `CMake` for Mac at [https://cmake.org/download/](https://cmake.org/download/).
-You can also use [`Homebrew`](http://brew.sh/) or [`MacPorts`](https://www.macports.org/)
-if you prefer (I prefer!).
-
-**Homebrew:**
-
-```bash
-brew install cmake
-```
-
-**MacPorts:**
-
-```bash
-sudo port install cmake
-```
-
-### 1.3 - Linux
-
-Before installing `trackR`, you will need to install the latest version of
-[`CMake`](https://cmake.org/).
-
-Download `CMake` for Linux at [https://cmake.org/download/](https://cmake.org/download/).
-However it is recommended that you install it using your distribution's package
-management system.
-
-**Ubuntu:**
-
-```bash
-sudo apt-get install cmake
-```
-
-[TODO: add more Linux install commands]
-
-### 1.4 - Mac, Linux and Windows
-
-Before installing `trackR`, you will need to install the `devtools` package 
-in `R`. 
-
-```r
-install.package("devtools")
-```
+Once you have installed `OpenCV` via `ROpenCVLite`, you can follow the rest of 
+the installation instructions for `trackR` below. 
 
 ---
 
 ## 2 - Installing `trackR`
 
-```r
-devtools::install_github("swarm-lab/trackR")
-```
+Once `OpenCV` is ready, you can install `trackR` and the rest of its dependencies 
+by simply typing the following command in your R console: 
 
-This step may take some time if it is the first time that you are installing the 
-`ROpenCVLite` dependency on your system. Go make yourself a cup of coffee or two.
+```r
+remotes::install_github("swarm-lab/trackR")
+```
 
 ---
 
-## 3 - Launching `trackR`
+You are now ready to proceed to the rest of the tutorials! 
 
-To launch `trackR` using classic background subtraction, type:
-
-```r
-library(trackR)
-trackR("classic") 
-```
-
-To launch `trackR` using quantized background subtraction, type:
-
-```r
-library(trackR)
-trackR("quanta") 
-```
-
-To launch `trackR` using ["tracktor"](https://github.com/vivekhsridhar/tracktor) 
-segmentation, type:
-
-```r
-library(trackR)
-trackR("tracktor") 
-```
++ [2 - Preparing videos (optional)](https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html)
++ [3 - Tracking videos](https://swarm-lab.github.io/trackR/articles/z3_trackR.html)

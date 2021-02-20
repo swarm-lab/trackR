@@ -66,22 +66,10 @@
       <a href="../articles/z1_install.html">1 - Installing trackR</a>
     </li>
     <li>
-      <a href="../articles/z2_video.html">2 - Video tab</a>
+      <a href="../articles/z2_videoFixer.html">2 - Preparing videos (optional)</a>
     </li>
     <li>
-      <a href="../articles/z3_background.html">3 - Background tab</a>
-    </li>
-    <li>
-      <a href="../articles/z4_mask.html">4 - Mask tab</a>
-    </li>
-    <li>
-      <a href="../articles/z5_blob.html">5 - Blob tab</a>
-    </li>
-    <li>
-      <a href="../articles/z6_tracking.html">6 - Tracking tab</a>
-    </li>
-    <li>
-      <a href="../articles/z7_settings.html">7 - Save/load settings</a>
+      <a href="../articles/z3_trackR.html">3 - Tracking videos</a>
     </li>
   </ul>
 </li>
@@ -127,83 +115,32 @@
 <p>All installation steps are described below.</p>
 <hr>
 <ul>
-<li>
-<a href="#before-installing">1 - Before installing</a>
-<ul>
-<li><a href="#windows">1.1 - Windows</a></li>
-<li><a href="#mac">1.2 - Mac</a></li>
-<li><a href="#linux">1.3 - Linux</a></li>
-<li><a href="#mac-linux-and-windows">1.4 - Mac, Linux and Windows</a></li>
-</ul>
-</li>
+<li><a href="#installing-opencv">1 - Installing <code>OpenCV</code></a></li>
 <li><a href="#installing-trackr">2 - Installing <code>trackR</code></a></li>
-<li><a href="#launching-trackr">3 - Launching <code>trackR</code></a></li>
 </ul>
 <hr>
-<div id="before-installing" class="section level2">
+<div id="installing-opencv" class="section level2">
 <h2 class="hasAnchor">
-<a href="#before-installing" class="anchor"></a>1 - Before installing</h2>
-<div id="windows" class="section level3">
-<h3 class="hasAnchor">
-<a href="#windows" class="anchor"></a>1.1 - Windows</h3>
-<p>Before installing <code>trackR</code>, you will need to install the latest versions of <a href="https://cmake.org/"><code>CMake</code></a> and <a href="https://cran.r-project.org/bin/windows/Rtools/"><code>Rtools</code></a>.</p>
-<p>Download <code>CMake</code> for Windows at <a href="https://cmake.org/download/">https://cmake.org/download/</a>.</p>
-<p>Download the latest “frozen” version of <code>Rtools</code> at <a href="https://cran.r-project.org/bin/windows/Rtools/">https://cran.r-project.org/bin/windows/Rtools/</a>.</p>
-<p>In both cases, make sure to tell the installer to add <code>CMake</code> and <code>Rtools</code> to your “PATH”.</p>
-</div>
-<div id="mac" class="section level3">
-<h3 class="hasAnchor">
-<a href="#mac" class="anchor"></a>1.2 - Mac</h3>
-<p>Before installing <code>trackR</code>, you will need to install the latest version of <a href="https://cmake.org/"><code>CMake</code></a>.</p>
-<p>Download <code>CMake</code> for Mac at <a href="https://cmake.org/download/">https://cmake.org/download/</a>. You can also use <a href="http://brew.sh/"><code>Homebrew</code></a> or <a href="https://www.macports.org/"><code>MacPorts</code></a> if you prefer (I prefer!).</p>
-<p><strong>Homebrew:</strong></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install cmake</span></code></pre></div>
-<p><strong>MacPorts:</strong></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> port install cmake</span></code></pre></div>
-</div>
-<div id="linux" class="section level3">
-<h3 class="hasAnchor">
-<a href="#linux" class="anchor"></a>1.3 - Linux</h3>
-<p>Before installing <code>trackR</code>, you will need to install the latest version of <a href="https://cmake.org/"><code>CMake</code></a>.</p>
-<p>Download <code>CMake</code> for Linux at <a href="https://cmake.org/download/">https://cmake.org/download/</a>. However it is recommended that you install it using your distribution’s package management system.</p>
-<p><strong>Ubuntu:</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install cmake</span></code></pre></div>
-<p>[TODO: add more Linux install commands]</p>
-</div>
-<div id="mac-linux-and-windows" class="section level3">
-<h3 class="hasAnchor">
-<a href="#mac-linux-and-windows" class="anchor"></a>1.4 - Mac, Linux and Windows</h3>
-<p>Before installing <code>trackR</code>, you will need to install the <code>devtools</code> package in <code>R</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">install.package</span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></code></pre></div>
+<a href="#installing-opencv" class="anchor"></a>1 - Installing <code>OpenCV</code>
+</h2>
+<p><code>trackR</code> uses the powerful computer-vision library <a href="https://www.opencv.org"><code>OpenCV</code></a> in order to load and process videos and images. Installing <code>OpenCV</code> can be a daunting task if you are not used to compiling complex software from source. For this reason, we have created <a href="https://CRAN.R-project.org/package=ROpenCVLite"><code>ROpenCVLite</code></a>, a helper <code>R</code> package that will take care of this process for you.</p>
+<p>Please go to <a href="https://swarm-lab.github.io/ROpenCVLite/articles/install.html">https://swarm-lab.github.io/ROpenCVLite/articles/install.html</a> and follow the instructions there to install <code>OpenCV</code> on your system. There are slight differences between the installation processes for Mac, Windows, and Linux, so make sure to follow those that are for your operating system. The installation process should be straightforward (just a few buttons or links to click here and there) but the compilation of OpenCV will take some time (10 to 20 minutes depending on your machine and operating system). Make yourself a nice cup of tea or coffee and relax in the meantime.</p>
+<p>Once you have installed <code>OpenCV</code> via <code>ROpenCVLite</code>, you can follow the rest of the installation instructions for <code>trackR</code> below.</p>
 <hr>
-</div>
 </div>
 <div id="installing-trackr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installing-trackr" class="anchor"></a>2 - Installing <code>trackR</code>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"swarm-lab/trackR"</span><span class="op">)</span></code></pre></div>
-<p>This step may take some time if it is the first time that you are installing the <code>ROpenCVLite</code> dependency on your system. Go make yourself a cup of coffee or two.</p>
+<p>Once <code>OpenCV</code> is ready, you can install <code>trackR</code> and the rest of its dependencies by simply typing the following command in your R console:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"swarm-lab/trackR"</span><span class="op">)</span></code></pre></div>
 <hr>
-</div>
-<div id="launching-trackr" class="section level2">
-<h2 class="hasAnchor">
-<a href="#launching-trackr" class="anchor"></a>3 - Launching <code>trackR</code>
-</h2>
-<p>To launch <code>trackR</code> using classic background subtraction, type:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://swarm-lab.github.io/trackR/">trackR</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/trackR.html">trackR</a></span><span class="op">(</span><span class="st">"classic"</span><span class="op">)</span> </code></pre></div>
-<p>To launch <code>trackR</code> using quantized background subtraction, type:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://swarm-lab.github.io/trackR/">trackR</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/trackR.html">trackR</a></span><span class="op">(</span><span class="st">"quanta"</span><span class="op">)</span> </code></pre></div>
-<p>To launch <code>trackR</code> using <a href="https://github.com/vivekhsridhar/tracktor">“tracktor”</a> segmentation, type:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://swarm-lab.github.io/trackR/">trackR</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/trackR.html">trackR</a></span><span class="op">(</span><span class="st">"tracktor"</span><span class="op">)</span> </code></pre></div>
+<p>You are now ready to proceed to the rest of the tutorials!</p>
+<ul>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html">2 - Preparing videos (optional)</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z3_trackR.html">3 - Tracking videos</a></li>
+</ul>
 </div>
   </div>
 

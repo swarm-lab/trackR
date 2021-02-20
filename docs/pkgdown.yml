@@ -1,15 +1,11 @@
-pandoc: 2.11.2
+pandoc: 2.11.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   z1_install: z1_install.html
-  z2_video: z2_video.html
-  z3_background: z3_background.html
-  z4_mask: z4_mask.html
-  z5_blob: z5_blob.html
-  z6_tracking: z6_tracking.html
-  z7_settings: z7_settings.html
-last_built: 2021-02-16T10:02Z
+  z2_videoFixer: z2_videoFixer.html
+  z3_trackR: z3_trackR.html
+last_built: 2021-02-20T19:17Z
 urls:
   reference: https://swarm-lab.github.io/trackR//reference
   article: https://swarm-lab.github.io/trackR//articles

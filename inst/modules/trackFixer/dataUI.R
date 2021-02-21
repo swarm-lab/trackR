@@ -8,14 +8,21 @@ verticalTabPanel(
   htmlOutput("videoStatus"),
   htmlOutput("trackStatus"),
 
-  tags$table(style = "width: 100%; margin-bottom: 10px;",
-             tags$tr(
-               shinyFilesButton("videoFile_x", "Select video file",
-                                "Please select a video file", FALSE,
-                                class = "halfWidth"),
-               shinyFilesButton("trackFile_x", "Select track file",
-                                "Please select a track file", FALSE,
-                                class = "halfWidth")
-             )
-  )
+  tags$table(
+    tags$tr(
+      tags$td(shinyFilesButton("videoFile_x", "Select video file",
+                               "Please select a video file", FALSE,
+                               class = "fullWidth"),
+              style = "width: 49%;"),
+      tags$td(),
+      tags$td(shinyFilesButton("trackFile_x", "Select track file",
+                               "Please select a track file", FALSE,
+                               class = "fullWidth"),
+              style = "width: 49%;")
+    ),
+
+    class = "settingsTable"
+  ),
+
+  p()
 )

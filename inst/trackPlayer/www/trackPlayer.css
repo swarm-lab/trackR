@@ -94,3 +94,15 @@ hr.hr-text:after {
   padding: 1rem;
   background-color: white;
 }
+
+.settingsTable {
+  width: 100%;
+}
+
+.settingsTable td:empty {
+  width: 10px;
+}
+
+.settingsTable tr:empty {
+  height: 10px;
+}

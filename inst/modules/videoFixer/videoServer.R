@@ -91,10 +91,10 @@ observe({
 # Display video
 observeEvent(theImage(), {
   if (Rvision::isImage(theImage())) {
-    Rvision::display(theImage(), "trackR", 5,
+    Rvision::display(theImage(), "videoFixer", 5,
                      nrow(theImage()) * input$videoSize_x,
                      ncol(theImage()) * input$videoSize_x)
   } else {
-    Rvision::display(Rvision::zeros(480, 640), "trackR", 5, 480, 640)
+    Rvision::display(Rvision::zeros(480, 640), "videoFixer", 5, 480, 640)
   }
 })

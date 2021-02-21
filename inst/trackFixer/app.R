@@ -3,7 +3,7 @@ library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
 
-Rvision::newDisplay("videoFixer")
+Rvision::newDisplay("trackFixer")
 cbPalette <- c("#FFBF80", "#FF8000", "#FFFF99", "#FFFF33", "#B2FF8C", "#33FF00",
                "#A6EDFF", "#1AB2FF", "#CCBFFF", "#664CFF", "#FF99BF", "#E61A33")
 

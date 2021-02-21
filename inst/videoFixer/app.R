@@ -3,7 +3,7 @@ library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
 
-Rvision::newDisplay("trackR")
+Rvision::newDisplay("videoFixer")
 
 ui <- function(request) {
   shinyUI(

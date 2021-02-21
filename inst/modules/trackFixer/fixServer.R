@@ -133,16 +133,16 @@ observeEvent(refreshDisplay(), {
                         tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
                         color = "white")
 
-      Rvision::display(to_display, "trackR", 5,
+      Rvision::display(to_display, "trackFixer", 5,
                        nrow(to_display) * input$videoSize_x,
                        ncol(to_display) * input$videoSize_x)
     } else {
-      Rvision::display(theImage(), "trackR", 5,
+      Rvision::display(theImage(), "trackFixer", 5,
                        nrow(theImage()) * input$videoSize_x,
                        ncol(theImage()) * input$videoSize_x)
     }
   } else {
-    Rvision::display(Rvision::zeros(480, 640), "trackR", 5, 480, 640)
+    Rvision::display(Rvision::zeros(480, 640), "trackFixer", 5, 480, 640)
   }
 })
 

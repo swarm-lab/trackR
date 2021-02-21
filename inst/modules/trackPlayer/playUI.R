@@ -2,14 +2,12 @@ verticalTabPanel(
   title = "2",
   id = "fixPanel",
   box_height = "100%",
-  p("Fixing module", class = "module-title"),
+  p("Play module", class = "module-title"),
 
   hr(),
 
   htmlOutput("videoStatus2"),
   htmlOutput("trackStatus2"),
-
-  htmlOutput("videoSlider"),
 
   tags$table(style = "width: 100%; margin-bottom: 10px;",
              tags$tr(
@@ -22,6 +20,8 @@ verticalTabPanel(
                actionButton("plusSec_x", "[↑] >>", class = "quarterWidth")
              )
   ),
+
+  htmlOutput("videoSlider"),
 
   hr(),
 

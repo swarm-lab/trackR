@@ -370,6 +370,10 @@ Plus, if you have set a real-world scale and origin in the "Tracking module":
 + `width_[unit]` is the width in real-world [unit] of the object. 
 + `height_[unit]` is the height in real-world [unit] of the object.  
 
+You can now proceed to the rest of the tutorials. 
+
++ [4 - Inspect and fix tracking results](https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html)
+
 ---
 
 The video used throughout this tutorial was provided by *Sridhar, V. H., Roche, 

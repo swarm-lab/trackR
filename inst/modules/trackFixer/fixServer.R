@@ -418,6 +418,24 @@ observeEvent(input$revertChanges_x, {
   }
 })
 
+# Statistics
+output$trackStats <- renderTable({
+  if (is.data.frame(theTracks())) {
+    tab <- table(theTracks()$track_fixed[!theTracks()$ignore])
+    data.frame("Number of tracks" = length(tab),
+               "Shortest" = min(tab),
+               "Longest" = max(tab),
+               "Median" = median(tab),
+               check.names = FALSE)
+  } else {
+    data.frame("Number of tracks" = NA,
+               "Shortest" = NA,
+               "Longest" = NA,
+               "Median" = NA,
+               check.names = FALSE)
+  }
+}, striped = TRUE, width = "100%", align = "c")
+
 # Save
 observeEvent(input$saveChanges_x, {
   if (is.data.frame(theTracks())) {

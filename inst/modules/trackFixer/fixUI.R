@@ -45,5 +45,9 @@ verticalTabPanel(
 
   hr(),
 
+  tableOutput("trackStats"),
+
+  hr(),
+
   htmlOutput("displaySlider")
 )

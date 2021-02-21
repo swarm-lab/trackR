@@ -33,6 +33,7 @@ track overlaid on top of them.
 + [1 - Installation instructions](https://swarm-lab.github.io/trackR/articles/z1_install.html)
 + [2 - Preparing videos (optional)](https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html)
 + [3 - Tracking videos](https://swarm-lab.github.io/trackR/articles/z3_trackR.html)
++ [4 - Inspect and fix tracking results](https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html)
 
 ---
 

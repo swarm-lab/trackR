@@ -113,3 +113,4 @@ result, you can proceed to the rest of the tutorials.
 
 + [3 - Tracking videos](https://swarm-lab.github.io/trackR/articles/z3_trackR.html)
 + [4 - Inspect and fix tracking results](https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html)
++ [5 - Export tracking results as video](https://swarm-lab.github.io/trackR/articles/z4_trackPlayer.html)

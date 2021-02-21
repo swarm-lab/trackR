@@ -373,6 +373,8 @@ Plus, if you have set a real-world scale and origin in the "Tracking module":
 You can now proceed to the rest of the tutorials. 
 
 + [4 - Inspect and fix tracking results](https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html)
++ [5 - Export tracking results as video](https://swarm-lab.github.io/trackR/articles/z4_trackPlayer.html)
+
 
 ---
 

@@ -6,7 +6,8 @@ articles:
   z2_videoFixer: z2_videoFixer.html
   z3_trackR: z3_trackR.html
   z4_trackFixer: z4_trackFixer.html
-last_built: 2021-02-21T11:17Z
+  z5_trackPlayer: z5_trackPlayer.html
+last_built: 2021-02-21T16:45Z
 urls:
   reference: https://swarm-lab.github.io/trackR//reference
   article: https://swarm-lab.github.io/trackR//articles

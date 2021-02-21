@@ -34,6 +34,7 @@ track overlaid on top of them.
 + [2 - Preparing videos (optional)](https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html)
 + [3 - Tracking videos](https://swarm-lab.github.io/trackR/articles/z3_trackR.html)
 + [4 - Inspect and fix tracking results](https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html)
++ [5 - Export tracking results as video](https://swarm-lab.github.io/trackR/articles/z4_trackPlayer.html)
 
 ---
 
@@ -89,6 +90,8 @@ iterations of `trackR`:
 6. Add AI-powered track correction. [IN PROGRESS]
 7. Add app to automatically compute classic statistics on trajectories for users
   that do not want to/cannot run their own data analysis pipeline. [LONG TERM GOAL]
+8. Add possibility to include timestamps, title, subtitle, etc., in videos 
+  exported by `trackPlayer`. [IN PROGRESS]
 
 --
 

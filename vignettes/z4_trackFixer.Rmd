@@ -129,6 +129,10 @@ The file will also contain 2 additional columns:
   corresponding row when you analyze the data. Ignored rows are those, for 
   instance, from tracks that you have chosen to remove or merge with another 
   track. 
+  
+You can now proceed to the rest of the tutorials. 
+
++ [5 - Export tracking results as video](https://swarm-lab.github.io/trackR/articles/z4_trackPlayer.html)
 
 ---
 

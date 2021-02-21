@@ -314,29 +314,74 @@ observeEvent(input$okMerge, {
   if (!is.na(id1) & !is.na(id2)) {
     idx <- theTracks()$track_fixed == id1 | theTracks()$track_fixed == id2
     orig <- theTracks()[idx]
+    n <- names(orig)
+    unit_real <- gsub("x", "", n[grepl("x_", n)])
     fixed <- orig[, {
       ix <- track_fixed == id1
+      l <- list()
 
       if (.N == 2) {
-        pts <- rbind(ellipse(x[1], y[1], width[1], height[1], angle[1]),
-                     ellipse(x[2], y[2], width[2], height[2], angle[2]))
-        ell <- amvee(pts)
-        list(x = c(ell[1], x[!ix]),
-             y = c(ell[2], y[!ix]),
-             n = c(sum(n), n[!ix]),
-             track = c(id1, id2),
-             width = c(ell[3], width[!ix]),
-             height = c(ell[4], height[!ix]),
-             angle = c(ell[5], angle[!ix]),
-             track_fixed = c(id1, id2),
-             ignore = c(FALSE, TRUE))
-      } else {
-        if (ix) {
-          list(x, y, n, track, width, height, angle, track_fixed, ignore)
-        } else {
-          list(x, y, n, track, width, height, angle, track_fixed = id1, ignore)
+        pts_px <- rbind(ellipse(x[1], y[1], width[1], height[1], angle[1]),
+                        ellipse(x[2], y[2], width[2], height[2], angle[2]))
+        ell_px <- amvee(pts_px)
+
+        l[["track"]] <- c(id1, id2)
+        l[["x"]] <- c(ell_px[1], x[!ix])
+        l[["y"]] <- c(ell_px[2], y[!ix])
+        l[["width"]] <- c(ell_px[3], width[!ix])
+        l[["height"]] <- c(ell_px[4], height[!ix])
+        l[["angle"]] <- c(ell_px[5], angle[!ix])
+        l[["n"]] <- c(sum(n), n[!ix])
+
+        if (length(unit_real) > 0) {
+          pts_real <- rbind(ellipse(get(paste0("x", unit_real))[1],
+                                    get(paste0("y", unit_real))[1],
+                                    get(paste0("width", unit_real))[1],
+                                    get(paste0("height", unit_real))[1],
+                                    angle[1]),
+                            ellipse(get(paste0("x", unit_real))[2],
+                                    get(paste0("y", unit_real))[2],
+                                    get(paste0("width", unit_real))[2],
+                                    get(paste0("height", unit_real))[2],
+                                    angle[2]))
+          ell_real <- amvee(pts_real)
+
+          l[[paste0("x", unit_real)]] <- c(ell_real[1], x[!ix])
+          l[[paste0("y", unit_real)]] <- c(ell_real[2], y[!ix])
+          l[[paste0("width", unit_real)]] <- c(ell_real[3],
+                                               get(paste0("width", unit_real))[!ix])
+          l[[paste0("height", unit_real)]] <- c(ell_real[4],
+                                                get(paste0("height", unit_real))[!ix])
         }
+
+        l[["track_fixed"]] <- c(id1, id2)
+        l[["ignore"]] <- c(FALSE, TRUE)
+      } else {
+        l[["track"]] <- track
+        l[["x"]] <- x
+        l[["y"]] <- y
+        l[["width"]] <- width
+        l[["height"]] <- height
+        l[["angle"]] <- angle
+        l[["n"]] <- n
+
+        if (length(unit_real) > 0) {
+          l[[paste0("x", unit_real)]] <- get(paste0("x", unit_real))
+          l[[paste0("y", unit_real)]] <- get(paste0("y", unit_real))
+          l[[paste0("width", unit_real)]] <- get(paste0("width", unit_real))
+          l[[paste0("height", unit_real)]] <- get(paste0("height", unit_real))
+        }
+
+        if (ix) {
+          l[["track_fixed"]] <- track_fixed
+        } else {
+          l[["track_fixed"]] <- id1
+        }
+
+        l[["ignore"]] <- ignore
       }
+
+      l
     },
     by = frame]
 

@@ -194,6 +194,8 @@ observeEvent(theTracksPath(), {
     min_density <- input$blobDensity_x / (input$speedup_x ^ 2)
     min_size <- input$blobArea_x / (input$speedup_x ^ 2)
 
+    centers <- NULL
+
     for (i in 1:n) {
       if (i == 1) {
         frame <- Rvision::readFrame(theVideo(), input$rangePos_x[1])
@@ -219,7 +221,7 @@ observeEvent(theTracksPath(), {
       nz <- data.table::as.data.table(Rvision::connectedComponents(bw > 63, 8)$table)
       nz <- nz[(x %% speedup) == 0 & (y %% speedup) == 0]
 
-      if (i == 1) {
+      if (is.null(centers)) {
         centers <- nz[, .(x = mean(x), y = mean(y)), by = .(id)][, 2:3]
       }
 
@@ -256,17 +258,17 @@ observeEvent(theTracksPath(), {
 
       centers <- shape[, 1:2, drop = FALSE]
 
-      blobs <- data.table::data.table(x = shape[, 1],
-                                      y = shape[, 2],
-                                      n = shape[, 6],
-                                      frame = theVideo()$frame(),
-                                      id = 1:nrow(shape),
-                                      track = NA,
-                                      width = shape[, 3],
-                                      height = shape[, 4],
-                                      angle = shape[, 5])
+      if (!is.null(shape)) {
+        blobs <- data.table::data.table(x = shape[, 1],
+                                        y = shape[, 2],
+                                        n = shape[, 6],
+                                        frame = theVideo()$frame(),
+                                        id = 1:nrow(shape),
+                                        track = NA,
+                                        width = shape[, 3],
+                                        height = shape[, 4],
+                                        angle = shape[, 5])
 
-      if (nrow(blobs) > 0) {
         memory <- memory[frame >= (theVideo()$frame() - memory_length)]
         blobs <- simplerTracker(blobs, memory, maxDist = input$maxDist_x)
         newTrack <- is.na(blobs$track)

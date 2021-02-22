@@ -105,33 +105,26 @@ observe({
 
 # Video slider
 output$videoSlider2 <- renderUI({
-  if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x) &
-      !is.null(input$videoPos_x)) {
-    if (any(is.na(rangeMem))) {
-      rangeMem <<- input$rangePos_x
-    }
+  if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x)) {
+    sliderInput("videoPos2_x", "Frame", width = "100%", step = 1,
+                value = theFrame(),
+                min = input$rangePos_x[1],
+                max = input$rangePos_x[2])
+  }
+})
 
-    test <- rangeMem != input$rangePos_x
-    rangeMem <<- input$rangePos_x
-
-    if (test[2] & !test[1]) {
-      sliderInput("videoPos2_x", "Frame", width = "100%", value = input$videoPos_x,
-                  min = 1, max = diff(input$rangePos_x) + 1, step = 1)
-    } else {
-      sliderInput("videoPos2_x", "Frame", width = "100%", value = input$videoPos_x,
-                  min = 1, max = diff(input$rangePos_x) + 1, step = 1)
+observeEvent(input$main, {
+  if (input$main == "4" & !is.null(input$videoPos2_x)) {
+    if (input$videoPos2_x != theFrame()) {
+      updateSliderInput(session, "videoPos2_x", value = theFrame())
     }
   }
 })
 
-observe({
-  if (Rvision::isVideo(theVideo()) & !is.null(input$videoPos2_x) &
-      !is.null(input$rangePos_x) & !is.null(input$videoQuality_x)) {
-    isolate({
-      updateSliderInput(session, inputId = "videoPos_x", value = input$videoPos2_x)
-    })
-  }
+observeEvent(input$videoPos2_x, {
+  updateSliderInput(session, "videoPos_x", value = input$videoPos2_x)
 })
+
 
 # Bookmark
 setBookmarkExclude(c(session$getBookmarkExclude(), "optimizeThresholds_x"))

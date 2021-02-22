@@ -2,6 +2,7 @@ volumes <- c(Home = fs::path_home(), getVolumes()())
 
 theVideoPath <- reactiveVal()
 theVideo <- reactiveVal()
+theFrame <- reactiveVal()
 theImage <- reactiveVal()
 theMask <- reactiveVal()
 defaultRoot <- reactiveVal(NULL)
@@ -21,9 +22,12 @@ observeEvent(input$videoFile_x, {
 observeEvent(theVideoPath(), {
   ix <- sapply(volumes, grepl, x = theVideoPath())
   volume <- volumes[ix]
-  dir <- dirname(theVideoPath())
-  defaultRoot(names(volumes)[ix])
-  defaultPath(gsub(volume, "", dir))
+
+  if (length(volume) > 0) {
+    dir <- dirname(theVideoPath())
+    defaultRoot(names(volumes)[ix])
+    defaultPath(gsub(volume, "", dir))
+  }
 })
 
 observeEvent(theVideoPath(), {
@@ -41,8 +45,6 @@ observeEvent(theVideoPath(), {
 
 output$videoStatus <- renderUI({
   if (!Rvision::isVideo(theVideo())) {
-  #   p("Video loaded.", class = "good")
-  # } else {
     p("Video missing (and required).", class = "bad")
   }
 })
@@ -70,13 +72,9 @@ output$qualitySlider <- renderUI({
   }
 })
 
-observe({
-  if (Rvision::isVideo(theVideo()) & !is.null(input$videoPos_x) &
-      !is.null(input$rangePos_x) & !is.null(input$videoQuality_x)) {
-    isolate({
-      theImage(Rvision::readFrame(theVideo(), input$videoPos_x + input$rangePos_x[1] - 1))
-    })
-  }
+observeEvent(theFrame(), {
+  if (!is.null(theFrame()))
+    theImage(Rvision::readFrame(theVideo(), theFrame()))
 })
 
 observe({
@@ -96,7 +94,6 @@ observe({
 
 rangeMem <- c(NA, NA)
 
-# Video slider
 output$videoSlider <- renderUI({
   if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x)) {
     if (any(is.na(rangeMem))) {
@@ -107,15 +104,23 @@ output$videoSlider <- renderUI({
     rangeMem <<- input$rangePos_x
 
     if (test[2] & !test[1]) {
-      sliderInput("videoPos_x", "Frame", width = "100%",
-                  value = diff(input$rangePos_x) + 1,
-                  min = 1, max = diff(input$rangePos_x) + 1, step = 1)
+      sliderInput("videoPos_x", "Frame", width = "100%", step = 1,
+                  value = input$rangePos_x[2],
+                  min = input$rangePos_x[1],
+                  max = input$rangePos_x[2])
     } else {
-      sliderInput("videoPos_x", "Frame", width = "100%", value = 1, min = 1,
-                  max = diff(input$rangePos_x) + 1, step = 1)
+      sliderInput("videoPos_x", "Frame", width = "100%", step = 1,
+                  value = input$rangePos_x[1],
+                  min = input$rangePos_x[1],
+                  max = input$rangePos_x[2])
     }
   }
 })
+
+observeEvent(input$videoPos_x, {
+  theFrame(input$videoPos_x)
+})
+
 
 # Bookmark
 setBookmarkExclude(c(session$getBookmarkExclude(), "videoFile_x",

@@ -102,25 +102,25 @@ observe({
 observeEvent(refreshDisplay(), {
   if (refreshDisplay() > 0) {
     tmp_rect <- theTracks()[ignore == FALSE & frame == input$videoPos_x, ]
+    tmp_tracks <- theTracks()[ignore == FALSE &
+                                frame >= (input$videoPos_x - 1 * theVideo()$fps()) &
+                                frame <= input$videoPos_x, ]
 
-    if (nrow(tmp_rect) > 0) {
+    if (nrow(tmp_tracks) > 0) {
       sc <- max(dim(theImage()) / 720)
-
       overlay1 <- Rvision::cloneImage(theImage())
-      Rvision::drawRotatedRectangle(overlay1, tmp_rect$x, tmp_rect$y,
-                                    tmp_rect$width, tmp_rect$height, tmp_rect$angle,
-                                    color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
-                                    thickness = 1.5 * sc)
-
       overlay2 <- Rvision::cloneImage(theImage())
-      Rvision::drawRotatedRectangle(overlay2, tmp_rect$x, tmp_rect$y,
-                                    tmp_rect$width, tmp_rect$height, tmp_rect$angle,
-                                    color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
-                                    thickness = -1)
 
-      tmp_tracks <- theTracks()[ignore == FALSE &
-                                  frame >= (input$videoPos_x - 1 * theVideo()$fps()) &
-                                  frame <= input$videoPos_x, ]
+      if (nrow(tmp_rect) > 0) {
+        Rvision::drawRotatedRectangle(overlay1, tmp_rect$x, tmp_rect$y,
+                                      tmp_rect$width, tmp_rect$height, tmp_rect$angle,
+                                      color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
+                                      thickness = 1.5 * sc)
+        Rvision::drawRotatedRectangle(overlay2, tmp_rect$x, tmp_rect$y,
+                                      tmp_rect$width, tmp_rect$height, tmp_rect$angle,
+                                      color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
+                                      thickness = -1)
+      }
 
       tmp_tracks[, Rvision::drawPolyline(overlay2, cbind(x, y), FALSE,
                                          color = cbPalette[(track_fixed[1] %% 12) + 1],
@@ -128,10 +128,13 @@ observeEvent(refreshDisplay(), {
                  by = track_fixed]
 
       to_display <- Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5))
-      Rvision::drawText(to_display, tmp_rect$track_fixed,
-                        tmp_rect$x - (floor(log10(tmp_rect$track_fixed)) + 1) * 5 * sc,
-                        tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
-                        color = "white")
+
+      if (nrow(tmp_rect) > 0) {
+        Rvision::drawText(to_display, tmp_rect$track_fixed,
+                          tmp_rect$x - (floor(log10(tmp_rect$track_fixed)) + 1) * 5 * sc,
+                          tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
+                          color = "white")
+      }
 
       Rvision::display(to_display, "trackFixer", 5,
                        nrow(to_display) * input$videoSize_x,

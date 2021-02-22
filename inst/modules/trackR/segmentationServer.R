@@ -105,24 +105,21 @@ observe({
 
 # Video slider
 output$videoSlider2 <- renderUI({
-  if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x)) {
+  if (!is.null(input$rangePos_x)) {
     sliderInput("videoPos2_x", "Frame", width = "100%", step = 1,
-                value = theFrame(),
+                value = frameMem,
                 min = input$rangePos_x[1],
                 max = input$rangePos_x[2])
   }
 })
 
-observeEvent(input$main, {
-  if (input$main == "4" & !is.null(input$videoPos2_x)) {
-    if (input$videoPos2_x != theFrame()) {
-      updateSliderInput(session, "videoPos2_x", value = theFrame())
-    }
-  }
-})
-
 observeEvent(input$videoPos2_x, {
-  updateSliderInput(session, "videoPos_x", value = input$videoPos2_x)
+  if (input$main == "4") {
+    updateSliderInput(session, "videoPos_x", value = input$videoPos2_x)
+
+    if (!is.null(input$videoPos3_x))
+      updateSliderInput(session, "videoPos3_x", value = input$videoPos2_x)
+  }
 })
 
 

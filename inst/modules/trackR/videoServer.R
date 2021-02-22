@@ -93,6 +93,7 @@ observe({
 })
 
 rangeMem <- c(NA, NA)
+frameMem <- NA
 
 output$videoSlider <- renderUI({
   if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x)) {
@@ -119,6 +120,15 @@ output$videoSlider <- renderUI({
 
 observeEvent(input$videoPos_x, {
   theFrame(input$videoPos_x)
+  frameMem <<- input$videoPos_x
+
+  if (input$main == "1") {
+    if (!is.null(input$videoPos2_x))
+      updateSliderInput(session, "videoPos2_x", value = input$videoPos_x)
+
+    if (!is.null(input$videoPos3_x))
+      updateSliderInput(session, "videoPos3_x", value = input$videoPos_x)
+  }
 })
 
 

@@ -199,4 +199,5 @@ onBookmark(function(state) {
 
 onRestore(function(state) {
   theMaskPath(state$values$theMaskPath[[1]])
+  refreshMask(refreshMask() + 1)
 })

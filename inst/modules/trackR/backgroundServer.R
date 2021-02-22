@@ -127,4 +127,5 @@ onBookmark(function(state) {
 
 onRestore(function(state) {
   theBackgroundPath(state$values$theBackgroundPath[[1]])
+  refreshBackground(refreshBackground() + 1)
 })

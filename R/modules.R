@@ -9,7 +9,9 @@
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
 #' @examples
+#' \dontrun{
 #' moduleUI("trackR/video")
+#' }
 #'
 #' @export
 moduleUI <- function(module) {
@@ -33,7 +35,9 @@ moduleUI <- function(module) {
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
 #' @examples
+#' \dontrun{
 #' moduleSVR("trackR/video")
+#' }
 #'
 #' @export
 moduleSVR <- function(module) {

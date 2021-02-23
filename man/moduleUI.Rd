@@ -16,7 +16,9 @@ The UI code of the module.
 Utility function to load the different UI modules of the apps.
 }
 \examples{
+\dontrun{
 moduleUI("trackR/video")
+}
 
 }
 \author{

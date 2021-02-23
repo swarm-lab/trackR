@@ -27,6 +27,7 @@ Imports:
     Rfast2 (>= 0.0.8),
     rgenoud (>= 5.8-3.0),
     mvoutlier (>= 2.0.9),
+    cluster (>= 2.1.0),
     CEC (>= 0.10.2)
 Remotes: 
     github::swarm-lab/Rvision

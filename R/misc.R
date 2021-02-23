@@ -89,7 +89,7 @@ optimEllipse <- function(x, y) {
   d <- Rfast::Dist(cbind(x, y))
   start <- c(mean(x), mean(y), max(d), max(d), 0)
 
-  opt <- optim(start, function(par) {
+  opt <- stats::optim(start, function(par) {
     sum((.dist2ellipse(x, y, par[1], par[2], par[3], par[4], par[5]) - 1) ^ 2)
   }, method = "L-BFGS-B",
   lower = c(min(x), min(y), -Inf, -Inf, -pi),

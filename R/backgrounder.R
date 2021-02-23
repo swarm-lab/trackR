@@ -26,7 +26,7 @@
 #'
 #' @examples
 #' cctv <- Rvision::video(system.file("sample_vid/Walk3.mp4", package = "Rvision"))
-#' background <- backgrounder(cctv, 100)
+#' background <- backgrounder(cctv, 20)
 #' plot(background)
 #'
 #' @export

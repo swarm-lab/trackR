@@ -16,7 +16,9 @@ The server code of the module.
 Utility function to load the different server modules of the apps.
 }
 \examples{
+\dontrun{
 moduleSVR("trackR/video")
+}
 
 }
 \author{

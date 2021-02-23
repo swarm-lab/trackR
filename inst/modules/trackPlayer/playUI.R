@@ -6,8 +6,9 @@ verticalTabPanel(
 
   hr(),
 
-  htmlOutput("videoStatus2"),
-  htmlOutput("trackStatus2"),
+  htmlOutput("rangeSlider"),
+
+  hr(),
 
   tags$table(style = "width: 100%; margin-bottom: 10px;",
              tags$tr(
@@ -26,6 +27,30 @@ verticalTabPanel(
   hr(),
 
   htmlOutput("displaySlider"),
+
+  hr(),
+
+  tags$table(
+    tags$tr(
+      tags$td(actionButton("title_x", "Set title", width = "100%"),
+              style = "width: 49%;"),
+      tags$td(),
+      tags$td(actionButton("subtitle_x", "Set subtitle", width = "100%"),
+              style = "width: 49%;")
+    ),
+
+    tags$tr(),
+
+    tags$tr(
+      tags$td(actionButton("authors_x", "Set author list", width = "100%"),
+              style = "width: 49%;"),
+      tags$td(),
+      tags$td(actionButton("timestamp_x", "Set timestamp", width = "100%"),
+              style = "width: 49%;")
+    ),
+
+    class = "settingsTable"
+  ),
 
   hr(),
 

@@ -106,3 +106,7 @@ hr.hr-text:after {
 .settingsTable tr:empty {
   height: 10px;
 }
+
+[data-shiny-input-type="colour"] {
+  width: 100%!important;
+}

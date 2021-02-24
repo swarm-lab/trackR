@@ -132,7 +132,7 @@ The file will also contain 2 additional columns:
   
 You can now proceed to the rest of the tutorials. 
 
-+ [5 - Export tracking results as video](https://swarm-lab.github.io/trackR/articles/z4_trackPlayer.html)
++ [5 - Export tracking results as video](https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html)
 
 ---
 

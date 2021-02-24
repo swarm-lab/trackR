@@ -113,3 +113,11 @@ hr.hr-text:after {
 #incButton_x.awesome-bootstrap-radio {
   text-align: center;
 }
+
+.shiny-notification {
+  overflow-wrap: break-word;
+}
+
+#shiny-notification-panel {
+  width: 100%;
+}

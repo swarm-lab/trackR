@@ -188,6 +188,7 @@ observeEvent(input$okReassign, {
                                             type = "reassign",
                                             idx = which(idx),
                                             revert = as.numeric(old_id))
+    refreshStats(refreshStats() + 1)
     refreshDisplay(refreshDisplay() + 1)
   }
 })
@@ -223,6 +224,7 @@ observeEvent(input$okRemove, {
                                             type = "remove",
                                             idx = which(idx),
                                             revert = FALSE)
+    refreshStats(refreshStats() + 1)
     refreshDisplay(refreshDisplay() + 1)
   }
 })
@@ -274,6 +276,7 @@ observeEvent(input$okSwap, {
                                             idx2 = which(idx2),
                                             revert1 = id1,
                                             revert2 = id2)
+    refreshStats(refreshStats() + 1)
     refreshDisplay(refreshDisplay() + 1)
   }
 })
@@ -394,6 +397,7 @@ observeEvent(input$okMerge, {
                                             type = "merge",
                                             idx = which(idx),
                                             revert = orig)
+    refreshStats(refreshStats() + 1)
     refreshDisplay(refreshDisplay() + 1)
   }
 })
@@ -417,13 +421,16 @@ observeEvent(input$revertChanges_x, {
 
     updateSliderInput(session, "videoPos_x", value = changes[[l]]$frame)
     changes[[l]] <<- NULL
+    refreshStats(refreshStats() + 1)
     refreshDisplay(refreshDisplay() + 1)
   }
 })
 
 # Statistics
+refreshStats <- reactiveVal(0)
+
 output$trackStats <- renderTable({
-  if (is.data.frame(theTracks())) {
+  if (is.data.frame(theTracks()) & refreshStats() >= 0) {
     tab <- table(theTracks()$track_fixed[!theTracks()$ignore])
     data.frame("Number of tracks" = length(tab),
                "Shortest" = min(tab),

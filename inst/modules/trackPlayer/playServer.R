@@ -35,10 +35,10 @@ output$displaySlider <- renderUI({
 
 # Range slider
 output$rangeSlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (Rvision::isVideo(theVideo()) & is.data.frame(theTracks())) {
     sliderInput("rangePos_x", "Video range", width = "100%", min = 1,
                 max = Rvision::nframes(theVideo()),
-                value = c(1, Rvision::nframes(theVideo())), step = 1)
+                value = range(theTracks()$frame), step = 1)
   }
 })
 

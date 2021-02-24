@@ -267,16 +267,29 @@ kbox <- function(x, centers = 1, iter.max = 10, split = FALSE, split.width = Inf
     if (any(to_split)) {
       tmp_cl <- CEC::cec(x, cl$nclusters, iter.max = iter.max, param = NULL,
                          card.min = min.size, nstart = 10, threads = "auto")
-      tmp_sh <- rbind(
-        mapply(.cov2shape, tmp_cl$covariances, asplit(tmp_cl$centers, 1),
-               SIMPLIFY = TRUE),
-        n = Rfast::Table(tmp_cl$cluster)
+
+      tmp_cl <- tryCatch(
+        CEC::cec(x, cl$nclusters, iter.max = iter.max, card.min = min.size, param = NULL,
+                 nstart = 10, threads = "auto"),
+        error = function(cond) {
+          NULL
+        }
       )
 
-      tmp_test_width <- tmp_sh[3, ] / split.width
-      tmp_test_height <- tmp_sh[4, ] / split.height
-      tmp_test_density <- split.density / (tmp_sh[6, ] / ((tmp_sh[3, ] / 2) *
-                                                            (tmp_sh[4, ] / 2) * pi))
+      if (is.null(tmp_cl)) {
+        tmp_test_width <- 2
+      } else {
+        tmp_sh <- rbind(
+          mapply(.cov2shape, tmp_cl$covariances, asplit(tmp_cl$centers, 1),
+                 SIMPLIFY = TRUE),
+          n = Rfast::Table(tmp_cl$cluster)
+        )
+
+        tmp_test_width <- tmp_sh[3, ] / split.width
+        tmp_test_height <- tmp_sh[4, ] / split.height
+        tmp_test_density <- split.density / (tmp_sh[6, ] / ((tmp_sh[3, ] / 2) *
+                                                              (tmp_sh[4, ] / 2) * pi))
+      }
 
       if (any(tmp_test_width > 1 | tmp_test_height > 1 | tmp_test_density > 1)) {
         tmp_tmp_centers <- rbind(

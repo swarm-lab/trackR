@@ -1,6 +1,8 @@
 # trackR - Multi-object tracking with R <img src="man/figures/logo.png" align="right" width="120" />
 
 [![R-CMD-check](https://github.com/swarm-lab/trackR/workflows/R-CMD-check/badge.svg)](https://github.com/swarm-lab/trackR/actions)
+![CRAN](https://www.r-pkg.org/badges/version/trackR)
+![CRANLOGS](https://cranlogs.r-pkg.org/badges/trackR)
 [![DOI](https://zenodo.org/badge/147672156.svg)](https://zenodo.org/badge/latestdoi/147672156)
 
 ## Description 

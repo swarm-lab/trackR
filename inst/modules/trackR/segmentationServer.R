@@ -93,8 +93,8 @@ observe({
         Rvision::display(
           toDisplay,
           "trackR", 25,
-          nrow(toDisplay) * input$videoSize_x,
-          ncol(toDisplay) * input$videoSize_x)
+          nrow(theImage()) * input$videoSize_x,
+          ncol(theImage()) * input$videoSize_x)
       } else {
         Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
       }

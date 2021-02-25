@@ -21,7 +21,18 @@ observeEvent(input$videoFile_x, {
 })
 
 observeEvent(theVideoPath(), {
-  ix <- sapply(volumes, grepl, x = theVideoPath())
+  ix <- which.max(
+    sapply(
+      stringr::str_locate_all(theVideoPath(), volumes),
+      function(l) {
+        if (nrow(l) > 0) {
+          diff(l[1, ])
+        } else {
+          NA
+        }
+      })
+  )
+  # ix <- sapply(volumes, grepl, x = theVideoPath())
   volume <- volumes[ix]
   dir <- dirname(theVideoPath())
   defaultRoot(names(volumes)[ix])
@@ -66,7 +77,18 @@ observeEvent(input$trackFile_x, {
 })
 
 observeEvent(theTracksPath(), {
-  ix <- sapply(volumes, grepl, x = theTracksPath())
+  ix <- which.max(
+    sapply(
+      stringr::str_locate_all(theTracksPath(), volumes),
+      function(l) {
+        if (nrow(l) > 0) {
+          diff(l[1, ])
+        } else {
+          NA
+        }
+      })
+  )
+  # ix <- sapply(volumes, grepl, x = theTracksPath())
   volume <- volumes[ix]
   dir <- dirname(theTracksPath())
   defaultRoot(names(volumes)[ix])

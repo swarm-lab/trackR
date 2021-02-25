@@ -20,7 +20,18 @@ observeEvent(refreshMask(), {
 
     if (Rvision::isImage(toCheck)) {
       theMask(Rvision::changeColorSpace(toCheck, "BGR"))
-      ix <- sapply(volumes, grepl, x = theMaskPath())
+      ix <- which.max(
+        sapply(
+          stringr::str_locate_all(theMaskPath(), volumes),
+          function(l) {
+            if (nrow(l) > 0) {
+              diff(l[1, ])
+            } else {
+              NA
+            }
+          })
+      )
+      # ix <- sapply(volumes, grepl, x = theMaskPath())
       volume <- volumes[ix]
       dir <- dirname(theMaskPath())
       defaultRoot(names(volumes)[ix])

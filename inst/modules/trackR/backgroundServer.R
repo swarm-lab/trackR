@@ -21,7 +21,18 @@ observeEvent(refreshBackground(), {
 
     if (Rvision::isImage(toCheck)) {
       theBackground(Rvision::changeColorSpace(toCheck, "BGR"))
-      ix <- sapply(volumes, grepl, x = theBackgroundPath())
+      ix <- which.max(
+        sapply(
+          stringr::str_locate_all(theBackgroundPath(), volumes),
+          function(l) {
+            if (nrow(l) > 0) {
+              diff(l[1, ])
+            } else {
+              NA
+            }
+          })
+      )
+      # ix <- sapply(volumes, grepl, x = theBackgroundPath())
       volume <- volumes[ix]
       dir <- dirname(theBackgroundPath())
       defaultRoot(names(volumes)[ix])

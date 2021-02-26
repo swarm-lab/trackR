@@ -1,6 +1,9 @@
 ---
 name: Issue template
 about: This is the template for reporting issues with trackR
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
@@ -8,44 +11,33 @@ about: This is the template for reporting issues with trackR
 Before posting an issue, please:
 
 * Read the documentation and make sure you have followed all the steps to install and run `trackR`.
-* Check if an other person has already created the same issue to avoid duplicates. If yes, please comment there instead of creating a new issue.
+* Check if another person has already created the same issue to avoid duplicates. If yes, please comment there instead of creating a new issue.
 * Try to be as detailed as possible in your report.
 * Report only one problem per created issue.
 
-
-This is a template helping you to create an issue which can be processed as quickly as possible. 
+This is a template helping you to create an issue that can be processed as quickly as possible. 
 -->
 
-##### System information (version)
-<!-- Example
-- trackR => 0.1
-- Rvision => 0.3.1
-- ROpenCVLite => 0.1.34.3
-- devtools => 2.0.1
-- shiny => 1.2.0
-- Operating System / Platform => Mac OS Mojave
-- R => 3.5.1
-- CMake => 3.12
--->
+**Describe the bug**
+A clear and concise description of what the bug is.
 
-- trackR => :grey_question:
-- Rvision => :grey_question:
-- ROpenCVLite => :grey_question:
-- devtools => :grey_question:
-- shiny => :grey_question:
-- Operating System / Platform => :grey_question:
-- R => :grey_question:
-- CMake => :grey_question:
+**To Reproduce**
+Steps to reproduce the behavior
 
-##### Detailed description
+**Expected behavior**
+A clear and concise description of what you expected to happen.
 
-<!-- your description -->
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
-##### Steps to reproduce
+**Computer (please complete the following information):**
+ - Operating system: [e.g. MacOS]
+ - Version [e.g. 11.2.1]
 
-<!-- to add code example fence it with triple backticks and optional file extension
-    ```.r
-    # R code example
-    ```
- or attach as .txt or .zip file
--->
+**R (please complete the following information):**
+ - R version: [e.g. 4.0.4]
+ - Rvision version: [e.g. 0.4.2]
+ - shiny version: [e.g. 1.6.0]
+
+**Additional context**
+Add any other context about the problem here.

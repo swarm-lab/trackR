@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: This is the template for reporting issues with trackR
+about: Create a bug report to help trackR improve
 title: ''
 labels: ''
 assignees: ''

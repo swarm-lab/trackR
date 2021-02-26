@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: This is the template for suggesting new features for trackR
+about: Suggest an idea to improve trackR
 title: ''
 labels: ''
 assignees: ''

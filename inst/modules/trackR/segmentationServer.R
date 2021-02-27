@@ -12,7 +12,8 @@ toOptim <- function(par, images) {
   out <- sapply(images, function(image) {
     bw <- Rvision::inRange(image, c(par[1:3], 0))
     md <- Rvision::medianBlur(bw, 1)
-    signal <- Rvision::sum(md * bw)
+    md %i*% bw
+    signal <- Rvision::sum(md)
     noise <- Rvision::sum(bw) - signal
     signal / (noise + 1)
   })
@@ -28,18 +29,31 @@ observeEvent(input$optimizeThresholds_x, {
     frame_pos <- round(seq.int(input$rangePos_x[1], input$rangePos_x[2],
                                length.out = 20))# input$thresholdImages_x))
 
+    background <- Rvision::cloneImage(theBackground())
+    if (input$videoQuality_x < 1)
+      background <- Rvision::resize(background, fx = input$videoQuality_x,
+                                    fy = input$videoQuality_x,
+                                    interpolation = "area")
+    if (input$darkButton_x == "Darker")
+      not(background)
+
+    mask <- Rvision::cloneImage(theMask())
+    mask %i/% 255
+
     frames <- lapply(frame_pos, function(i) {
       frame <- Rvision::readFrame(theVideo(), i)
 
-      if (input$darkButton_x == "Darker") {
-        Rvision::resize((theBackground() - frame) * (theMask() / 255),
-                        fx = input$videoQuality_x, fy = input$videoQuality_x,
-                        interpolation = "area")
-      } else {
-        Rvision::resize((frame - theBackground()) * (theMask() / 255),
-                        fx = input$videoQuality_x, fy = input$videoQuality_x,
-                        interpolation = "area")
-      }
+      if (input$videoQuality_x < 1)
+        frame <- Rvision::resize(frame, fx = input$videoQuality_x,
+                                 fy = input$videoQuality_x,
+                                 interpolation = "area")
+
+      if (input$darkButton_x == "Darker")
+        not(frame)
+
+      frame %i-% background
+      frame %i*% mask
+      frame
     })
 
     removeNotification(id = "load")
@@ -88,7 +102,7 @@ observe({
         toDisplay <- Rvision::resize(theImage(), fx = input$videoQuality_x,
                                      fy = input$videoQuality_x, interpolation = "area")
 
-        Rvision::drawCircle(toDisplay, ct$contours$x, ct$contours$y, sc, "green", -1)
+        Rvision::drawCircle(toDisplay, ct$contours[, 2], ct$contours[, 3], sc, "green", -1)
 
         Rvision::display(
           toDisplay,

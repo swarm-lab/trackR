@@ -43,22 +43,34 @@ observeEvent(input$optimizeBlobs_x, {
     old_frame <- 1
     old_time <- Sys.time()
 
+    background <- Rvision::cloneImage(theBackground())
+    if (input$videoQuality_x < 1)
+      background <- Rvision::resize(background, fx = input$videoQuality_x,
+                                    fy = input$videoQuality_x,
+                                    interpolation = "area")
+    if (input$darkButton_x == "Darker")
+      not(background)
+
+    mask <- Rvision::cloneImage(theMask())
+    mask %i/% 255
+
     for (i in 1:n) {
       frame <- Rvision::readFrame(theVideo(), frame_pos[i])
 
-      if (input$darkButton_x == "Darker") {
-        d <- Rvision::resize((theBackground() - frame) * (theMask() / 255),
-                             fx = input$videoQuality_x, fy = input$videoQuality_x,
-                             interpolation = "area")
-      } else {
-        d <- Rvision::resize((frame - theBackground()) * (theMask() / 255),
-                             fx = input$videoQuality_x, fy = input$videoQuality_x,
-                             interpolation = "area")
-      }
+      if (input$videoQuality_x < 1)
+        frame <- Rvision::resize(frame, fx = input$videoQuality_x,
+                                 fy = input$videoQuality_x,
+                                 interpolation = "area")
 
-      bw <- Rvision::inRange(d, c(input$blueThreshold_x, input$greenThreshold_x,
+      if (input$darkButton_x == "Darker")
+        not(frame)
+
+      frame %i-% background
+      frame %i*% mask
+      bw <- Rvision::inRange(frame, c(input$blueThreshold_x, input$greenThreshold_x,
                                   input$redThreshold_x, 0))
       Rvision::boxFilter(bw, in_place = TRUE)
+
       nz <- data.table::as.data.table(Rvision::connectedComponents(bw > 63, 8)$table)
       nz <- nz[, if(.N >= 5) .SD, by = .(id)]
       nz_summ <- nz[, data.table::as.data.table(kbox(cbind(x, y))), by = .(id)]

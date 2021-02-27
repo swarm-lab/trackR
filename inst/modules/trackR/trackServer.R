@@ -172,7 +172,8 @@ observeEvent(theTracksPath(), {
     n <- diff(input$rangePos_x) + 1
     sc <- max(dim(theBackground())) / 720
 
-    mask <- theMask() / 255
+    mask <- theMask()
+    mask %i/% 255
     background <- theBackground()
 
     if (input$videoQuality_x < 1) {
@@ -180,6 +181,10 @@ observeEvent(theTracksPath(), {
                               fy = input$videoQuality_x)
       background <- Rvision::resize(background, fx = input$videoQuality_x,
                                     fy = input$videoQuality_x)
+    }
+
+    if (input$darkButton_x == "Darker") {
+      not(background)
     }
 
     pb <- Progress$new()
@@ -209,12 +214,12 @@ observeEvent(theTracksPath(), {
       }
 
       if (input$darkButton_x == "Darker") {
-        d <- (background - frame) * mask
-      } else {
-        d <- (frame - background) * mask
+        not(frame)
       }
 
-      bw <- Rvision::inRange(d, c(input$blueThreshold_x, input$greenThreshold_x,
+      frame %i-% background
+      frame %i*% mask
+      bw <- Rvision::inRange(frame, c(input$blueThreshold_x, input$greenThreshold_x,
                                   input$redThreshold_x, 0))
       Rvision::boxFilter(bw, in_place = TRUE)
 

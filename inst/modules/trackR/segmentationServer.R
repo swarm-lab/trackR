@@ -2,7 +2,7 @@
 output$segmentationStatus <- renderUI({
   if (is.null(input$videoSize_x)) {
     p("Video missing (and required).", class = "bad")
-  } else if (!Rvision::isImage(theBackground())) {
+  } else if (!isImage(theBackground())) {
     p("Background missing (and required).", class = "bad")
   }
 })
@@ -10,11 +10,11 @@ output$segmentationStatus <- renderUI({
 # Optimize thresholds
 toOptim <- function(par, images) {
   out <- sapply(images, function(image) {
-    bw <- Rvision::inRange(image, c(par[1:3], 0))
-    md <- Rvision::medianBlur(bw, 1)
+    bw <- inRange(image, c(par[1:3], 0))
+    md <- medianBlur(bw, 1)
     md %i*% bw
-    signal <- Rvision::sum(md)
-    noise <- Rvision::sum(bw) - signal
+    signal <- sum(md)
+    noise <- sum(bw) - signal
     signal / (noise + 1)
   })
 
@@ -22,31 +22,37 @@ toOptim <- function(par, images) {
 }
 
 observeEvent(input$optimizeThresholds_x, {
-  if (Rvision::isVideo(theVideo()) & Rvision::isImage(theBackground())) {
+  if (isVideo(theVideo()) & isImage(theBackground())) {
     toggleAll("OFF")
 
     showNotification("Loading images in memory.", id = "load", duration = NULL)
     frame_pos <- round(seq.int(input$rangePos_x[1], input$rangePos_x[2],
                                length.out = 20))# input$thresholdImages_x))
 
-    background <- Rvision::cloneImage(theBackground())
-    if (input$videoQuality_x < 1)
-      background <- Rvision::resize(background, fx = input$videoQuality_x,
-                                    fy = input$videoQuality_x,
-                                    interpolation = "area")
+    background <- cloneImage(theBackground())
+    mask <- cloneImage(theMask())
+
+    if (input$videoQuality_x < 1) {
+      background <- resize(background, fx = input$videoQuality_x,
+                           fy = input$videoQuality_x,
+                           interpolation = "area")
+      mask <- resize(mask, fx = input$videoQuality_x,
+                     fy = input$videoQuality_x,
+                     interpolation = "area")
+    }
+
     if (input$darkButton_x == "Darker")
       not(background)
 
-    mask <- Rvision::cloneImage(theMask())
     mask %i/% 255
 
     frames <- lapply(frame_pos, function(i) {
-      frame <- Rvision::readFrame(theVideo(), i)
+      frame <- readFrame(theVideo(), i)
 
       if (input$videoQuality_x < 1)
-        frame <- Rvision::resize(frame, fx = input$videoQuality_x,
-                                 fy = input$videoQuality_x,
-                                 interpolation = "area")
+        frame <- resize(frame, fx = input$videoQuality_x,
+                        fy = input$videoQuality_x,
+                        interpolation = "area")
 
       if (input$darkButton_x == "Darker")
         not(frame)
@@ -81,36 +87,62 @@ observeEvent(input$optimizeThresholds_x, {
 observe({
   if (input$main == "4") {
     if (is.null(input$videoSize_x)) {
-      Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
+      display(zeros(480, 640), "trackR", 5, 480, 640)
     } else {
-      if (Rvision::isImage(theBackground())) {
-        if (input$darkButton_x == "Darker") {
-          d <- Rvision::resize((theBackground() - theImage()) * (theMask() / 255),
-                               fx = input$videoQuality_x, fy = input$videoQuality_x,
+      if (isImage(theBackground())) {
+        background <- cloneImage(theBackground())
+        mask <- cloneImage(theMask())
+
+        if (input$videoQuality_x < 1) {
+          background <- resize(background, fx = input$videoQuality_x,
+                               fy = input$videoQuality_x,
                                interpolation = "area")
-        } else {
-          d <- Rvision::resize((theImage() - theBackground()) * (theMask() / 255),
-                               fx = input$videoQuality_x, fy = input$videoQuality_x,
-                               interpolation = "area")
+          mask <- resize(mask, fx = input$videoQuality_x,
+                         fy = input$videoQuality_x,
+                         interpolation = "area")
         }
 
-        sc <- max(dim(d) / 720)
+        if (input$darkButton_x == "Darker")
+          not(background)
 
-        bw <- Rvision::inRange(d, c(input$blueThreshold_x, input$greenThreshold_x,
-                                    input$redThreshold_x, 0))
-        ct <- Rvision::findContours(Rvision::boxFilter(bw) > 63, method = "none")
-        toDisplay <- Rvision::resize(theImage(), fx = input$videoQuality_x,
-                                     fy = input$videoQuality_x, interpolation = "area")
+        mask %i/% 255
 
-        Rvision::drawCircle(toDisplay, ct$contours[, 2], ct$contours[, 3], sc, "green", -1)
+        frame <- cloneImage(theImage())
 
-        Rvision::display(
+        if (input$videoQuality_x < 1)
+          frame <- resize(frame, fx = input$videoQuality_x,
+                          fy = input$videoQuality_x,
+                          interpolation = "area")
+
+        if (input$darkButton_x == "Darker")
+          not(frame)
+
+        frame %i-% background
+        frame %i*% mask
+
+        sc <- max(dim(frame) / 720)
+
+        bw <- inRange(frame, c(input$blueThreshold_x, input$greenThreshold_x,
+                               input$redThreshold_x, 0))
+        boxFilter(bw, in_place = TRUE)
+        bw %i>% 63
+        ct <- findContours(bw, method = "none")
+
+        if (input$videoQuality_x < 1) {
+          toDisplay <- resize(theImage(), fx = input$videoQuality_x,
+                              fy = input$videoQuality_x, interpolation = "area")
+        } else {
+          toDisplay <- cloneImage(theImage())
+        }
+        drawCircle(toDisplay, ct$contours[, 2], ct$contours[, 3], sc, "green", -1)
+
+        display(
           toDisplay,
-          "trackR", 25,
+          "trackR", 5,
           nrow(theImage()) * input$videoSize_x,
           ncol(theImage()) * input$videoSize_x)
       } else {
-        Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
+        display(zeros(480, 640), "trackR", 5, 480, 640)
       }
     }
   }

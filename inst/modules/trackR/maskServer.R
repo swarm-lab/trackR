@@ -15,11 +15,11 @@ observeEvent(input$maskFile_x, {
 
 observeEvent(refreshMask(), {
   if (refreshMask() > 0) {
-    toCheck <- tryCatch(Rvision::image(theMaskPath()),
+    toCheck <- tryCatch(image(theMaskPath()),
                         error = function(e) NA)
 
-    if (Rvision::isImage(toCheck)) {
-      theMask(Rvision::changeColorSpace(toCheck, "BGR"))
+    if (isImage(toCheck)) {
+      theMask(changeColorSpace(toCheck, "BGR"))
       ix <- which.max(
         sapply(
           stringr::str_locate_all(theMaskPath(), volumes),
@@ -31,7 +31,6 @@ observeEvent(refreshMask(), {
             }
           })
       )
-      # ix <- sapply(volumes, grepl, x = theMaskPath())
       volume <- volumes[ix]
       dir <- dirname(theMaskPath())
       defaultRoot(names(volumes)[ix])
@@ -43,33 +42,33 @@ observeEvent(refreshMask(), {
 # Display mask
 observe({
   if (input$main == "3") {
-    if (Rvision::isImage(theMask())) {
-      displayMask <- Rvision::cloneImage(theMask())
-      Rvision::setTo(displayMask, theMask(), "green", in_place = TRUE)
-      Rvision::setTo(displayMask, Rvision::invert(theMask()), "red", in_place = TRUE)
+    if (isImage(theMask())) {
+      displayMask <- cloneImage(theMask())
+      setTo(displayMask, theMask(), "green", in_place = TRUE)
+      setTo(displayMask, invert(theMask()), "red", in_place = TRUE)
 
       if (is.null(input$videoSize_x)) {
-        Rvision::display(displayMask, "trackR", 25,
-                         nrow(displayMask),
-                         ncol(displayMask))
+        display(displayMask, "trackR", 5,
+                nrow(displayMask),
+                ncol(displayMask))
       } else {
-        Rvision::display(
-          Rvision::addWeighted(
+        display(
+          addWeighted(
             theImage(),
             displayMask,
             c(0.75, 0.25)
           ),
-          "trackR", 25,
+          "trackR", 5,
           nrow(displayMask) * input$videoSize_x,
           ncol(displayMask) * input$videoSize_x)
       }
     } else {
       if (is.null(input$videoSize_x)) {
-        Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
+        display(zeros(480, 640), "trackR", 5, 480, 640)
       } else {
         display(
-          Rvision::zeros(nrow(theImage()), ncol(theImage())),
-          "trackR", 25,
+          zeros(nrow(theImage()), ncol(theImage())),
+          "trackR", 5,
           nrow(theImage()) * input$videoSize_x,
           ncol(theImage()) * input$videoSize_x)
       }
@@ -79,22 +78,22 @@ observe({
 
 # Add polygon
 observeEvent(input$polyButton_x, {
-  if (Rvision::isImage(theMask())) {
+  if (isImage(theMask())) {
     toggleAll("OFF")
 
-    displayMask <- Rvision::cloneImage(theMask())
-    Rvision::setTo(displayMask, theMask(), "green", in_place = TRUE)
-    Rvision::setTo(displayMask, Rvision::invert(theMask()), "red", in_place = TRUE)
+    displayMask <- cloneImage(theMask())
+    setTo(displayMask, theMask(), "green", in_place = TRUE)
+    setTo(displayMask, invert(theMask()), "red", in_place = TRUE)
 
     showNotification("Use left click to draw the ROI. Use right click to close
                        it and return the result.", id = "mask_notif", duration = NULL,
                      type = "message")
 
     if (is.null(input$videoSize_x)) {
-      suppressMessages(ROI <- Rvision::selectROI(displayMask, "trackR", 1, TRUE))
+      suppressMessages(ROI <- selectROI(displayMask, "trackR", 1, TRUE))
     } else {
-      suppressMessages(ROI <- Rvision::selectROI(
-        Rvision::addWeighted(theImage(), displayMask, c(0.75, 0.25)),
+      suppressMessages(ROI <- selectROI(
+        addWeighted(theImage(), displayMask, c(0.75, 0.25)),
         "trackR", input$videoSize_x, TRUE)
       )
     }
@@ -102,9 +101,9 @@ observeEvent(input$polyButton_x, {
     removeNotification(id = "mask_notif")
 
     if (input$incButton_x == "Including") {
-      theMask(Rvision::setTo(theMask(), ROI$mask, "white"))
+      theMask(setTo(theMask(), ROI$mask, "white"))
     } else if (input$incButton_x == "Excluding") {
-      theMask(Rvision::setTo(theMask(), ROI$mask, "black"))
+      theMask(setTo(theMask(), ROI$mask, "black"))
     }
 
     toggleAll("ON")
@@ -113,12 +112,12 @@ observeEvent(input$polyButton_x, {
 
 # Add Ellipse
 observeEvent(input$ellButton_x, {
-  if (Rvision::isImage(theMask())) {
+  if (isImage(theMask())) {
     toggleAll("OFF")
 
-    displayMask <- Rvision::cloneImage(theMask())
-    Rvision::setTo(displayMask, theMask(), "green", in_place = TRUE)
-    Rvision::setTo(displayMask, Rvision::invert(theMask()), "red", in_place = TRUE)
+    displayMask <- cloneImage(theMask())
+    setTo(displayMask, theMask(), "green", in_place = TRUE)
+    setTo(displayMask, invert(theMask()), "red", in_place = TRUE)
 
     showNotification("Select 5 points along the periphery of the ellipse/circle to define.",
                      id = "mask_notif", duration = NULL,
@@ -127,45 +126,45 @@ observeEvent(input$ellButton_x, {
     ROI <- data.frame()
 
     if (is.null(input$videoSize_x)) {
-      tmpImage <- Rvision::cloneImage(displayMask)
+      tmpImage <- cloneImage(displayMask)
     } else {
-      tmpImage <- Rvision::addWeighted(theImage(), displayMask, c(0.75, 0.25))
+      tmpImage <- addWeighted(theImage(), displayMask, c(0.75, 0.25))
     }
 
     r <- 0.01 * min(nrow(tmpImage), ncol(tmpImage))
 
     for (i in 1:5) {
       if (is.null(input$videoSize_x)) {
-        ROI <- rbind(ROI, Rvision::click(tmpImage, 1, "trackR"))
-        Rvision::drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                            radius = r * 1.5, thickness = -1, color = "white")
-        Rvision::drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                            radius = r, thickness = -1, color = "red")
-        Rvision::display(tmpImage, window_name = "trackR", delay = 25,
-                         height = nrow(tmpImage),  width = ncol(tmpImage))
+        ROI <- rbind(ROI, click(tmpImage, 1, "trackR"))
+        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
+                   radius = r * 1.5, thickness = -1, color = "white")
+        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
+                   radius = r, thickness = -1, color = "red")
+        display(tmpImage, window_name = "trackR", delay = 25,
+                height = nrow(tmpImage),  width = ncol(tmpImage))
       } else {
-        ROI <- rbind(ROI, Rvision::click(tmpImage, input$videoSize_x, "trackR"))
-        Rvision::drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                            radius = r * 1.5, thickness = -1, color = "white")
-        Rvision::drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                            radius = r, thickness = -1, color = "red")
-        Rvision::display(tmpImage, window_name = "trackR", delay = 25,
-                         height = nrow(tmpImage) * input$videoSize_x,
-                         width = ncol(tmpImage) * input$videoSize_x)
+        ROI <- rbind(ROI, click(tmpImage, input$videoSize_x, "trackR"))
+        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
+                   radius = r * 1.5, thickness = -1, color = "white")
+        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
+                   radius = r, thickness = -1, color = "red")
+        display(tmpImage, window_name = "trackR", delay = 25,
+                height = nrow(tmpImage) * input$videoSize_x,
+                width = ncol(tmpImage) * input$videoSize_x)
       }
     }
 
     removeNotification(id = "mask_notif")
 
     ell <- optimEllipse(ROI$x, ROI$y)
-    ellMask <- Rvision::zeros(nrow(displayMask), ncol(displayMask))
-    Rvision::drawEllipse(ellMask, ell[1], ell[2], ell[3] / 2, ell[4] / 2, ell[5],
-                         color = "white", thickness = -1)
+    ellMask <- zeros(nrow(displayMask), ncol(displayMask))
+    drawEllipse(ellMask, ell[1], ell[2], ell[3] / 2, ell[4] / 2, ell[5],
+                color = "white", thickness = -1)
 
     if (input$incButton_x == "Including") {
-      theMask(Rvision::setTo(theMask(), ellMask, "white"))
+      theMask(setTo(theMask(), ellMask, "white"))
     } else if (input$incButton_x == "Excluding") {
-      theMask(Rvision::setTo(theMask(), ellMask, "black"))
+      theMask(setTo(theMask(), ellMask, "black"))
     }
 
     toggleAll("ON")
@@ -174,14 +173,14 @@ observeEvent(input$ellButton_x, {
 
 # Include/exclude all
 observeEvent(input$includeAll_x, {
-  if (Rvision::isImage(theMask())) {
-    theMask(Rvision::ones(nrow(theMask()), ncol(theMask())) * 255)
+  if (isImage(theMask())) {
+    theMask(ones(nrow(theMask()), ncol(theMask())) * 255)
   }
 })
 
 observeEvent(input$excludeAll_x, {
-  if (Rvision::isImage(theMask())) {
-    theMask(Rvision::zeros(nrow(theMask()), ncol(theMask())))
+  if (isImage(theMask())) {
+    theMask(zeros(nrow(theMask()), ncol(theMask())))
   }
 })
 
@@ -193,8 +192,8 @@ shinyFileSave(input, "saveMask_x", roots = volumes, session = session,
 observeEvent(input$saveMask_x, {
   path <- parseSavePath(volumes, input$saveMask_x)
 
-  if (Rvision::isImage(theMask()) & nrow(path) > 0) {
-    Rvision::write.Image(theMask(), path$datapath)
+  if (isImage(theMask()) & nrow(path) > 0) {
+    write.Image(theMask(), path$datapath)
     theMaskPath(path$datapath)
   }
 })

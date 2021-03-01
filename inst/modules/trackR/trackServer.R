@@ -6,7 +6,7 @@ origin <- reactiveVal(c(1, 1))
 output$trackingStatus <- renderUI({
   if (is.null(input$videoSize_x)) {
     p("Video missing (and required).", class = "bad")
-  } else if (!Rvision::isImage(theBackground())) {
+  } else if (!isImage(theBackground())) {
     p("Background missing (and required).", class = "bad")
   }
 })
@@ -31,10 +31,10 @@ output$scaleStatus <- renderUI({
 
 # Origin
 observeEvent(input$origin_x, {
-  if (Rvision::isImage(theImage())) {
+  if (isImage(theImage())) {
     toggleAll("OFF")
 
-    displayOrigin <- Rvision::cloneImage(theImage())
+    displayOrigin <- cloneImage(theImage())
 
     showNotification("Select 2 reference points.",
                      id = "origin_notif", duration = NULL,
@@ -44,14 +44,14 @@ observeEvent(input$origin_x, {
 
     r <- 0.01 * min(nrow(displayOrigin), ncol(displayOrigin))
 
-    POI <- rbind(POI, Rvision::click(displayOrigin, input$videoSize_x, "trackR"))
-    Rvision::drawCircle(displayOrigin, x = POI$x, y = POI$y,
-                        radius = r * 1.5, thickness = -1, color = "white")
-    Rvision::drawCircle(displayOrigin, x = POI$x, y = POI$y,
-                        radius = r, thickness = -1, color = "red")
-    Rvision::display(displayOrigin, window_name = "trackR", delay = 25,
-                     height = nrow(displayOrigin) * input$videoSize_x,
-                     width = ncol(displayOrigin) * input$videoSize_x)
+    POI <- rbind(POI, click(displayOrigin, input$videoSize_x, "trackR"))
+    drawCircle(displayOrigin, x = POI$x, y = POI$y,
+               radius = r * 1.5, thickness = -1, color = "white")
+    drawCircle(displayOrigin, x = POI$x, y = POI$y,
+               radius = r, thickness = -1, color = "red")
+    display(displayOrigin, window_name = "trackR", delay = 25,
+            height = nrow(displayOrigin) * input$videoSize_x,
+            width = ncol(displayOrigin) * input$videoSize_x)
 
     origin(c(POI$x, POI$y))
 
@@ -63,10 +63,10 @@ observeEvent(input$origin_x, {
 
 # Scale
 observeEvent(input$scale_x, {
-  if (Rvision::isImage(theImage())) {
+  if (isImage(theImage())) {
     toggleAll("OFF")
 
-    displayScale <- Rvision::cloneImage(theImage())
+    displayScale <- cloneImage(theImage())
 
     showNotification("Select 2 reference points.",
                      id = "scale_notif", duration = NULL,
@@ -77,18 +77,18 @@ observeEvent(input$scale_x, {
     r <- 0.01 * min(nrow(displayScale), ncol(displayScale))
 
     for (i in 1:2) {
-      POI <- rbind(POI, Rvision::click(displayScale, input$videoSize_x, "trackR"))
+      POI <- rbind(POI, click(displayScale, input$videoSize_x, "trackR"))
       if (i == 2)
-        Rvision::drawLine(displayScale, pt1_x = POI$x[1], pt1_y = POI$y[1],
-                          pt2_x = POI$x[2], pt2_y = POI$y[2], thickness = r / 2,
-                          color = "white")
-      Rvision::drawCircle(displayScale, x = POI$x, y = POI$y,
-                          radius = r * 1.5, thickness = -1, color = "white")
-      Rvision::drawCircle(displayScale, x = POI$x, y = POI$y,
-                          radius = r, thickness = -1, color = "red")
-      Rvision::display(displayScale, window_name = "trackR", delay = 25,
-                       height = nrow(displayScale) * input$videoSize_x,
-                       width = ncol(displayScale) * input$videoSize_x)
+        drawLine(displayScale, pt1_x = POI$x[1], pt1_y = POI$y[1],
+                 pt2_x = POI$x[2], pt2_y = POI$y[2], thickness = r / 2,
+                 color = "white")
+      drawCircle(displayScale, x = POI$x, y = POI$y,
+                 radius = r * 1.5, thickness = -1, color = "white")
+      drawCircle(displayScale, x = POI$x, y = POI$y,
+                 radius = r, thickness = -1, color = "red")
+      display(displayScale, window_name = "trackR", delay = 25,
+              height = nrow(displayScale) * input$videoSize_x,
+              width = ncol(displayScale) * input$videoSize_x)
     }
 
     scalePX(sqrt(diff(POI$x) ^ 2 + diff(POI$y) ^ 2))
@@ -135,15 +135,15 @@ observeEvent(input$okScale, {
 # Display
 observe({
   if (input$main == "6") {
-    if (Rvision::isImage(theImage()) & !is.null(input$videoSize_x)) {
-      Rvision::display(
-        Rvision::resize(theImage(), fx = input$videoQuality_x,
-                        fy = input$videoQuality_x, interpolation = "area"),
-        "trackR", 25,
+    if (isImage(theImage()) & !is.null(input$videoSize_x)) {
+      display(
+        resize(theImage(), fx = input$videoQuality_x,
+               fy = input$videoQuality_x, interpolation = "area"),
+        "trackR", 5,
         nrow(theImage()) * input$videoSize_x,
         ncol(theImage()) * input$videoSize_x)
     } else {
-      Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
+      display(zeros(480, 640), "trackR", 5, 480, 640)
     }
   }
 })
@@ -158,34 +158,36 @@ observeEvent(input$computeTracks_x, {
 })
 
 observeEvent(theTracksPath(), {
-  if (Rvision::isVideo(theVideo()) & Rvision::isImage(theBackground()) & length(theTracksPath()) > 0) {
+  if (isVideo(theVideo()) & isImage(theBackground()) & length(theTracksPath()) > 0) {
     toggleAll("OFF")
 
     showNotification("Tracking.", id = "tracking", duration = NULL)
 
     max_dist <- input$maxDist_x
-    memory <- data.table::data.table(x = double(), y = double(), n = double(),
-                                     frame = double(), id = integer(), track = integer(),
-                                     width = double(), height = double(), angle = double())
+    memory <- data.table(x = double(), y = double(), n = double(),
+                         frame = double(), id = integer(), track = integer(),
+                         width = double(), height = double(), angle = double())
     memory_length <- input$lookBack_x
     mt <- 0
     n <- diff(input$rangePos_x) + 1
-    sc <- max(dim(theBackground())) / 720
+    sc <- max(dim(theBackground())) * input$videoQuality_x / 720
 
-    mask <- theMask()
-    mask %i/% 255
     background <- theBackground()
+    mask <- theMask()
 
     if (input$videoQuality_x < 1) {
-      mask <- Rvision::resize(mask, fx = input$videoQuality_x,
-                              fy = input$videoQuality_x)
-      background <- Rvision::resize(background, fx = input$videoQuality_x,
-                                    fy = input$videoQuality_x)
+      background <- resize(background, fx = input$videoQuality_x,
+                           fy = input$videoQuality_x,
+                           interpolation = "area")
+      mask <- resize(mask, fx = input$videoQuality_x,
+                     fy = input$videoQuality_x,
+                     interpolation = "area")
     }
 
-    if (input$darkButton_x == "Darker") {
+    if (input$darkButton_x == "Darker")
       not(background)
-    }
+
+    mask %i/% 255
 
     pb <- Progress$new()
     pb$set(message = "Computing: ", value = 0, detail = "0%")
@@ -203,27 +205,30 @@ observeEvent(theTracksPath(), {
 
     for (i in 1:n) {
       if (i == 1) {
-        frame <- Rvision::readFrame(theVideo(), input$rangePos_x[1])
+        frame <- readFrame(theVideo(), input$rangePos_x[1])
       } else {
-        frame <- Rvision::readNext(theVideo())
+        frame <- readNext(theVideo())
       }
 
-      if (input$videoQuality_x < 1) {
-        frame <- Rvision::resize(frame, fx = input$videoQuality_x,
-                                 fy = input$videoQuality_x)
-      }
+      if (input$videoQuality_x < 1)
+        frame <- resize(frame, fx = input$videoQuality_x,
+                        fy = input$videoQuality_x,
+                        interpolation = "area")
 
-      if (input$darkButton_x == "Darker") {
+      if (input$showTracks_x == "Yes")
+        display_frame <- cloneImage(frame)
+
+      if (input$darkButton_x == "Darker")
         not(frame)
-      }
 
       frame %i-% background
       frame %i*% mask
-      bw <- Rvision::inRange(frame, c(input$blueThreshold_x, input$greenThreshold_x,
-                                  input$redThreshold_x, 0))
-      Rvision::boxFilter(bw, in_place = TRUE)
+      bw <- inRange(frame, c(input$blueThreshold_x, input$greenThreshold_x,
+                             input$redThreshold_x, 0))
+      boxFilter(bw, in_place = TRUE)
+      bw %i>% 63
 
-      nz <- data.table::as.data.table(Rvision::connectedComponents(bw > 63, 8)$table)
+      nz <- as.data.table(connectedComponents(bw, 8)$table)
       nz <- nz[(x %% speedup) == 0 & (y %% speedup) == 0]
 
       if (is.null(centers)) {
@@ -233,7 +238,7 @@ observeEvent(theTracksPath(), {
       d <- Rfast::dista(nz[, 2:3], centers)
       nz[, k := Rfast::rowMins(d)]
       gr <- nz[, .N, by = .(id, k)]
-      data.table::setorder(gr, id)
+      setorder(gr, id)
       gr[, new_id := id]
       gr <- gr[N > min_size, ]
 
@@ -264,15 +269,15 @@ observeEvent(theTracksPath(), {
       centers <- shape[, 1:2, drop = FALSE]
 
       if (!is.null(shape)) {
-        blobs <- data.table::data.table(x = shape[, 1],
-                                        y = shape[, 2],
-                                        n = shape[, 6],
-                                        frame = theVideo()$frame(),
-                                        id = 1:nrow(shape),
-                                        track = NA,
-                                        width = shape[, 3],
-                                        height = shape[, 4],
-                                        angle = shape[, 5])
+        blobs <- data.table(x = shape[, 1],
+                            y = shape[, 2],
+                            n = shape[, 6],
+                            frame = theVideo()$frame(),
+                            id = 1:nrow(shape),
+                            track = NA,
+                            width = shape[, 3],
+                            height = shape[, 4],
+                            angle = shape[, 5])
 
         memory <- memory[frame >= (theVideo()$frame() - memory_length)]
         blobs <- simplerTracker(blobs, memory, maxDist = input$maxDist_x)
@@ -286,7 +291,7 @@ observeEvent(theTracksPath(), {
         memory <- rbind(memory, blobs)
 
         to_write <- blobs[, -"id"]
-        data.table::setcolorder(to_write, c("frame", "track", "x", "y", "width", "height", "angle", "n"))
+        setcolorder(to_write, c("frame", "track", "x", "y", "width", "height", "angle", "n"))
 
         if (input$videoQuality_x < 1) {
           to_write[, c("x", "y", "n", "width", "height") := .(x / input$videoQuality_x,
@@ -310,26 +315,25 @@ observeEvent(theTracksPath(), {
           if (file.exists(theTracksPath())) {
             unlink(theTracksPath())
           }
-          data.table::fwrite(to_write, theTracksPath(), append = FALSE)
+          fwrite(to_write, theTracksPath(), append = FALSE)
         } else {
-          data.table::fwrite(to_write, theTracksPath(), append = TRUE)
+          fwrite(to_write, theTracksPath(), append = TRUE)
         }
 
         if (input$showTracks_x == "Yes") {
-          Rvision::drawRotatedRectangle(frame, blobs$x, blobs$y, blobs$width,
-                                        blobs$height, blobs$angle, color = "green",
-                                        thickness = 2)
-          Rvision::drawText(frame, blobs$track,
-                            blobs$x - (floor(log10(blobs$track)) + 1) * 4 ,
-                            blobs$y - 4 * sc, font_scale = 0.4 * sc,
-                            thickness = 1.5 * sc, color = "green")
+          drawRotatedRectangle(display_frame, blobs$x, blobs$y, blobs$width,
+                               blobs$height, blobs$angle, color = "green",
+                               thickness = 2)
+          drawText(display_frame, blobs$track,
+                   blobs$x - (floor(log10(blobs$track)) + 1) * 4 ,
+                   blobs$y - 4 * sc, font_scale = 0.4 * sc,
+                   thickness = 1.5 * sc, color = "green")
 
-          Rvision::display(
-            Rvision::resize(frame, fx = input$videoQuality_x,
-                            fy = input$videoQuality_x, interpolation = "area"),
+          display(
+            display_frame,
             "trackR", 1,
-            nrow(frame) * input$videoSize_x,
-            ncol(frame) * input$videoSize_x)
+            nrow(display_frame) * input$videoSize_x,
+            ncol(display_frame) * input$videoSize_x)
         }
       }
 

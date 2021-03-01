@@ -1,5 +1,4 @@
 volumes <- c(Home = fs::path_home(), getVolumes()())
-
 theVideoPath <- reactiveVal()
 theVideo <- reactiveVal()
 theFrame <- reactiveVal()
@@ -31,7 +30,6 @@ observeEvent(theVideoPath(), {
         }
       })
   )
-  # ix <- sapply(volumes, grepl, x = theVideoPath())
   volume <- volumes[ix]
 
   if (length(volume) > 0) {
@@ -42,42 +40,42 @@ observeEvent(theVideoPath(), {
 })
 
 observeEvent(theVideoPath(), {
-  toCheck <- tryCatch(Rvision::video(theVideoPath()),
+  toCheck <- tryCatch(video(theVideoPath()),
                       error = function(e) NA)
 
-  if (Rvision::isVideo(toCheck)) {
-    if (!is.na(Rvision::nframes(toCheck))) {
+  if (isVideo(toCheck)) {
+    if (!is.na(nframes(toCheck))) {
       theVideo(toCheck)
-      theImage(Rvision::readFrame(theVideo(), 1))
-      theMask(Rvision::ones(nrow(theVideo()), ncol(theVideo())) * 255)
+      theImage(readFrame(theVideo(), 1))
+      theMask(ones(nrow(theVideo()), ncol(theVideo())) * 255)
     }
   }
 })
 
 output$videoStatus <- renderUI({
-  if (!Rvision::isVideo(theVideo())) {
+  if (!isVideo(theVideo())) {
     p("Video missing (and required).", class = "bad")
   }
 })
 
 # Display video
 output$rangeSlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     sliderInput("rangePos_x", "Video range", width = "100%", min = 1,
-                max = Rvision::nframes(theVideo()),
-                value = c(1, Rvision::nframes(theVideo())), step = 1)
+                max = nframes(theVideo()),
+                value = c(1, nframes(theVideo())), step = 1)
   }
 })
 
 output$displaySlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
                 min = 0.1, max = 1, step = 0.1)
   }
 })
 
 output$qualitySlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     sliderInput("videoQuality_x", "Video quality", width = "100%", value = 1,
                 min = 0.1, max = 1, step = 0.1)
   }
@@ -85,20 +83,20 @@ output$qualitySlider <- renderUI({
 
 observeEvent(theFrame(), {
   if (!is.null(theFrame()))
-    theImage(Rvision::readFrame(theVideo(), theFrame()))
+    theImage(readFrame(theVideo(), theFrame()))
 })
 
 observe({
   if (input$main == "1") {
-    if (Rvision::isImage(theImage()) & !is.null(input$videoSize_x)) {
-      Rvision::display(
-        Rvision::resize(theImage(), fx = input$videoQuality_x,
-                        fy = input$videoQuality_x, interpolation = "area"),
-        "trackR", 25,
+    if (isImage(theImage()) & !is.null(input$videoSize_x)) {
+      display(
+        resize(theImage(), fx = input$videoQuality_x,
+               fy = input$videoQuality_x, interpolation = "area"),
+        "trackR", 5,
         nrow(theImage()) * input$videoSize_x,
         ncol(theImage()) * input$videoSize_x)
     } else {
-      Rvision::display(Rvision::zeros(480, 640), "trackR", 25, 480, 640)
+      display(zeros(480, 640), "trackR", 5, 480, 640)
     }
   }
 })
@@ -107,7 +105,7 @@ rangeMem <- c(NA, NA)
 frameMem <- NA
 
 output$videoSlider <- renderUI({
-  if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x)) {
+  if (isVideo(theVideo()) & !is.null(input$rangePos_x)) {
     if (any(is.na(rangeMem))) {
       rangeMem <<- input$rangePos_x
     }

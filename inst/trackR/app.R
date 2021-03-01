@@ -2,6 +2,7 @@ library(shiny)
 library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
+library(data.table)
 library(Rvision)
 
 Rvision::newDisplay("trackR")

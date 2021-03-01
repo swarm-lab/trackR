@@ -35,10 +35,13 @@ shinyFileChoose(input, "loadSettings_x", roots = volumes, session = session,
 observeEvent(input$loadSettings_x, {
   settings_path <- parseFilePaths(volumes, input$loadSettings_x)
   if (nrow(settings_path) > 0) {
-    state <- readRDS(settings_path$datapath)
-    url <- paste0("http://", session$clientData$url_hostname, ":",
-                  session$clientData$url_port, "/?_inputs_", state)
-    js$replace(url)
+    state <- tryCatch(readRDS(settings_path$datapath),
+                        error = function(e) NA)
+    if (!is.na(state)) {
+      url <- paste0("http://", session$clientData$url_hostname, ":",
+                    session$clientData$url_port, "/?_inputs_", state)
+      js$replace(url)
+    }
   }
 })
 

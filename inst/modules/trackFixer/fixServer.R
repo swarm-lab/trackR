@@ -127,18 +127,18 @@ observeEvent(refreshDisplay(), {
                                          thickness = 3 * sc),
                  by = track_fixed]
 
-      to_display <- Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5))
+      Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5), in_place = TRUE)
 
       if (nrow(tmp_rect) > 0) {
-        Rvision::drawText(to_display, tmp_rect$track_fixed,
+        Rvision::drawText(overlay1, tmp_rect$track_fixed,
                           tmp_rect$x - (floor(log10(tmp_rect$track_fixed)) + 1) * 5 * sc,
                           tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
                           color = "white")
       }
 
-      Rvision::display(to_display, "trackFixer", 5,
-                       nrow(to_display) * input$videoSize_x,
-                       ncol(to_display) * input$videoSize_x)
+      Rvision::display(overlay1, "trackFixer", 5,
+                       nrow(overlay1) * input$videoSize_x,
+                       ncol(overlay1) * input$videoSize_x)
     } else {
       Rvision::display(theImage(), "trackFixer", 5,
                        nrow(theImage()) * input$videoSize_x,

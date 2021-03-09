@@ -82,6 +82,7 @@ ui <- function(request) {
 
 server <- function(input, output, session) {
   moduleSVR("trackPlayer/data")
+  moduleSVR("trackPlayer/modal")
   moduleSVR("trackPlayer/play")
   disable(selector = "a[data-value=2]")
 

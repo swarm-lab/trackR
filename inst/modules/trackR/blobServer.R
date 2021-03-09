@@ -270,7 +270,7 @@ observeEvent(refreshDisplay(), {
                0.025 * ncol(toDisplay), 0.025 * nrow(toDisplay) + 50,
                color = color, thickness = max(1, 1.5 * sc))
 
-      drawText(toDisplay, "50 px", x + 6 * sc, y + 6 * sc, font_scale = max(0.5, 0.4 * sc),
+      drawText(toDisplay, "50 px", x + 6 * sc, y + 6 * sc, font_scale = max(0.5, 0.5 * sc),
                thickness = max(1, sc), color = color)
     }
 

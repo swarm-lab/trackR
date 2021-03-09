@@ -351,9 +351,9 @@ observeEvent(theTracksPath(), {
                                blobs$height, blobs$angle, color = color,
                                thickness = max(1, 1.5 * sc))
           drawText(display_frame, blobs$track,
-                   blobs$x - (floor(log10(blobs$track)) + 1) * 4 ,
-                   blobs$y - 4 * sc, font_scale = 0.4 * sc,
-                   thickness = max(1, sc), color = color)
+                   blobs$x - (floor(log10(blobs$track)) + 1) * 5 ,
+                   blobs$y - 5 * sc, font_scale = 0.5 * sc,
+                   thickness = max(1, 1.5 * sc), color = color)
         }
       }
 

@@ -1,5 +1,3 @@
-theTrackVideoPath <- reactiveVal()
-
 # Toggle UI on and off during long operations
 toggleAll <- function(state = "OFF") {
   input_list <- reactiveValuesToList(input)
@@ -70,20 +68,27 @@ output$videoSlider <- renderUI({
 })
 
 
-# Controls
+# Read video
+refreshDisplay <- reactiveVal(0)
 play <- reactiveVal(FALSE)
+theImage <- NULL
 
 observeEvent(input$videoPos_x, {
-  if (input$videoPos_x - theVideo()$frame() == 1) {
-    theImage(Rvision::readNext(theVideo()))
+  if (isImage(theImage)) {
+    if (input$videoPos_x - theVideo()$frame() == 1) {
+      Rvision::readNext(theVideo(), theImage)
+    } else {
+      Rvision::readFrame(theVideo(), input$videoPos_x, theImage)
+    }
   } else {
-    theImage(Rvision::readFrame(theVideo(), input$videoPos_x))
+    theImage <<- Rvision::readFrame(theVideo(), input$videoPos_x)
   }
+
+  refreshDisplay(refreshDisplay() + 1)
 })
 
 observeEvent(input$videoSize_x, {
-  if (!is.null(input$videoPos_x))
-    theImage(Rvision::readFrame(theVideo(), input$videoPos_x))
+  refreshDisplay(refreshDisplay() + 1)
 })
 
 observeEvent(input$playPause_x, {
@@ -117,456 +122,38 @@ observeEvent(input$plusSec_x, {
 })
 
 
-# Title
-title <- reactiveValues(text = "",
-                        scale = 1,
-                        thickness = 1,
-                        color = "black",
-                        vert_position = "Top",
-                        hor_position = "Left",
-                        margin_vert = -2,
-                        margin_hor = 2)
-
-observeEvent(input$title_x, {
-  showModal(
-    modalDialog(
-      title = "Set title",
-      easyClose = TRUE,
-
-      textAreaInput("titleText", "Title text", value = title$text, width = "100%", rows = 3),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(numericInput("titleScale", "Font scale", value = title$scale,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("titleThick", "Font thickness", value = title$thickness,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(
-            colourInput("titleColor", "Font color", title$color),
-            colspan = "3",
-            style = "width: 100%;"
-          )
-        ),
-
-        class = "settingsTable"
-      ),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(selectInput("titleVert", "Vertical position", c("Top", "Middle", "Bottom"),
-                              selected = title$vert_position, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(selectInput("titleHor", "Horizontal position", c("Left", "Center", "Right"),
-                              selected = title$hor_position, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(numericInput("titleMarginVert", "Vertical margin (% height)",
-                               value = title$margin_vert,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("titleMarginHor", "Horizontal margin (% width)",
-                               value = title$margin_hor,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        class = "settingsTable"
-      ),
-
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton("okTitle", "Set")
-      )
-    )
-  )
-})
-
-observe({
-  if (!is.null(input$titleText) & !is.null(input$titleScale) &
-      !is.null(input$titleThick) & !is.null(input$titleColor) &
-      !is.null(input$titleVert) & !is.null(input$titleHor) &
-      !is.null(input$titleMarginVert) & !is.null(input$titleMarginHor)) {
-    isolate({
-      title$text <- input$titleText
-      title$scale <- input$titleScale
-      title$thickness <- input$titleThick
-      title$color <- input$titleColor
-      title$vert_position <- input$titleVert
-      title$hor_position <- input$titleHor
-      title$margin_vert <- input$titleMarginVert
-      title$margin_hor <- input$titleMarginHor
-      refreshDisplay(refreshDisplay() + 1)
-    })
-  }
-})
-
-observeEvent(input$okTitle, {
-  removeModal(session)
-})
-
-
-# Subtitle
-subtitle <- reactiveValues(text = "",
-                           scale = 0.75,
-                           thickness = 1,
-                           color = "black",
-                           vert_position = "Top",
-                           hor_position = "Left",
-                           margin_vert = -10,
-                           margin_hor = 2)
-
-observeEvent(input$subtitle_x, {
-  showModal(
-    modalDialog(
-      title = "Set subtitle",
-      easyClose = TRUE,
-
-      textAreaInput("subtitleText", "Subtitle text", value = subtitle$text, width = "100%", rows = 3),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(numericInput("subtitleScale", "Font scale", value = subtitle$scale,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("subtitleThick", "Font thickness", value = subtitle$thickness,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(
-            colourInput("subtitleColor", "Font color", subtitle$color),
-            colspan = "3",
-            style = "width: 100%;"
-          )
-        ),
-
-        class = "settingsTable"
-      ),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(selectInput("subtitleVert", "Vertical position", c("Top", "Middle", "Bottom"),
-                              selected = subtitle$vert_position, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(selectInput("subtitleHor", "Horizontal position", c("Left", "Center", "Right"),
-                              selected = subtitle$hor_position, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(numericInput("subtitleMarginVert", "Vertical margin (% height)",
-                               value = subtitle$margin_vert,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("subtitleMarginHor", "Horizontal margin (% width)",
-                               value = subtitle$margin_hor,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        class = "settingsTable"
-      ),
-
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton("okSubtitle", "Set")
-      )
-    )
-  )
-})
-
-observe({
-  if (!is.null(input$subtitleText) & !is.null(input$subtitleScale) &
-      !is.null(input$subtitleThick) & !is.null(input$subtitleColor) &
-      !is.null(input$subtitleVert) & !is.null(input$subtitleHor) &
-      !is.null(input$subtitleMarginVert) & !is.null(input$subtitleMarginHor)) {
-    isolate({
-      subtitle$text <- input$subtitleText
-      subtitle$scale <- input$subtitleScale
-      subtitle$thickness <- input$subtitleThick
-      subtitle$color <- input$subtitleColor
-      subtitle$vert_position <- input$subtitleVert
-      subtitle$hor_position <- input$subtitleHor
-      subtitle$margin_vert <- input$subtitleMarginVert
-      subtitle$margin_hor <- input$subtitleMarginHor
-      refreshDisplay(refreshDisplay() + 1)
-    })
-  }
-})
-
-observeEvent(input$okSubtitle, {
-  removeModal(session)
-})
-
-
-# Author list
-authors <- reactiveValues(text = "",
-                          scale = 0.75,
-                          thickness = 1,
-                          color = "black",
-                          vert_position = "Bottom",
-                          hor_position = "Left",
-                          margin_vert = 2,
-                          margin_hor = 2)
-
-observeEvent(input$authors_x, {
-  showModal(
-    modalDialog(
-      title = "Set author list",
-      easyClose = TRUE,
-
-      textAreaInput("authorsText", "Author list text", value = authors$text, width = "100%", rows = 3),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(numericInput("authorsScale", "Font scale", value = authors$scale,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("authorsThick", "Font thickness", value = authors$thickness,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(
-            colourInput("authorsColor", "Font color", authors$color),
-            colspan = "3",
-            style = "width: 100%;"
-          )
-        ),
-
-        class = "settingsTable"
-      ),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(selectInput("authorsVert", "Vertical position", c("Top", "Middle", "Bottom"),
-                              selected = authors$vert_position, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(selectInput("authorsHor", "Horizontal position", c("Left", "Center", "Right"),
-                              selected = authors$hor_position, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(numericInput("authorsMarginVert", "Vertical margin (% height)",
-                               value = authors$margin_vert,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("authorsMarginHor", "Horizontal margin (% width)",
-                               value = authors$margin_hor,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        class = "settingsTable"
-      ),
-
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton("okAuthors", "Set")
-      )
-    )
-  )
-})
-
-observe({
-  if (!is.null(input$authorsText) & !is.null(input$authorsScale) &
-      !is.null(input$authorsThick) & !is.null(input$authorsColor) &
-      !is.null(input$authorsVert) & !is.null(input$authorsHor) &
-      !is.null(input$authorsMarginVert) & !is.null(input$authorsMarginHor)) {
-    isolate({
-      authors$text <- input$authorsText
-      authors$scale <- input$authorsScale
-      authors$thickness <- input$authorsThick
-      authors$color <- input$authorsColor
-      authors$vert_position <- input$authorsVert
-      authors$hor_position <- input$authorsHor
-      authors$margin_vert <- input$authorsMarginVert
-      authors$margin_hor <- input$authorsMarginHor
-      refreshDisplay(refreshDisplay() + 1)
-    })
-  }
-})
-
-observeEvent(input$okAuthors, {
-  removeModal(session)
-})
-
-
-# Timestamp
-timestamp <- reactiveValues(display = FALSE,
-                            scale = 0.5,
-                            thickness = 1,
-                            color = "black",
-                            vert_position = "Bottom",
-                            hor_position = "Right",
-                            margin_vert = 2,
-                            margin_hor = -2)
-
-observeEvent(input$timestamp_x, {
-  showModal(
-    modalDialog(
-      title = "Set timestamp",
-      easyClose = TRUE,
-
-      tags$label("Display timestamp?",
-                 class = "control-label"),
-      switchInput(inputId = "timestampToggle_x",
-                  value = timestamp$display,
-                  onLabel = "YES", offLabel = "NO"),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(numericInput("timestampScale", "Font scale", value = timestamp$scale,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("timestampThick", "Font thickness", value = timestamp$thickness,
-                               min = 0.1, max = 10, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(
-            colourInput("timestampColor", "Font color", timestamp$color),
-            colspan = "3",
-            style = "width: 100%;"
-          )
-        ),
-
-        class = "settingsTable"
-      ),
-
-      hr(),
-
-      tags$table(
-        tags$tr(
-          tags$td(selectInput("timestampVert", "Vertical position", c("Top", "Middle", "Bottom"),
-                              selected = timestamp$vert_position, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(selectInput("timestampHor", "Horizontal position", c("Left", "Center", "Right"),
-                              selected = timestamp$hor_position, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        tags$tr(
-          tags$td(numericInput("timestampMarginVert", "Vertical margin (% height)",
-                               value = timestamp$margin_vert,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;"),
-          tags$td(),
-          tags$td(numericInput("timestampMarginHor", "Horizontal margin (% width)",
-                               value = timestamp$margin_hor,
-                               min = -100, max = 100, step = 0.1, width = "100%"),
-                  style = "width: 49%;")
-        ),
-
-        class = "settingsTable"
-      ),
-
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton("okTimestamp", "Set")
-      )
-    )
-  )
-})
-
-observe({
-  if (!is.null(input$timestampToggle_x) & !is.null(input$timestampScale) &
-      !is.null(input$timestampThick) & !is.null(input$timestampColor) &
-      !is.null(input$timestampVert) & !is.null(input$timestampHor) &
-      !is.null(input$timestampMarginVert) & !is.null(input$timestampMarginHor)) {
-    isolate({
-      timestamp$display <- input$timestampToggle_x
-      timestamp$scale <- input$timestampScale
-      timestamp$thickness <- input$timestampThick
-      timestamp$color <- input$timestampColor
-      timestamp$vert_position <- input$timestampVert
-      timestamp$hor_position <- input$timestampHor
-      timestamp$margin_vert <- input$timestampMarginVert
-      timestamp$margin_hor <- input$timestampMarginHor
-      refreshDisplay(refreshDisplay() + 1)
-    })
-  }
-})
-
-observeEvent(input$okTimestamp, {
-  removeModal(session)
-})
-
-
 # Display video
-refreshDisplay <- reactiveVal(0)
-
-observe({
-  if (Rvision::isImage(theImage()) & is.data.frame(theTracks())) {
-    isolate( refreshDisplay(refreshDisplay() + 1) )
-  }
-})
-
 observeEvent(refreshDisplay(), {
-  if (refreshDisplay() > 0) {
-    tmp_rect <- theTracks()[ignore == FALSE & frame == input$videoPos_x, ]
+  if (isImage(theImage)) {
     tmp_tracks <- theTracks()[ignore == FALSE &
                                 frame >= (input$videoPos_x - 1 * theVideo()$fps()) &
                                 frame <= input$videoPos_x, ]
-    sc <- max(dim(theImage()) / 720)
+    tmp_rect <- tmp_tracks[frame == input$videoPos_x, ]
+
+    sc <- max(dim(theImage) / 720)
+
+    to_display <- Rvision::cloneImage(theImage)
 
     if (nrow(tmp_tracks) > 0) {
-      overlay1 <- Rvision::cloneImage(theImage())
-      overlay2 <- Rvision::cloneImage(theImage())
+      overlay <- Rvision::cloneImage(theImage)
 
       if (nrow(tmp_rect) > 0) {
-        Rvision::drawRotatedRectangle(overlay1, tmp_rect$x, tmp_rect$y,
+        Rvision::drawRotatedRectangle(to_display, tmp_rect$x, tmp_rect$y,
                                       tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                       color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                       thickness = 1.5 * sc)
-        Rvision::drawRotatedRectangle(overlay2, tmp_rect$x, tmp_rect$y,
+        Rvision::drawRotatedRectangle(overlay, tmp_rect$x, tmp_rect$y,
                                       tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                       color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                       thickness = -1)
       }
 
-      tmp_tracks[, Rvision::drawPolyline(overlay2, cbind(x, y), FALSE,
+      tmp_tracks[, Rvision::drawPolyline(overlay, cbind(x, y), FALSE,
                                          color = cbPalette[(track_fixed[1] %% 12) + 1],
                                          thickness = 3 * sc),
                  by = track_fixed]
 
-      to_display <- Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5))
+      Rvision::addWeighted(to_display, overlay, c(0.5, 0.5), target = to_display)
 
       if (nrow(tmp_rect) > 0) {
         Rvision::drawText(to_display, tmp_rect$track_fixed,
@@ -574,8 +161,6 @@ observeEvent(refreshDisplay(), {
                           tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
                           color = "white")
       }
-    } else {
-      to_display <- Rvision::cloneImage(theImage())
     }
 
     if (nchar(title$text) > 0) {
@@ -687,15 +272,17 @@ observeEvent(refreshDisplay(), {
                         font_face = "duplex")
     }
 
-    Rvision::display(to_display, "trackPlayer", 5,
+    Rvision::display(to_display, "trackPlayer", 1,
                      nrow(to_display) * input$videoSize_x,
                      ncol(to_display) * input$videoSize_x)
   } else {
-    Rvision::display(Rvision::zeros(480, 640), "trackPlayer", 5, 480, 640)
+    Rvision::display(Rvision::zeros(480, 640), "trackPlayer", 1, 480, 640)
   }
 })
 
 # Export video
+theTrackVideoPath <- reactiveVal()
+
 shinyFileSave(input, "exportVideo_x", roots = volumes, session = session,
               defaultRoot = defaultRoot(), defaultPath = defaultPath())
 
@@ -712,7 +299,7 @@ observeEvent(theTrackVideoPath(), {
 
     range_pos <- input$rangePos_x # range(theTracks()[, frame])
     n <- diff(range_pos) + 1
-    sc <- max(dim(theImage()) / 720)
+    sc <- max(dim(theImage) / 720)
 
     vw <- Rvision::videoWriter(theTrackVideoPath(),
                                fourcc = "avc1",
@@ -728,38 +315,37 @@ observeEvent(theTrackVideoPath(), {
 
     for (i in 1:n) {
       pos <- i + range_pos[1] - 1
-      tmp_rect <- theTracks()[ignore == FALSE & frame == pos, ]
       tmp_tracks <- theTracks()[ignore == FALSE &
                                   frame >= (pos - 1 * theVideo()$fps()) &
                                   frame <= pos, ]
+      tmp_rect <- tmp_tracks[frame == pos, ]
 
       if (i == 1) {
-        frame <- Rvision::readFrame(theVideo(), range_pos[1])
+        to_export <- Rvision::readFrame(theVideo(), range_pos[1])
       } else {
-        frame <- Rvision::readNext(theVideo())
+        Rvision::readNext(theVideo(), to_export)
       }
 
       if (nrow(tmp_tracks) > 0) {
-        overlay1 <- Rvision::cloneImage(frame)
-        overlay2 <- Rvision::cloneImage(frame)
+        overlay <- Rvision::cloneImage(to_export)
 
         if (nrow(tmp_rect) > 0) {
-          Rvision::drawRotatedRectangle(overlay1, tmp_rect$x, tmp_rect$y,
+          Rvision::drawRotatedRectangle(to_export, tmp_rect$x, tmp_rect$y,
                                         tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                         color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                         thickness = 1.5 * sc)
-          Rvision::drawRotatedRectangle(overlay2, tmp_rect$x, tmp_rect$y,
+          Rvision::drawRotatedRectangle(overlay, tmp_rect$x, tmp_rect$y,
                                         tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                         color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                         thickness = -1)
         }
 
-        tmp_tracks[, Rvision::drawPolyline(overlay2, cbind(x, y), FALSE,
+        tmp_tracks[, Rvision::drawPolyline(overlay, cbind(x, y), FALSE,
                                            color = cbPalette[(track_fixed[1] %% 12) + 1],
                                            thickness = 3 * sc),
                    by = track_fixed]
 
-        to_export <- Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5))
+        Rvision::addWeighted(to_export, overlay, c(0.5, 0.5), target = to_export)
 
         if (nrow(tmp_rect) > 0) {
           Rvision::drawText(to_export, tmp_rect$track_fixed,
@@ -767,8 +353,6 @@ observeEvent(theTrackVideoPath(), {
                             tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
                             color = "white")
         }
-      } else {
-        to_export <- Rvision::cloneImage(frame)
       }
 
       if (nchar(title$text) > 0) {

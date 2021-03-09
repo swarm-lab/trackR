@@ -127,7 +127,7 @@ observeEvent(refreshDisplay(), {
                                          thickness = 3 * sc),
                  by = track_fixed]
 
-      Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5), in_place = TRUE)
+      Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5), target = "self")
 
       if (nrow(tmp_rect) > 0) {
         Rvision::drawText(overlay1, tmp_rect$track_fixed,

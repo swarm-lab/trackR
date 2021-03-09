@@ -57,11 +57,14 @@ observeEvent(theFixedVideoPath(), {
     old_frame <- 1
     old_time <- Sys.time()
 
+    frame <- Rvision::zeros(nrow(theVideo()), ncol(theVideo()), 3)
+    frame_gray <- Rvision::zeros(nrow(theVideo()), ncol(theVideo()), 1)
+
     for (i in 1:n) {
       if (i == 1) {
-        frame <- Rvision::readFrame(theVideo(), input$rangePos_x[1])
+        Rvision::readFrame(theVideo(), 1, frame)
       } else {
-        frame <- Rvision::readNext(theVideo())
+        Rvision::readNext(theVideo(), frame)
       }
 
       if (input$lightToggle_x) {
@@ -72,14 +75,13 @@ observeEvent(theFixedVideoPath(), {
           map[, j] <- apply(abs(outer(cdf_frame[, j], cdf_target[, j], "-")), 1, which.min) - 1
         }
 
-        Rvision::LUT(frame, map, TRUE)
+        Rvision::LUT(frame, map, target = "self")
       }
 
       if (input$perspToggle_x) {
-        frame_gray <- Rvision::changeColorSpace(frame, "GRAY")
-        tr <- Rvision::findTransformORB(target_gray, frame_gray,
-                                        warp_mode = "homography")
-        frame <- Rvision::warpPerspective(frame, tr)
+        Rvision::changeColorSpace(frame, "GRAY", target = frame_gray)
+        tr <- Rvision::findTransformORB(target_gray, frame_gray, warp_mode = "homography")
+        Rvision::warpPerspective(frame, tr, target = "self")
       }
 
       Rvision::writeFrame(vw, frame)

@@ -20,7 +20,7 @@ Imports:
     shinyjs (>= 2.0.0),
     colourpicker (>= 1.1.0),
     ROpenCVLite (>= 4.50.0),
-    Rvision (>= 0.4.2),
+    Rvision (>= 0.5.0),
     stringr(>= 1.4.0),
     data.table (>= 1.13.6),
     clue (>= 0.3-58),

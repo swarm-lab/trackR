@@ -13,7 +13,7 @@ verticalTabPanel(
 
   hr(class = "hr-text", `data-content` = "And either..."),
 
-  actionButton("optimizeThresholds_x", "Automatically optimize thresholds", width = "100%"),
+  actionButton("optimizeThresholds_x", "Automatically select thresholds", width = "100%"),
 
   # p(style = "padding-bottom: 10px;"),
   #

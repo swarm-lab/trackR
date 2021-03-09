@@ -25,8 +25,8 @@ verticalTabPanel(
 
   hr(),
 
-  sliderInput("speedup_x", "Speed-up:", min = 1, max = 5, step = 1, value = 4,
-              width = "100%"),
+  # sliderInput("speedup_x", "Speed-up:", min = 1, max = 5, step = 1, value = 4,
+  #             width = "100%"),
 
   sliderInput("lookBack_x", "Look back (frames):", min = 1, max = 150,
               value = 5, width = "100%"),

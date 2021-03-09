@@ -1,7 +1,20 @@
+# Variables and reactives
+theMask <- NULL
+
 theMaskPath <- reactiveVal()
 refreshMask <- reactiveVal(0)
 
-# Select mask
+
+# Outputs
+
+
+# Events
+observeEvent(input$main, {
+  if (input$main == "3") {
+    refreshDisplay(refreshDisplay() + 1)
+  }
+})
+
 shinyFileChoose(input, "maskFile_x", roots = volumes, session = session,
                 defaultRoot = defaultRoot(), defaultPath = defaultPath())
 
@@ -15,11 +28,15 @@ observeEvent(input$maskFile_x, {
 
 observeEvent(refreshMask(), {
   if (refreshMask() > 0) {
-    toCheck <- tryCatch(image(theMaskPath()),
-                        error = function(e) NA)
+    toCheck <- tryCatch(image(theMaskPath()), error = function(e) NA)
 
     if (isImage(toCheck)) {
-      theMask(changeColorSpace(toCheck, "BGR"))
+      if (colorspace(toCheck) != "BGR")
+        changeColorSpace(toCheck, "BGR", "self")
+
+      theMask <<- cloneImage(toCheck)
+      refreshDisplay(refreshDisplay() + 1)
+
       ix <- which.max(
         sapply(
           stringr::str_locate_all(theMaskPath(), volumes),
@@ -39,51 +56,40 @@ observeEvent(refreshMask(), {
   }
 })
 
-# Display mask
-observe({
+observeEvent(refreshDisplay(), {
   if (input$main == "3") {
-    if (isImage(theMask())) {
-      displayMask <- cloneImage(theMask())
-      setTo(displayMask, theMask(), "green", in_place = TRUE)
-      setTo(displayMask, invert(theMask()), "red", in_place = TRUE)
-
-      if (is.null(input$videoSize_x)) {
-        display(displayMask, "trackR", 5,
-                nrow(displayMask),
-                ncol(displayMask))
-      } else {
-        display(
-          addWeighted(
-            theImage(),
-            displayMask,
-            c(0.75, 0.25)
-          ),
-          "trackR", 5,
-          nrow(displayMask) * input$videoSize_x,
-          ncol(displayMask) * input$videoSize_x)
-      }
+    if (isImage(theMask)) {
+      toDisplay <- cloneImage(theMask)
+      setTo(toDisplay, theMask, "green", target = "self")
+      setTo(toDisplay, invert(theMask), "red", target = "self")
+      addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
+    } else if (isImage(theImage)) {
+      theMask <<- ones(nrow(theImage), ncol(theImage), 3)
+      theMask %i*% 255
+      toDisplay <- cloneImage(theMask)
+      setTo(toDisplay, theMask, "green", target = "self")
+      addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
     } else {
-      if (is.null(input$videoSize_x)) {
-        display(zeros(480, 640), "trackR", 5, 480, 640)
-      } else {
-        display(
-          zeros(nrow(theImage()), ncol(theImage())),
-          "trackR", 5,
-          nrow(theImage()) * input$videoSize_x,
-          ncol(theImage()) * input$videoSize_x)
-      }
+      toDisplay <- zeros(480, 640, 3)
+    }
+
+    if (is.null(input$videoSize_x)) {
+      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
+    } else {
+      display(toDisplay, "trackR", 5,
+              nrow(toDisplay) * input$videoSize_x,
+              ncol(toDisplay) * input$videoSize_x)
     }
   }
 })
 
-# Add polygon
 observeEvent(input$polyButton_x, {
-  if (isImage(theMask())) {
+  if (isImage(theMask)) {
     toggleAll("OFF")
 
-    displayMask <- cloneImage(theMask())
-    setTo(displayMask, theMask(), "green", in_place = TRUE)
-    setTo(displayMask, invert(theMask()), "red", in_place = TRUE)
+    displayMask <- cloneImage(theMask)
+    setTo(displayMask, theMask, "green", target = "self")
+    setTo(displayMask, invert(theMask), "red", target = "self")
 
     showNotification("Use left click to draw the ROI. Use right click to close
                        it and return the result.", id = "mask_notif", duration = NULL,
@@ -93,7 +99,7 @@ observeEvent(input$polyButton_x, {
       suppressMessages(ROI <- selectROI(displayMask, "trackR", 1, TRUE))
     } else {
       suppressMessages(ROI <- selectROI(
-        addWeighted(theImage(), displayMask, c(0.75, 0.25)),
+        addWeighted(theImage, displayMask, c(0.75, 0.25)),
         "trackR", input$videoSize_x, TRUE)
       )
     }
@@ -101,23 +107,23 @@ observeEvent(input$polyButton_x, {
     removeNotification(id = "mask_notif")
 
     if (input$incButton_x == "Including") {
-      theMask(setTo(theMask(), ROI$mask, "white"))
+      setTo(theMask, ROI$mask, "white", target = "self")
     } else if (input$incButton_x == "Excluding") {
-      theMask(setTo(theMask(), ROI$mask, "black"))
+      setTo(theMask, ROI$mask, "black", target = "self")
     }
 
     toggleAll("ON")
+    refreshDisplay(refreshDisplay() + 1)
   }
 })
 
-# Add Ellipse
 observeEvent(input$ellButton_x, {
-  if (isImage(theMask())) {
+  if (isImage(theMask)) {
     toggleAll("OFF")
 
-    displayMask <- cloneImage(theMask())
-    setTo(displayMask, theMask(), "green", in_place = TRUE)
-    setTo(displayMask, invert(theMask()), "red", in_place = TRUE)
+    displayMask <- cloneImage(theMask)
+    setTo(displayMask, theMask, "green", target = "self")
+    setTo(displayMask, invert(theMask), "red", target = "self")
 
     showNotification("Select 5 points along the periphery of the ellipse/circle to define.",
                      id = "mask_notif", duration = NULL,
@@ -128,14 +134,14 @@ observeEvent(input$ellButton_x, {
     if (is.null(input$videoSize_x)) {
       tmpImage <- cloneImage(displayMask)
     } else {
-      tmpImage <- addWeighted(theImage(), displayMask, c(0.75, 0.25))
+      tmpImage <- addWeighted(theImage, displayMask, c(0.75, 0.25))
     }
 
     r <- 0.01 * min(nrow(tmpImage), ncol(tmpImage))
 
     for (i in 1:5) {
       if (is.null(input$videoSize_x)) {
-        ROI <- rbind(ROI, click(tmpImage, 1, "trackR"))
+        ROI <- rbind(ROI, Rvision::click(tmpImage, 1, "trackR"))
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
                    radius = r * 1.5, thickness = -1, color = "white")
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
@@ -143,7 +149,7 @@ observeEvent(input$ellButton_x, {
         display(tmpImage, window_name = "trackR", delay = 25,
                 height = nrow(tmpImage),  width = ncol(tmpImage))
       } else {
-        ROI <- rbind(ROI, click(tmpImage, input$videoSize_x, "trackR"))
+        ROI <- rbind(ROI, Rvision::click(tmpImage, input$videoSize_x, "trackR"))
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
                    radius = r * 1.5, thickness = -1, color = "white")
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
@@ -157,51 +163,53 @@ observeEvent(input$ellButton_x, {
     removeNotification(id = "mask_notif")
 
     ell <- optimEllipse(ROI$x, ROI$y)
-    ellMask <- zeros(nrow(displayMask), ncol(displayMask))
+    ellMask <- zeros(nrow(displayMask), ncol(displayMask), 3)
     drawEllipse(ellMask, ell[1], ell[2], ell[3] / 2, ell[4] / 2, ell[5],
                 color = "white", thickness = -1)
 
     if (input$incButton_x == "Including") {
-      theMask(setTo(theMask(), ellMask, "white"))
+      setTo(theMask, ellMask, "white", target = "self")
     } else if (input$incButton_x == "Excluding") {
-      theMask(setTo(theMask(), ellMask, "black"))
+      setTo(theMask, ellMask, "black", target = "self")
     }
 
     toggleAll("ON")
+    refreshDisplay(refreshDisplay() + 1)
   }
 })
 
-# Include/exclude all
 observeEvent(input$includeAll_x, {
-  if (isImage(theMask())) {
-    theMask(ones(nrow(theMask()), ncol(theMask())) * 255)
+  if (isImage(theMask)) {
+    theMask <<- ones(nrow(theMask), ncol(theMask), 3)
+    theMask %i*% 255
+    refreshDisplay(refreshDisplay() + 1)
   }
 })
 
 observeEvent(input$excludeAll_x, {
-  if (isImage(theMask())) {
-    theMask(zeros(nrow(theMask()), ncol(theMask())))
+  if (isImage(theMask)) {
+    theMask <<- zeros(nrow(theMask), ncol(theMask), 3)
+    refreshDisplay(refreshDisplay() + 1)
   }
 })
 
-
-# Save mask
 shinyFileSave(input, "saveMask_x", roots = volumes, session = session,
               defaultRoot = defaultRoot(), defaultPath = defaultPath())
 
 observeEvent(input$saveMask_x, {
   path <- parseSavePath(volumes, input$saveMask_x)
 
-  if (isImage(theMask()) & nrow(path) > 0) {
-    write.Image(theMask(), path$datapath)
+  if (isImage(theMask) & nrow(path) > 0) {
+    write.Image(theMask, path$datapath)
     theMaskPath(path$datapath)
   }
 })
 
+
 # Bookmark
 setBookmarkExclude(c(session$getBookmarkExclude(), "saveMask_x", "maskFile_x",
                      "polyButton_x", "incButton_x", "ellButton_x", "includeAll_x",
-                     "excludeAll_x"))
+                     "excludeAll_x", "refreshMask"))
 
 onBookmark(function(state) {
   state$values$theMaskPath <- theMaskPath()

@@ -1,12 +1,16 @@
+# Variables and reactives
 theTracksPath <- reactiveVal()
 scalePX <- reactiveVal()
+scaleREAL <- reactiveVal()
+scaleModal <- reactiveVal(0)
 origin <- reactiveVal(c(1, 1))
 
-# Status
+
+# Output
 output$trackingStatus <- renderUI({
   if (is.null(input$videoSize_x)) {
     p("Video missing (and required).", class = "bad")
-  } else if (!isImage(theBackground())) {
+  } else if (refreshDisplay() > -1 & !isImage(theBackground)) {
     p("Background missing (and required).", class = "bad")
   }
 })
@@ -20,23 +24,30 @@ output$scaleStatus <- renderUI({
 
   scale_st <- "No set scale (optional)."
 
-  if (!is.null(scalePX()) & !is.null(input$scaleREAL)) {
-    if (!is.na(input$scaleREAL)) {
-      scale_st <- paste0("1 ", input$unitReal, " = ", round(scalePX() / input$scaleREAL, 2), " pixels.")
+  if (!is.null(scalePX()) & !is.null(scaleREAL())) {
+    if (!is.na(scaleREAL())) {
+      scale_st <- paste0("1 ", input$unitReal, " = ", round(scalePX() / scaleREAL(), 2), " pixels.")
     }
   }
 
   p(paste0(origin_st, scale_st), style = "text-align: center;")
 })
 
-# Origin
+
+# Events
+observeEvent(input$main, {
+  if (input$main == "6") {
+    refreshDisplay(refreshDisplay() + 1)
+  }
+})
+
 observeEvent(input$origin_x, {
-  if (isImage(theImage())) {
+  if (isImage(theImage)) {
     toggleAll("OFF")
 
-    displayOrigin <- cloneImage(theImage())
+    displayOrigin <- cloneImage(theImage)
 
-    showNotification("Select 2 reference points.",
+    showNotification("Select a point to set the origin.",
                      id = "origin_notif", duration = NULL,
                      type = "message")
 
@@ -61,14 +72,13 @@ observeEvent(input$origin_x, {
   }
 })
 
-# Scale
 observeEvent(input$scale_x, {
-  if (isImage(theImage())) {
+  if (isImage(theImage)) {
     toggleAll("OFF")
 
-    displayScale <- cloneImage(theImage())
+    displayScale <- cloneImage(theImage)
 
-    showNotification("Select 2 reference points.",
+    showNotification("Select 2 reference points for calculating the scale.",
                      id = "scale_notif", duration = NULL,
                      type = "message")
 
@@ -94,13 +104,13 @@ observeEvent(input$scale_x, {
     scalePX(sqrt(diff(POI$x) ^ 2 + diff(POI$y) ^ 2))
 
     removeNotification(id = "scale_notif")
-
     toggleAll("ON")
+    scaleModal(scaleModal() + 1)
   }
 })
 
-observeEvent(scalePX(), {
-  if (!is.null(scalePX())) {
+observeEvent(scaleModal(), {
+  if (!is.null(scalePX()) & scaleModal() > 0) {
     units <- c("µm", "mm", "cm", "dm", "m", "km", "parsec")
 
     showModal(
@@ -132,23 +142,28 @@ observeEvent(input$okScale, {
   removeModal(session)
 })
 
-# Display
-observe({
+observeEvent(input$scaleREAL, {
+  scaleREAL(input$scaleREAL)
+})
+
+observeEvent(refreshDisplay(), {
   if (input$main == "6") {
-    if (isImage(theImage()) & !is.null(input$videoSize_x)) {
-      display(
-        resize(theImage(), fx = input$videoQuality_x,
-               fy = input$videoQuality_x, interpolation = "area"),
-        "trackR", 5,
-        nrow(theImage()) * input$videoSize_x,
-        ncol(theImage()) * input$videoSize_x)
+    if (isImage(theImage)) {
+      toDisplay <- cloneImage(theImage)
     } else {
-      display(zeros(480, 640), "trackR", 5, 480, 640)
+      toDisplay <- zeros(480, 640, 3)
+    }
+
+    if (is.null(input$videoSize_x)) {
+      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
+    } else {
+      display(toDisplay, "trackR", 5,
+              nrow(toDisplay) * input$videoSize_x,
+              ncol(toDisplay) * input$videoSize_x)
     }
   }
 })
 
-# Tracking
 shinyFileSave(input, "computeTracks_x", roots = volumes, session = session,
               defaultRoot = defaultRoot(), defaultPath = defaultPath())
 
@@ -158,7 +173,7 @@ observeEvent(input$computeTracks_x, {
 })
 
 observeEvent(theTracksPath(), {
-  if (isVideo(theVideo()) & isImage(theBackground()) & length(theTracksPath()) > 0) {
+  if (isVideo(theVideo) & isImage(theBackground) & length(theTracksPath()) > 0) {
     toggleAll("OFF")
 
     showNotification("Tracking.", id = "tracking", duration = NULL)
@@ -170,22 +185,25 @@ observeEvent(theTracksPath(), {
     memory_length <- input$lookBack_x
     mt <- 0
     n <- diff(input$rangePos_x) + 1
-    sc <- max(dim(theBackground())) * input$videoQuality_x / 720
+    sc <- max(dim(theBackground)) * input$videoQuality_x / 720
 
-    background <- theBackground()
-    mask <- theMask()
+    background <- cloneImage(theBackground)
+
+    if (!isImage(theMask)) {
+      theMask <<- ones(nrow(theBackground), ncol(theBackground), 3)
+      theMask %i*% 255
+    }
+    mask <- cloneImage(theMask)
 
     if (input$videoQuality_x < 1) {
       background <- resize(background, fx = input$videoQuality_x,
-                           fy = input$videoQuality_x,
-                           interpolation = "area")
-      mask <- resize(mask, fx = input$videoQuality_x,
-                     fy = input$videoQuality_x,
+                           fy = input$videoQuality_x, interpolation = "area")
+      mask <- resize(mask, fx = input$videoQuality_x, fy = input$videoQuality_x,
                      interpolation = "area")
     }
 
     if (input$darkButton_x == "Darker")
-      not(background)
+      not(background, target = "self")
 
     mask %i/% 255
 
@@ -195,41 +213,50 @@ observeEvent(theTracksPath(), {
     old_frame <- 1
     old_time <- Sys.time()
 
-    speedup <- input$speedup_x
+    # speedup <- input$speedup_x
     max_width <- input$blobWidth_x
     max_height <- input$blobHeight_x
-    min_density <- input$blobDensity_x / (input$speedup_x ^ 2)
-    min_size <- input$blobArea_x / (input$speedup_x ^ 2)
+    min_density <- input$blobDensity_x # / (input$speedup_x ^ 2)
+    min_size <- input$blobArea_x # / (input$speedup_x ^ 2)
 
     centers <- NULL
 
+    frame <- zeros(nrow(background), ncol(background), 3)
+    proc_frame <- zeros(nrow(background), ncol(background), 3)
+    bw <- zeros(nrow(background), ncol(background), 1)
+    cc_dump <- zeros(nrow(background), ncol(background), 1, "32S")
+
+    avg_rgb <- mean(frame) / 255
+    avg_rgb <- avg_rgb == min(avg_rgb)
+    color <- rgb(avg_rgb[3], avg_rgb[2], avg_rgb[1])
+
+    setProp(theVideo, "POS_FRAMES", input$rangePos_x[1] - 1)
+
     for (i in 1:n) {
-      if (i == 1) {
-        frame <- readFrame(theVideo(), input$rangePos_x[1])
+      if (input$videoQuality_x < 1) {
+        readNext(theVideo, target = frame)
+        resize(frame, fx = input$videoQuality_x, fy = input$videoQuality_x,
+               interpolation = "area", target = proc_frame)
       } else {
-        frame <- readNext(theVideo())
+        readNext(theVideo, target = proc_frame)
       }
 
-      if (input$videoQuality_x < 1)
-        frame <- resize(frame, fx = input$videoQuality_x,
-                        fy = input$videoQuality_x,
-                        interpolation = "area")
-
       if (input$showTracks_x == "Yes")
-        display_frame <- cloneImage(frame)
+        display_frame <- cloneImage(proc_frame)
 
       if (input$darkButton_x == "Darker")
-        not(frame)
+        not(proc_frame, target = "self")
 
-      frame %i-% background
-      frame %i*% mask
-      bw <- inRange(frame, c(input$blueThreshold_x, input$greenThreshold_x,
-                             input$redThreshold_x, 0))
-      boxFilter(bw, in_place = TRUE)
+      proc_frame %i-% background
+      proc_frame %i*% mask
+      inRange(proc_frame, target = bw, c(input$blueThreshold_x,
+                                         input$greenThreshold_x,
+                                         input$redThreshold_x, 0))
+      boxFilter(bw, target = "self")
       bw %i>% 63
 
-      nz <- as.data.table(connectedComponents(bw, 8)$table)
-      nz <- nz[(x %% speedup) == 0 & (y %% speedup) == 0]
+      nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
+      # nz <- nz[(x %% speedup) == 0 & (y %% speedup) == 0]
 
       if (is.null(centers)) {
         centers <- nz[, .(x = mean(x), y = mean(y)), by = .(id)][, 2:3]
@@ -237,10 +264,9 @@ observeEvent(theTracksPath(), {
 
       d <- Rfast::dista(nz[, 2:3], centers)
       nz[, k := Rfast::rowMins(d)]
-      gr <- nz[, .N, by = .(id, k)]
+      gr <- unique(nz[, .(id, k)])
       setorder(gr, id)
       gr[, new_id := id]
-      gr <- gr[N > min_size, ]
 
       for (j in 1:nrow(gr)) {
         friends <- gr$new_id[gr$k == gr$k[j]]
@@ -254,7 +280,7 @@ observeEvent(theTracksPath(), {
       shape <- c()
 
       for (j in 1:length(uid)) {
-        ix <- gr[, 4] == uid[j]
+        ix <- gr[, 3] == uid[j]
         ugr <- unique(gr[ix, 2])
         pos <- nz[nz[, 1] %in% gr[ix, 1], 2:3]
         cl <- kbox(pos, centers[ugr, , drop = FALSE], iter.max = 1000,
@@ -272,14 +298,14 @@ observeEvent(theTracksPath(), {
         blobs <- data.table(x = shape[, 1],
                             y = shape[, 2],
                             n = shape[, 6],
-                            frame = theVideo()$frame(),
+                            frame = theVideo$frame(),
                             id = 1:nrow(shape),
                             track = NA,
                             width = shape[, 3],
                             height = shape[, 4],
                             angle = shape[, 5])
 
-        memory <- memory[frame >= (theVideo()$frame() - memory_length)]
+        memory <- memory[frame >= (theVideo$frame() - memory_length)]
         blobs <- simplerTracker(blobs, memory, maxDist = input$maxDist_x)
         newTrack <- is.na(blobs$track)
 
@@ -301,13 +327,13 @@ observeEvent(theTracksPath(), {
                                                               height / input$videoQuality_x)]
         }
 
-        if (!is.null(scalePX()) & !is.null(input$scaleREAL)) {
-          if (!is.na(input$scaleREAL)) {
+        if (!is.null(scalePX()) & !is.null(scaleREAL())) {
+          if (!is.na(scaleREAL())) {
             to_write[, paste0(c("x", "y", "width", "height"), "_", input$unitReal) :=
-                       .((x - origin()[1]) * input$scaleREAL / scalePX(),
-                         (y - origin()[2]) * input$scaleREAL / scalePX(),
-                         width * input$scaleREAL / scalePX(),
-                         height * input$scaleREAL / scalePX())]
+                       .((x - origin()[1]) * scaleREAL() / scalePX(),
+                         (y - origin()[2]) * scaleREAL() / scalePX(),
+                         width * scaleREAL() / scalePX(),
+                         height * scaleREAL() / scalePX())]
           }
         }
 
@@ -322,19 +348,19 @@ observeEvent(theTracksPath(), {
 
         if (input$showTracks_x == "Yes") {
           drawRotatedRectangle(display_frame, blobs$x, blobs$y, blobs$width,
-                               blobs$height, blobs$angle, color = "green",
-                               thickness = 2)
+                               blobs$height, blobs$angle, color = color,
+                               thickness = max(1, 1.5 * sc))
           drawText(display_frame, blobs$track,
                    blobs$x - (floor(log10(blobs$track)) + 1) * 4 ,
                    blobs$y - 4 * sc, font_scale = 0.4 * sc,
-                   thickness = 1.5 * sc, color = "green")
-
-          display(
-            display_frame,
-            "trackR", 1,
-            nrow(display_frame) * input$videoSize_x,
-            ncol(display_frame) * input$videoSize_x)
+                   thickness = max(1, sc), color = color)
         }
+      }
+
+      if (input$showTracks_x == "Yes") {
+        display(display_frame, "trackR", 1,
+                nrow(display_frame) * input$videoSize_x,
+                ncol(display_frame) * input$videoSize_x)
       }
 
       new_check <- floor(100 * i / n)
@@ -355,6 +381,19 @@ observeEvent(theTracksPath(), {
   }
 })
 
+
 # Bookmark
 setBookmarkExclude(c(session$getBookmarkExclude(), "computeTracks_x", "scale_x",
                      "origin_x", "okScale"))
+
+onBookmark(function(state) {
+  state$values$scalePX <- scalePX()
+  state$values$scaleREAL <- scaleREAL()
+  state$values$origin <- origin()
+})
+
+onRestore(function(state) {
+  scalePX(state$values$scalePX)
+  scaleREAL(state$values$scaleREAL)
+  origin(state$values$origin)
+})

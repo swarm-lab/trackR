@@ -7,7 +7,7 @@ verticalTabPanel(
 
   htmlOutput("blobStatus", container = p, class = "good"),
 
-  actionButton("optimizeBlobs_x", "Automatically optimize object parameters", width = "100%"),
+  actionButton("optimizeBlobs_x", "Automatically select object parameters", width = "100%"),
 
   # p(style = "padding-bottom: 10px;"),
   #

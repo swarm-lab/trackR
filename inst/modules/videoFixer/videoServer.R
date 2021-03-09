@@ -30,7 +30,6 @@ observeEvent(theVideoPath(), {
         }
       })
   )
-  # ix <- sapply(volumes, grepl, x = theVideoPath())
   volume <- volumes[ix]
   dir <- dirname(theVideoPath())
   defaultRoot(names(volumes)[ix])

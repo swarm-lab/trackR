@@ -1,8 +1,25 @@
+# Variables and reactives
+theBackground <- NULL
+
 theBackgroundPath <- reactiveVal()
-theBackground <- reactiveVal()
 refreshBackground <- reactiveVal(0)
 
-# Load background
+
+# Outputs
+output$backgroundStatus <- renderUI({
+  if (refreshDisplay() > -1 & !isImage(theBackground)) {
+    p("Background missing (and required).", class = "bad")
+  }
+})
+
+
+# Events
+observeEvent(input$main, {
+  if (input$main == "2") {
+    refreshDisplay(refreshDisplay() + 1)
+  }
+})
+
 shinyFileChoose(input, "backgroundFile_x", roots = volumes, session = session,
                 defaultRoot = defaultRoot(), defaultPath = defaultPath())
 
@@ -16,11 +33,15 @@ observeEvent(input$backgroundFile_x, {
 
 observeEvent(refreshBackground(), {
   if (refreshBackground() > 0) {
-    toCheck <- tryCatch(image(theBackgroundPath()),
-                        error = function(e) NA)
+    toCheck <- tryCatch(image(theBackgroundPath()), error = function(e) NA)
 
     if (isImage(toCheck)) {
-      theBackground(changeColorSpace(toCheck, "BGR"))
+      if (colorspace(toCheck) != "BGR")
+        changeColorSpace(toCheck, "BGR", "self")
+
+      theBackground <<- cloneImage(toCheck)
+      refreshDisplay(refreshDisplay() + 1)
+
       ix <- which.max(
         sapply(
           stringr::str_locate_all(theBackgroundPath(), volumes),
@@ -40,55 +61,42 @@ observeEvent(refreshBackground(), {
   }
 })
 
-# Compute background
 observeEvent(input$computeBackground_x, {
-  if (isVideo(theVideo())) {
+  if (isVideo(theVideo)) {
     toggleAll("OFF")
-    theBackground(backgrounder(theVideo(), n = input$backroundImages_x,
-                               method = input$backgroundType_x,
-                               start = input$rangePos_x[1],
-                               end = input$rangePos_x[2]))
+    theBackground <<- backgrounder(theVideo, n = input$backroundImages_x,
+                                   method = input$backgroundType_x,
+                                   start = input$rangePos_x[1],
+                                   end = input$rangePos_x[2])
+    changeBitDepth(theBackground, "8U", target = "self")
     toggleAll("ON")
+    refreshBackground(refreshBackground() + 1)
+    refreshDisplay(refreshDisplay() + 1)
   }
 })
 
-output$backgroundStatus <- renderUI({
-  if (!isImage(theBackground())) {
-    p("Background missing (and required).", class = "bad")
-  }
-})
-
-# Display background
-observe({
+observeEvent(refreshDisplay(), {
   if (input$main == "2") {
-    if (isImage(theBackground())) {
-      if (is.null(input$videoSize_x)) {
-        display(theBackground(), "trackR", 5,
-                nrow(theBackground()),
-                ncol(theBackground()))
-      } else {
-        display(
-          theBackground(),
-          "trackR", 5,
-          nrow(theBackground()) * input$videoSize_x,
-          ncol(theBackground()) * input$videoSize_x)
-      }
+    if (isImage(theBackground)) {
+      toDisplay <- theBackground
+    } else if (isImage(theImage)) {
+      toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
     } else {
-      if (is.null(input$videoSize_x)) {
-        display(zeros(480, 640), "trackR", 5, 480, 640)
-      } else {
-        display(zeros(nrow(theImage()), ncol(theImage())),
-                "trackR", 5,
-                nrow(theImage()) * input$videoSize_x,
-                ncol(theImage()) * input$videoSize_x)
-      }
+      toDisplay <- zeros(480, 640, 3)
+    }
+
+    if (is.null(input$videoSize_x)) {
+      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
+    } else {
+      display(toDisplay, "trackR", 5,
+              nrow(toDisplay) * input$videoSize_x,
+              ncol(toDisplay) * input$videoSize_x)
     }
   }
 })
 
-# Remove ghosts
 observeEvent(input$ghostButton_x, {
-  if (isImage(theBackground())) {
+  if (isImage(theBackground)) {
     toggleAll("OFF")
 
     showNotification("Use left click to draw the ROI. Use right click to close
@@ -97,38 +105,37 @@ observeEvent(input$ghostButton_x, {
 
     if (is.null(input$videoSize_x)) {
       suppressMessages(
-        ROI <- selectROI(theBackground(), "trackR", 1, TRUE)
+        ROI <- selectROI(theBackground, "trackR", 1, TRUE)
       )
     } else {
       suppressMessages(
-        ROI <- selectROI(theBackground(), "trackR",
-                         input$videoSize_x, TRUE)
+        ROI <- selectROI(theBackground, "trackR", input$videoSize_x, TRUE)
       )
     }
 
+    inpaint(theBackground, ROI$mask, method = "Telea", target = "self")
+
     removeNotification(id = "bg_notif")
-
-    theBackground(inpaint(theBackground(), ROI$mask, method = "Telea"))
-
     toggleAll("ON")
+    refreshDisplay(refreshDisplay() + 1)
   }
 })
 
-# Save background
 shinyFileSave(input, "saveBackground_x", roots = volumes, session = session,
               defaultRoot = defaultRoot(), defaultPath = defaultPath())
 
 observeEvent(input$saveBackground_x, {
   path <- parseSavePath(volumes, input$saveBackground_x)
 
-  if (isImage(theBackground()) & nrow(path) > 0) {
-    write.Image(theBackground(), path$datapath)
+  if (isImage(theBackground) & nrow(path) > 0) {
+    write.Image(theBackground, path$datapath)
     theBackgroundPath(path$datapath)
   }
 })
 
+
 # Bookmark
-setBookmarkExclude(c(session$getBookmarkExclude(), "backgroundFile_x",
+setBookmarkExclude(c(session$getBookmarkExclude(), "backgroundFile_x", "refreshBackground",
                      "computeBackground_x", "ghostButton_x", "saveBackground_x"))
 
 onBookmark(function(state) {

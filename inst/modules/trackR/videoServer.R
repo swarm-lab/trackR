@@ -1,13 +1,78 @@
+# Variables and reactives
 volumes <- c(Home = fs::path_home(), getVolumes()())
+theVideo <- NULL
+theImage <- NULL
+rangeMem <- c(NA, NA)
+frameMem <- NA
+
 theVideoPath <- reactiveVal()
-theVideo <- reactiveVal()
 theFrame <- reactiveVal()
-theImage <- reactiveVal()
-theMask <- reactiveVal()
 defaultRoot <- reactiveVal(NULL)
 defaultPath <- reactiveVal("")
+refreshVideo <- reactiveVal(0)
+refreshDisplay <- reactiveVal(0)
 
-# Select video
+
+# Outputs
+output$videoStatus <- renderUI({
+  if (refreshDisplay() > -1 & !isVideo(theVideo)) {
+    p("Video missing (and required).", class = "bad")
+  }
+})
+
+output$rangeSlider <- renderUI({
+  if (refreshVideo() > 0 & isVideo(theVideo)) {
+    sliderInput("rangePos_x", "Video range", width = "100%", min = 1,
+                max = nframes(theVideo),
+                value = c(1, nframes(theVideo)), step = 1)
+  }
+})
+
+output$displaySlider <- renderUI({
+  if (refreshVideo() > 0 & isVideo(theVideo)) {
+    sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
+                min = 0.1, max = 1, step = 0.1)
+  }
+})
+
+output$qualitySlider <- renderUI({
+  if (refreshVideo() > 0 & isVideo(theVideo)) {
+    sliderInput("videoQuality_x", "Video quality", width = "100%", value = 1,
+                min = 0.1, max = 1, step = 0.1)
+  }
+})
+
+output$videoSlider <- renderUI({
+  if (!is.null(input$rangePos_x) & isVideo(theVideo)) {
+    if (any(is.na(rangeMem))) {
+      rangeMem <<- input$rangePos_x
+    }
+
+    test <- rangeMem != input$rangePos_x
+    rangeMem <<- input$rangePos_x
+
+    if (test[2] & !test[1]) {
+      sliderInput("videoPos_x", "Frame", width = "100%", step = 1,
+                  value = input$rangePos_x[2],
+                  min = input$rangePos_x[1],
+                  max = input$rangePos_x[2])
+    } else {
+      sliderInput("videoPos_x", "Frame", width = "100%", step = 1,
+                  value = input$rangePos_x[1],
+                  min = input$rangePos_x[1],
+                  max = input$rangePos_x[2])
+    }
+  }
+})
+
+
+# Events
+observeEvent(input$main, {
+  if (input$main == "1") {
+    refreshDisplay(refreshDisplay() + 1)
+  }
+})
+
 shinyFileChoose(input, "videoFile_x", roots = volumes, session = session,
                 defaultRoot = defaultRoot(), defaultPath = defaultPath())
 
@@ -40,89 +105,47 @@ observeEvent(theVideoPath(), {
 })
 
 observeEvent(theVideoPath(), {
-  toCheck <- tryCatch(video(theVideoPath()),
-                      error = function(e) NA)
+  toCheck <- tryCatch(video(theVideoPath()), error = function(e) NA)
 
   if (isVideo(toCheck)) {
     if (!is.na(nframes(toCheck))) {
-      theVideo(toCheck)
-      theImage(readFrame(theVideo(), 1))
-      theMask(ones(nrow(theVideo()), ncol(theVideo())) * 255)
+      theVideo <<- toCheck
+      theImage <<- readFrame(theVideo, 1)
+      refreshVideo(refreshVideo() + 1)
+      refreshDisplay(refreshDisplay() + 1)
     }
   }
 })
 
-output$videoStatus <- renderUI({
-  if (!isVideo(theVideo())) {
-    p("Video missing (and required).", class = "bad")
-  }
+observeEvent(input$videoSize_x, {
+  refreshDisplay(refreshDisplay() + 1)
 })
 
-# Display video
-output$rangeSlider <- renderUI({
-  if (isVideo(theVideo())) {
-    sliderInput("rangePos_x", "Video range", width = "100%", min = 1,
-                max = nframes(theVideo()),
-                value = c(1, nframes(theVideo())), step = 1)
-  }
-})
-
-output$displaySlider <- renderUI({
-  if (isVideo(theVideo())) {
-    sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
-                min = 0.1, max = 1, step = 0.1)
-  }
-})
-
-output$qualitySlider <- renderUI({
-  if (isVideo(theVideo())) {
-    sliderInput("videoQuality_x", "Video quality", width = "100%", value = 1,
-                min = 0.1, max = 1, step = 0.1)
-  }
+observeEvent(input$videoQuality_x, {
+  refreshDisplay(refreshDisplay() + 1)
 })
 
 observeEvent(theFrame(), {
-  if (!is.null(theFrame()))
-    theImage(readFrame(theVideo(), theFrame()))
-})
-
-observe({
-  if (input$main == "1") {
-    if (isImage(theImage()) & !is.null(input$videoSize_x)) {
-      display(
-        resize(theImage(), fx = input$videoQuality_x,
-               fy = input$videoQuality_x, interpolation = "area"),
-        "trackR", 5,
-        nrow(theImage()) * input$videoSize_x,
-        ncol(theImage()) * input$videoSize_x)
-    } else {
-      display(zeros(480, 640), "trackR", 5, 480, 640)
-    }
+  if (!is.null(theFrame())) {
+    readFrame(theVideo, theFrame(), theImage)
+    refreshDisplay(refreshDisplay() + 1)
   }
 })
 
-rangeMem <- c(NA, NA)
-frameMem <- NA
-
-output$videoSlider <- renderUI({
-  if (isVideo(theVideo()) & !is.null(input$rangePos_x)) {
-    if (any(is.na(rangeMem))) {
-      rangeMem <<- input$rangePos_x
+observeEvent(refreshDisplay(), {
+  if (input$main == "1") {
+    if (isImage(theImage)) {
+      toDisplay <- cloneImage(theImage)
+    } else {
+      toDisplay <- zeros(480, 640, 3)
     }
 
-    test <- rangeMem != input$rangePos_x
-    rangeMem <<- input$rangePos_x
-
-    if (test[2] & !test[1]) {
-      sliderInput("videoPos_x", "Frame", width = "100%", step = 1,
-                  value = input$rangePos_x[2],
-                  min = input$rangePos_x[1],
-                  max = input$rangePos_x[2])
+    if (is.null(input$videoSize_x)) {
+      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
     } else {
-      sliderInput("videoPos_x", "Frame", width = "100%", step = 1,
-                  value = input$rangePos_x[1],
-                  min = input$rangePos_x[1],
-                  max = input$rangePos_x[2])
+      display(toDisplay, "trackR", 5,
+              nrow(toDisplay) * input$videoSize_x,
+              ncol(toDisplay) * input$videoSize_x)
     }
   }
 })
@@ -142,8 +165,8 @@ observeEvent(input$videoPos_x, {
 
 
 # Bookmark
-setBookmarkExclude(c(session$getBookmarkExclude(), "videoFile_x",
-                     "videoFile_x-modal"))
+setBookmarkExclude(c(session$getBookmarkExclude(), "refreshVideo", "refreshDisplay",
+                     "videoFile_x", "videoFile_x-modal"))
 
 onBookmark(function(state) {
   state$values$theVideoPath <- theVideoPath()

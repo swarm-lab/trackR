@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">trackR</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.5.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.5.1</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@
 
       
 
-      </header><script src="z3_trackR_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="z3_trackR_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>3 - Tracking videos</h1>
@@ -251,8 +251,6 @@
 <p>You can also specify a different origin for the real-world coordinates. By default, the origin is set at the bottom-left corner of the image. If you would like to change that, click the “Set origin” button. <code>trackR</code> will ask you to select a point in the image shown in the display panel. Once this is done, this point will become the new origin (i.e. the new [0,0]) of the real-word coordinates.</p>
 <p>Finally, there are a few more controls that you can set before launching the tracking:</p>
 <ul>
-<li>
-<code>Speed-up</code> controls the number of segmented pixels that are passed to the separation algorithm. The higher this number is, the less segmented pixels are sent to the separation algorithm, effectively speeding it up. However, this may impact the quality of the tracking, especially if the objects to track are small.</li>
 <li>
 <code>Look back</code> controls how many past frames the tracking algorithm should take into account to associate each detected object to a track. This is a useful parameter to take into account if, for instance, the objects tend to disappear for a few frames from time to time.</li>
 <li>

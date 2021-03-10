@@ -311,11 +311,6 @@ coordinates.
 Finally, there are a few more controls that you can set before launching the 
 tracking: 
 
-+ `Speed-up` controls the number of segmented pixels that are passed to the 
-  separation algorithm. The higher this number is, the less segmented pixels are
-  sent to the separation algorithm, effectively speeding it up. However, this 
-  may impact the quality of the tracking, especially if the objects to track are 
-  small.
 + `Look back` controls how many past frames the tracking algorithm should take 
   into account to associate each detected object to a track. This is a useful 
   parameter to take into account if, for instance, the objects tend to disappear 

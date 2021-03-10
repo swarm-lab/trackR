@@ -228,7 +228,7 @@ parts of the objects to track, then the selected thresholds are too stringent
 and can be decreased for better results. 
 
 You can also let `trackR` search for good thresholds by clicking the 
-"Automatically optimize thresholds" button in the control panel. `trackR` will 
+"Automatically select thresholds" button in the control panel. `trackR` will 
 use a genetic algorithm to look for thresholds that provide good segmentation 
 results in general. You can then tweak manually these suggested thresholds if 
 you want. 
@@ -264,7 +264,7 @@ resemble better perfect ellipsoids).
 
 You can set these parameters manually using the corresponding input boxes in the 
 control panel of the "Separation module". You can also let `trackR` search for 
-good values for these parameters by clicking the "Automatically optimize object 
+good values for these parameters by clicking the "Automatically select object 
 parameters" button in the control panel. `trackR` will look for parameters that 
 provide good separation results in general. You can then tweak manually these 
 suggested parameters if you want. 

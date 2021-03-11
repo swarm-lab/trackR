@@ -184,8 +184,8 @@ observeEvent(refreshDisplay(), {
       display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
     } else {
       display(toDisplay, "trackR", 5,
-              nrow(toDisplay) * input$videoSize_x,
-              ncol(toDisplay) * input$videoSize_x)
+              nrow(theImage) * input$videoSize_x,
+              ncol(theImage) * input$videoSize_x)
     }
   }
 })

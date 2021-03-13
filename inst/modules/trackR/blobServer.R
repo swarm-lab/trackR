@@ -103,7 +103,7 @@ observeEvent(input$optimizeBlobs_x, {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
-      nz <- nz[, if(.N >= 5) .SD, by = .(id)]
+      # nz <- nz[, if(.N >= 5) .SD, by = .(id)]
       nz_summ <- nz[, as.data.table(kbox(cbind(x, y))), by = .(id)]
 
       if (nrow(nz_summ) > 0) {

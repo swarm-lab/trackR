@@ -256,6 +256,7 @@ observeEvent(theTracksPath(), {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
+      # nz <- nz[, if(.N >= 5) .SD, by = .(id)]
       # nz <- nz[(x %% speedup) == 0 & (y %% speedup) == 0]
 
       if (is.null(centers)) {
@@ -263,7 +264,8 @@ observeEvent(theTracksPath(), {
       }
 
       d <- Rfast::dista(nz[, 2:3], centers)
-      nz[, k := Rfast::rowMins(d)]
+      nz[, c("k", "kd") := list(Rfast::rowMins(d), Rfast::rowMins(d, value = TRUE))]
+      nz[kd > (2 * max_height), "k"] <- NA
       gr <- unique(nz[, .(id, k)])
       setorder(gr, id)
       gr[, new_id := id]
@@ -283,11 +285,20 @@ observeEvent(theTracksPath(), {
         ix <- gr[, 3] == uid[j]
         ugr <- unique(gr[ix, 2])
         pos <- nz[nz[, 1] %in% gr[ix, 1], 2:3]
-        cl <- kbox(pos, centers[ugr, , drop = FALSE], iter.max = 1000,
-                   split = TRUE, split.width = max_width,
-                   split.height = max_height,
-                   split.density = min_density,
-                   min.size = min_size)
+
+        if (any(is.na(ugr))) {
+          cl <- kbox(pos, 1, iter.max = 1000,
+                     split = TRUE, split.width = max_width,
+                     split.height = max_height,
+                     split.density = min_density,
+                     min.size = min_size)
+        } else {
+          cl <- kbox(pos, centers[ugr, , drop = FALSE], iter.max = 1000,
+                     split = TRUE, split.width = max_width,
+                     split.height = max_height,
+                     split.density = min_density,
+                     min.size = min_size)
+        }
 
         shape <- rbind(shape, cl)
       }

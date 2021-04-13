@@ -103,6 +103,7 @@ observeEvent(input$optimizeBlobs_x, {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
+      setcolorder(nz, c("id", "x", "y"))
       # nz <- nz[, if(.N >= 5) .SD, by = .(id)]
       nz_summ <- nz[, as.data.table(kbox(cbind(x, y))), by = .(id)]
 
@@ -215,6 +216,7 @@ observeEvent(refreshDisplay(), {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
+      setcolorder(nz, c("id", "x", "y"))
       centers <- nz[, .(x = mean(x), y = mean(y)), by = .(id)]
 
       d <- Rfast::dista(nz[, 2:3], centers[, 2:3])

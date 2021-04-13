@@ -256,6 +256,7 @@ observeEvent(theTracksPath(), {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
+      setcolorder(nz, c("id", "x", "y"))
       # nz <- nz[, if(.N >= 5) .SD, by = .(id)]
       # nz <- nz[(x %% speedup) == 0 & (y %% speedup) == 0]
 

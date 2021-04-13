@@ -50,7 +50,7 @@ observeEvent(input$optimizeThresholds_x, {
     background <- cloneImage(theBackground)
 
     if (!isImage(theMask)) {
-      theMask <<- ones(nrow(theBackground), ncol(theBackground), 3)
+      theMask <<- ones(nrow(theBackground), ncol(theBackground), 1)
       theMask %i*% 255
     }
     mask <- cloneImage(theMask)

@@ -59,15 +59,15 @@ observeEvent(refreshMask(), {
 observeEvent(refreshDisplay(), {
   if (input$main == "3") {
     if (isImage(theMask)) {
-      toDisplay <- cloneImage(theMask)
-      setTo(toDisplay, theMask, "green", target = "self")
-      setTo(toDisplay, invert(theMask), "red", target = "self")
+      toDisplay <- ones(nrow(theImage), ncol(theImage), 3)
+      setTo(toDisplay, changeColorSpace(theMask, "GRAY"), "green", target = "self")
+      setTo(toDisplay, invert(changeColorSpace(theMask, "GRAY")), "red", target = "self")
       addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
     } else if (isImage(theImage)) {
       theMask <<- ones(nrow(theImage), ncol(theImage), 3)
       theMask %i*% 255
-      toDisplay <- cloneImage(theMask)
-      setTo(toDisplay, theMask, "green", target = "self")
+      toDisplay <- ones(nrow(theImage), ncol(theImage), 3)
+      setTo(toDisplay, changeColorSpace(theMask, "GRAY"), "green", target = "self")
       addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
     } else {
       toDisplay <- zeros(480, 640, 3)
@@ -87,9 +87,9 @@ observeEvent(input$polyButton_x, {
   if (isImage(theMask)) {
     toggleAll("OFF")
 
-    displayMask <- cloneImage(theMask)
-    setTo(displayMask, theMask, "green", target = "self")
-    setTo(displayMask, invert(theMask), "red", target = "self")
+    displayMask <- ones(nrow(theMask), ncol(theMask), 3)
+    setTo(displayMask, changeColorSpace(theMask, "GRAY"), "green", target = "self")
+    setTo(displayMask, invert(changeColorSpace(theMask, "GRAY")), "red", target = "self")
 
     showNotification("Use left click to draw the ROI. Use right click to close
                        it and return the result.", id = "mask_notif", duration = NULL,
@@ -121,9 +121,9 @@ observeEvent(input$ellButton_x, {
   if (isImage(theMask)) {
     toggleAll("OFF")
 
-    displayMask <- cloneImage(theMask)
-    setTo(displayMask, theMask, "green", target = "self")
-    setTo(displayMask, invert(theMask), "red", target = "self")
+    displayMask <- ones(nrow(theMask), ncol(theMask), 3)
+    setTo(displayMask, changeColorSpace(theMask, "GRAY"), "green", target = "self")
+    setTo(displayMask, invert(changeColorSpace(theMask, "GRAY")), "red", target = "self")
 
     showNotification("Select 5 points along the periphery of the ellipse/circle to define.",
                      id = "mask_notif", duration = NULL,
@@ -163,7 +163,7 @@ observeEvent(input$ellButton_x, {
     removeNotification(id = "mask_notif")
 
     ell <- optimEllipse(ROI$x, ROI$y)
-    ellMask <- zeros(nrow(displayMask), ncol(displayMask), 3)
+    ellMask <- zeros(nrow(displayMask), ncol(displayMask), 1)
     drawEllipse(ellMask, ell[1], ell[2], ell[3] / 2, ell[4] / 2, ell[5],
                 color = "white", thickness = -1)
 

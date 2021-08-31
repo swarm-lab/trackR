@@ -42,6 +42,12 @@ verticalTabPanel(
 
   hr(),
 
+  awesomeRadio(inputId = "doNotTrack_x", label = "Save positions only (do not track)",
+               choices = c("Yes", "No"), selected = "No",
+               inline = TRUE, checkbox = TRUE, width = "100%"),
+
+  hr(),
+
   shinySaveButton("computeTracks_x", "Start tracking", "Save tracks as...",
                   filetype = "csv",
                   class = "fullWidth"),

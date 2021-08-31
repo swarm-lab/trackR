@@ -317,16 +317,20 @@ observeEvent(theTracksPath(), {
                             height = shape[, 4],
                             angle = shape[, 5])
 
-        memory <- memory[frame >= (theVideo$frame() - memory_length)]
-        blobs <- simplerTracker(blobs, memory, maxDist = input$maxDist_x)
-        newTrack <- is.na(blobs$track)
+        if (input$doNotTrack_x == "No") {
+          memory <- memory[frame >= (theVideo$frame() - memory_length)]
+          blobs <- simplerTracker(blobs, memory, maxDist = input$maxDist_x)
+          newTrack <- is.na(blobs$track)
 
-        if (sum(newTrack) > 0) {
-          blobs$track[newTrack] <- seq(mt + 1, mt + sum(newTrack), 1)
-          mt <- mt + sum(newTrack)
+          if (sum(newTrack) > 0) {
+            blobs$track[newTrack] <- seq(mt + 1, mt + sum(newTrack), 1)
+            mt <- mt + sum(newTrack)
+          }
+
+          memory <- rbind(memory, blobs)
+        } else {
+          blobs$track <- 1:nrow(blobs)
         }
-
-        memory <- rbind(memory, blobs)
 
         to_write <- blobs[, -"id"]
         setcolorder(to_write, c("frame", "track", "x", "y", "width", "height", "angle", "n"))

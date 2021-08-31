@@ -39,7 +39,7 @@ This function attempts to reconstruct the background of a video
  that was filmed from a fixed point of view.
 }
 \examples{
-cctv <- Rvision::video(system.file("sample_vid/Walk3.mp4", package = "Rvision"))
+cctv <- Rvision::video(system.file("sample/people.mp4", package = "trackR"))
 background <- backgrounder(cctv, 20)
 plot(background)
 

@@ -106,6 +106,10 @@ hr.hr-text:after {
   text-align: center;
 }
 
+#doNotTrack_x {
+  text-align: center;
+}
+
 #settings-tabbable .col-sm-1.vrtc-tab-panel-menu.vrtc-tab-panel-menu-right {
   display: none;
 }

@@ -25,7 +25,7 @@
 #' @author Simon Garnier, \email{garnier@@njit.edu}
 #'
 #' @examples
-#' cctv <- Rvision::video(system.file("sample_vid/Walk3.mp4", package = "Rvision"))
+#' cctv <- Rvision::video(system.file("sample/people.mp4", package = "trackR"))
 #' background <- backgrounder(cctv, 20)
 #' plot(background)
 #'

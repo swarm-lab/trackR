@@ -17,6 +17,8 @@ verticalTabPanel(
              class = "control-label"),
   switchInput(inputId = "perspToggle_x", value = FALSE,
               onLabel = "YES", offLabel = "NO"),
+  radioButtons(inputId = "perspSpeed_x", label = NULL, inline = TRUE,
+               choices = c("Faster", "More precise")),
 
   hr(),
 

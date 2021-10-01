@@ -41,9 +41,13 @@ observeEvent(theFixedVideoPath(), {
 
     target <- Rvision::readFrame(theVideo(), input$videoPos_x)
     target_gray <- Rvision::changeColorSpace(target, "GRAY")
-    h_target <- Rvision::imhist(target)[, 1:target$nchan() + 1]
+
+    anchor <- round(dim(target)[1:2] * 0.1)
+    wh <- dim(target)[1:2] - 2 * anchor
+    sub_target <- Rvision::subImage(target, anchor[2], anchor[1], wh[2], wh[1])
+    h_target <- Rvision::imhist(sub_target)[, 1:sub_target$nchan() + 1]
     cdf_target <- apply(h_target, 2, cumsum)
-    map <- matrix(0, nrow = 256, ncol = target$nchan())
+    map <- matrix(0, nrow = 256, ncol = sub_target$nchan())
 
     vw <- Rvision::videoWriter(theFixedVideoPath(),
                                fourcc = "avc1",
@@ -67,8 +71,21 @@ observeEvent(theFixedVideoPath(), {
         Rvision::readNext(theVideo(), frame)
       }
 
+      if (input$perspToggle_x) {
+        Rvision::changeColorSpace(frame, "GRAY", target = frame_gray)
+
+        if (input$perspSpeed_x == "Faster") {
+          tr <- Rvision::findTransformORB(target_gray, frame_gray, warp_mode = "affine")
+        } else {
+          tr <- Rvision::findTransformECC(target_gray, frame_gray, warp_mode = "euclidean")
+        }
+
+        Rvision::warpAffine(frame, tr, target = "self")
+      }
+
       if (input$lightToggle_x) {
-        h_frame <- Rvision::imhist(frame)[, 1:frame$nchan() + 1]
+        sub_frame <- Rvision::subImage(frame, anchor[2], anchor[1], wh[2], wh[1])
+        h_frame <- Rvision::imhist(sub_frame)[, 1:sub_frame$nchan() + 1]
         cdf_frame <- apply(h_frame, 2, cumsum)
 
         for (j in 1:target$nchan()) {
@@ -76,12 +93,6 @@ observeEvent(theFixedVideoPath(), {
         }
 
         Rvision::LUT(frame, map, target = "self")
-      }
-
-      if (input$perspToggle_x) {
-        Rvision::changeColorSpace(frame, "GRAY", target = frame_gray)
-        tr <- Rvision::findTransformORB(target_gray, frame_gray, warp_mode = "homography")
-        Rvision::warpPerspective(frame, tr, target = "self")
       }
 
       Rvision::writeFrame(vw, frame)

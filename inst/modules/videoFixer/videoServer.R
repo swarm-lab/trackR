@@ -6,6 +6,7 @@ theVideo <- reactiveVal()
 theImage <- reactiveVal()
 defaultRoot <- reactiveVal(NULL)
 defaultPath <- reactiveVal("")
+redraw <- reactiveVal(0)
 
 # Select video
 shinyFileChoose(input, "videoFile_x", roots = volumes, session = session,
@@ -100,11 +101,23 @@ observe({
 
 # Display video
 observeEvent(theImage(), {
-  if (Rvision::isImage(theImage())) {
-    Rvision::display(theImage(), "videoFixer", 5,
-                     nrow(theImage()) * input$videoSize_x,
-                     ncol(theImage()) * input$videoSize_x)
-  } else {
-    Rvision::display(Rvision::zeros(480, 640), "videoFixer", 5, 480, 640)
+  redraw(redraw() + 1)
+})
+
+observeEvent(input$main, {
+  if (input$main == "1") {
+    redraw(redraw() + 1)
+  }
+})
+
+observeEvent(redraw(), {
+  if (input$main == "1") {
+    if (Rvision::isImage(theImage())) {
+      Rvision::display(theImage(), "videoFixer", 5,
+                       nrow(theImage()) * input$videoSize_x,
+                       ncol(theImage()) * input$videoSize_x)
+    } else {
+      Rvision::display(Rvision::zeros(480, 640), "videoFixer", 5, 480, 640)
+    }
   }
 })

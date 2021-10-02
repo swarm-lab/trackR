@@ -22,6 +22,38 @@ verticalTabPanel(
 
   hr(),
 
+  tags$table(
+    tags$tr(
+      tags$td(
+        sliderInput("refWidth_x", "Reference area width", width = "100%",
+                    value = 1, min = 1, max = 1, step = 1),
+        style = "width: 49%;"),
+      tags$td(),
+      tags$td(
+        sliderInput("refHeight_x", "Reference area height", width = "100%",
+                    value = 1, min = 1, max = 1, step = 1),
+        style = "width: 49%;")
+    ),
+
+    tags$tr(),
+
+    tags$tr(
+      tags$td(
+        sliderInput("refShiftLeft_x", "Reference shift left", width = "100%",
+                    value = 0, min = 0, max = 0, step = 1),
+        style = "width: 49%;"),
+      tags$td(),
+      tags$td(
+        sliderInput("refShiftUp_x", "Reference shift up", width = "100%",
+                    value = 0, min = 0, max = 0, step = 1),
+        style = "width: 49%;")
+    ),
+
+    class = "settingsTable"
+  ),
+
+  hr(),
+
   shinySaveButton("exportVideo_x", "Export video", "Save video as...",
                   filetype = "mp4",
                   class = "fullWidth"),

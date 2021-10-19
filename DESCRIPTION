@@ -31,8 +31,7 @@ Imports:
     cluster (>= 2.1.0),
     CEC (>= 0.10.2)
 Remotes: 
-    github::swarm-lab/Rvision,
-    github::azureblue/cec
+    github::swarm-lab/Rvision
 Suggests: 
     knitr,
     rmarkdown

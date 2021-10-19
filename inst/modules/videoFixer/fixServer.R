@@ -68,7 +68,7 @@ observeEvent(input$main, {
 })
 
 observeEvent(redraw(), {
-  if (Rvision::isImage(theImage())) {
+  if (Rvision::isImage(theImage()) & input$main == "2") {
     toDisplay <- Rvision::cloneImage(theImage())
     Rvision::drawRectangle(toDisplay, color = "green", thickness = 5,
                            input$refShiftLeft_x + 1, input$refShiftUp_x + 1,

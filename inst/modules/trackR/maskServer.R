@@ -141,7 +141,7 @@ observeEvent(input$ellButton_x, {
 
     for (i in 1:5) {
       if (is.null(input$videoSize_x)) {
-        ROI <- rbind(ROI, Rvision::click(tmpImage, 1, "trackR"))
+        ROI <- rbind(ROI, click(tmpImage, 1, "trackR"))
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
                    radius = r * 1.5, thickness = -1, color = "white")
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
@@ -149,7 +149,7 @@ observeEvent(input$ellButton_x, {
         display(tmpImage, window_name = "trackR", delay = 25,
                 height = nrow(tmpImage),  width = ncol(tmpImage))
       } else {
-        ROI <- rbind(ROI, Rvision::click(tmpImage, input$videoSize_x, "trackR"))
+        ROI <- rbind(ROI, click(tmpImage, input$videoSize_x, "trackR"))
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
                    radius = r * 1.5, thickness = -1, color = "white")
         drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],

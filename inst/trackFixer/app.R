@@ -2,8 +2,9 @@ library(shiny)
 library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
+library(Rvision)
 
-Rvision::newDisplay("trackFixer")
+newDisplay("trackFixer")
 cbPalette <- c("#FFBF80", "#FF8000", "#FFFF99", "#FFFF33", "#B2FF8C", "#33FF00",
                "#A6EDFF", "#1AB2FF", "#CCBFFF", "#664CFF", "#FF99BF", "#E61A33")
 
@@ -103,7 +104,7 @@ server <- function(input, output, session) {
   disable(selector = "a[data-value=2]")
 
   session$onSessionEnded(function() {
-    Rvision::destroyAllDisplays()
+    destroyAllDisplays()
   })
 }
 

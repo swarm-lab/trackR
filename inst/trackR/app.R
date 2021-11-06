@@ -5,7 +5,7 @@ library(shinyjs)
 library(data.table)
 library(Rvision)
 
-Rvision::newDisplay("trackR")
+newDisplay("trackR")
 jscode <- "shinyjs.replace = function(url) { location.replace(url); }"
 
 ui <- function(request) {
@@ -64,7 +64,7 @@ server <- function(input, output, session) {
   moduleSVR("trackR/controls")
 
   session$onSessionEnded(function() {
-    Rvision::destroyAllDisplays()
+    destroyAllDisplays()
   })
 }
 

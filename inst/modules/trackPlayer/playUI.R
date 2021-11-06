@@ -54,6 +54,24 @@ verticalTabPanel(
 
   hr(),
 
+  tags$table(
+    tags$tr(
+      tags$td(switchInput(label = "Show ID", inputId = "idToggle_x",
+                          value = TRUE, onLabel = "YES", offLabel = "NO",
+                          labelWidth = "50%", handleWidth = "25%", width = "100%"),
+              style = "width: 49%; text-align:center;"),
+      tags$td(),
+      tags$td(switchInput(label = "Show track", inputId = "trackToggle_x",
+                          value = TRUE, onLabel = "YES", offLabel = "NO",
+                          labelWidth = "50%", handleWidth = "25%", width = "100%"),
+              style = "width: 49%; text-align:center;")
+    ),
+
+    class = "settingsTable"
+  ),
+
+  hr(),
+
   shinySaveButton("exportVideo_x", "Export video", "Save video as...",
                   filetype = "mp4",
                   class = "fullWidth"),

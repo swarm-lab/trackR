@@ -17,14 +17,14 @@ toggleAll <- function(state = "OFF") {
 
 # Enable panel
 observe({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     enable(selector = "a[data-value=2]")
   }
 })
 
 # Controls
 observe({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     updateSliderInput(session, "refWidth_x", value = ncol(theVideo()),
                       max = ncol(theVideo()))
     updateSliderInput(session, "refHeight_x", value = nrow(theVideo()),
@@ -33,13 +33,13 @@ observe({
 })
 
 observeEvent(input$refWidth_x, {
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     updateSliderInput(session, "refShiftLeft_x", max = ncol(theVideo()) - input$refWidth_x)
   }
 })
 
 observeEvent(input$refHeight_x, {
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     updateSliderInput(session, "refShiftUp_x", max = nrow(theVideo()) - input$refHeight_x)
   }
 })
@@ -68,17 +68,17 @@ observeEvent(input$main, {
 })
 
 observeEvent(redraw(), {
-  if (Rvision::isImage(theImage()) & input$main == "2") {
-    toDisplay <- Rvision::cloneImage(theImage())
-    Rvision::drawRectangle(toDisplay, color = "green", thickness = 5,
+  if (isImage(theImage()) & input$main == "2") {
+    toDisplay <- cloneImage(theImage())
+    drawRectangle(toDisplay, color = "green", thickness = 5,
                            input$refShiftLeft_x + 1, input$refShiftUp_x + 1,
                            input$refWidth_x + input$refShiftLeft_x,
                            input$refHeight_x + input$refShiftUp_x)
-    Rvision::display(toDisplay, "videoFixer", 5,
+    display(toDisplay, "videoFixer", 5,
                      nrow(theImage()) * input$videoSize_x,
                      ncol(theImage()) * input$videoSize_x)
   } else {
-    Rvision::display(Rvision::zeros(480, 640), "videoFixer", 5, 480, 640)
+    display(zeros(480, 640), "videoFixer", 5, 480, 640)
   }
 })
 
@@ -100,17 +100,17 @@ observeEvent(theFixedVideoPath(), {
 
     n <- diff(input$rangePos_x) + 1
 
-    target_raw <- Rvision::readFrame(theVideo(), input$videoPos_x)
-    target_color <- Rvision::subImage(target_raw, input$refShiftLeft_x + 1,
+    target_raw <- readFrame(theVideo(), input$videoPos_x)
+    target_color <- subImage(target_raw, input$refShiftLeft_x + 1,
                                 input$refShiftUp_x + 1, input$refWidth_x,
                                 input$refHeight_x)
-    target_gray <- Rvision::changeColorSpace(target_color, "GRAY")
+    target_gray <- changeColorSpace(target_color, "GRAY")
 
-    h_target <- Rvision::imhist(target_color)[, 1:target_color$nchan() + 1]
+    h_target <- imhist(target_color)[, 1:target_color$nchan() + 1]
     cdf_target <- apply(h_target, 2, cumsum)
     map <- matrix(0, nrow = 256, ncol = target_color$nchan())
 
-    vw <- Rvision::videoWriter(theFixedVideoPath(),
+    vw <- videoWriter(theFixedVideoPath(),
                                fourcc = "avc1",
                                fps = theVideo()$fps(),
                                height = theVideo()$nrow(),
@@ -122,46 +122,46 @@ observeEvent(theFixedVideoPath(), {
     old_frame <- 1
     old_time <- Sys.time()
 
-    frame_raw <- Rvision::zeros(theVideo()$nrow(), theVideo()$ncol(), 3)
-    frame_color <- Rvision::zeros(target_color$nrow(), target_color$ncol(), 3)
-    frame_gray <- Rvision::zeros(target_gray$nrow(), target_gray$ncol(), 1)
+    frame_raw <- zeros(theVideo()$nrow(), theVideo()$ncol(), 3)
+    frame_color <- zeros(target_color$nrow(), target_color$ncol(), 3)
+    frame_gray <- zeros(target_gray$nrow(), target_gray$ncol(), 1)
 
     for (i in 1:n) {
       if (i == 1) {
-        Rvision::readFrame(theVideo(), 1, frame_raw)
+        readFrame(theVideo(), 1, frame_raw)
       } else {
-        Rvision::readNext(theVideo(), frame_raw)
+        readNext(theVideo(), frame_raw)
       }
 
-      Rvision::subImage(frame_raw, input$refShiftLeft_x + 1, input$refShiftUp_x + 1,
+      subImage(frame_raw, input$refShiftLeft_x + 1, input$refShiftUp_x + 1,
                         input$refWidth_x, input$refHeight_x, target = frame_color)
 
       if (input$perspToggle_x) {
-        Rvision::changeColorSpace(frame_color, "GRAY", target = frame_gray)
+        changeColorSpace(frame_color, "GRAY", target = frame_gray)
 
         if (input$perspSpeed_x == "Faster") {
-          tr <- Rvision::findTransformORB(target_gray, frame_gray, warp_mode = "affine")
+          tr <- findTransformORB(target_gray, frame_gray, warp_mode = "affine")
         } else {
-          tr <- Rvision::findTransformECC(target_gray, frame_gray, warp_mode = "euclidean")
+          tr <- findTransformECC(target_gray, frame_gray, warp_mode = "euclidean")
         }
 
-        Rvision::warpAffine(frame_raw, tr, target = "self")
+        warpAffine(frame_raw, tr, target = "self")
       }
 
       if (input$lightToggle_x) {
-        Rvision::subImage(frame_raw, input$refShiftLeft_x + 1, input$refShiftUp_x + 1,
+        subImage(frame_raw, input$refShiftLeft_x + 1, input$refShiftUp_x + 1,
                           input$refWidth_x, input$refHeight_x, target = frame_color)
-        h_frame <- Rvision::imhist(frame_color)[, 1:frame_color$nchan() + 1]
+        h_frame <- imhist(frame_color)[, 1:frame_color$nchan() + 1]
         cdf_frame <- apply(h_frame, 2, cumsum)
 
         for (j in 1:target_color$nchan()) {
           map[, j] <- apply(abs(outer(cdf_frame[, j], cdf_target[, j], "-")), 1, which.min) - 1
         }
 
-        Rvision::LUT(frame_raw, map, target = "self")
+        LUT(frame_raw, map, target = "self")
       }
 
-      Rvision::writeFrame(vw, frame_raw)
+      writeFrame(vw, frame_raw)
 
       new_check <- floor(100 * i / n)
       if (new_check > old_check) {
@@ -174,7 +174,7 @@ observeEvent(theFixedVideoPath(), {
       }
     }
 
-    Rvision::release(vw)
+    release(vw)
 
     pb$close()
     removeNotification(id = "exporting")

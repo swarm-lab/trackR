@@ -38,44 +38,44 @@ observeEvent(theVideoPath(), {
 })
 
 observeEvent(theVideoPath(), {
-  toCheck <- tryCatch(Rvision::video(theVideoPath()),
+  toCheck <- tryCatch(video(theVideoPath()),
                       error = function(e) NA)
 
-  if (Rvision::isVideo(toCheck)) {
-    if (!is.na(Rvision::nframes(toCheck))) {
+  if (isVideo(toCheck)) {
+    if (!is.na(nframes(toCheck))) {
       theVideo(toCheck)
     }
   }
 })
 
 output$videoStatus <- renderUI({
-  if (!Rvision::isVideo(theVideo())) {
+  if (!isVideo(theVideo())) {
     p("Video missing (and required).", class = "bad")
   }
 })
 
 # Controls
 output$displaySlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
                 min = 0.1, max = 1, step = 0.1)
   }
 })
 
 output$rangeSlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     tagList(
       hr(),
       sliderInput("rangePos_x", "Select video range", width = "100%", min = 1,
-                  max = Rvision::nframes(theVideo()),
-                  value = c(1, Rvision::nframes(theVideo())), step = 1)
+                  max = nframes(theVideo()),
+                  value = c(1, nframes(theVideo())), step = 1)
     )
   }
 })
 
 rangeMem <- c(NA, NA)
 output$videoSlider <- renderUI({
-  if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x)) {
+  if (isVideo(theVideo()) & !is.null(input$rangePos_x)) {
     if (any(is.na(rangeMem))) {
       rangeMem <<- input$rangePos_x
     }
@@ -96,7 +96,7 @@ output$videoSlider <- renderUI({
 
 observe({
   if (!is.null(input$videoPos_x) & !is.null(input$videoSize_x) & !is.null(input$rangePos_x))
-    theImage(Rvision::readFrame(theVideo(), input$videoPos_x + input$rangePos_x[1] - 1))
+    theImage(readFrame(theVideo(), input$videoPos_x + input$rangePos_x[1] - 1))
 })
 
 # Display video
@@ -112,12 +112,12 @@ observeEvent(input$main, {
 
 observeEvent(redraw(), {
   if (input$main == "1") {
-    if (Rvision::isImage(theImage())) {
-      Rvision::display(theImage(), "videoFixer", 5,
+    if (isImage(theImage())) {
+      display(theImage(), "videoFixer", 5,
                        nrow(theImage()) * input$videoSize_x,
                        ncol(theImage()) * input$videoSize_x)
     } else {
-      Rvision::display(Rvision::zeros(480, 640), "videoFixer", 5, 480, 640)
+      display(zeros(480, 640), "videoFixer", 5, 480, 640)
     }
   }
 })

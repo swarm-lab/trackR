@@ -2,8 +2,9 @@ library(shiny)
 library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
+library(Rvision)
 
-Rvision::newDisplay("videoFixer")
+newDisplay("videoFixer")
 
 ui <- function(request) {
   shinyUI(
@@ -39,7 +40,7 @@ server <- function(input, output, session) {
   disable(selector = "a[data-value=2]")
 
   session$onSessionEnded(function() {
-    Rvision::destroyAllDisplays()
+    destroyAllDisplays()
   })
 }
 

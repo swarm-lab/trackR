@@ -40,18 +40,18 @@ observeEvent(theVideoPath(), {
 })
 
 observeEvent(theVideoPath(), {
-  toCheck <- tryCatch(Rvision::video(theVideoPath()),
+  toCheck <- tryCatch(video(theVideoPath()),
                       error = function(e) NA)
 
-  if (Rvision::isVideo(toCheck)) {
-    if (!is.na(Rvision::nframes(toCheck))) {
+  if (isVideo(toCheck)) {
+    if (!is.na(nframes(toCheck))) {
       theVideo(toCheck)
     }
   }
 })
 
 output$videoStatus <- renderUI({
-  if (!Rvision::isVideo(theVideo())) {
+  if (!isVideo(theVideo())) {
     p("Video missing (and required).", class = "bad")
   }
 })

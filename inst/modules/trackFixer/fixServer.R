@@ -4,7 +4,7 @@
 
 # Enable panel
 observe({
-  if (Rvision::isVideo(theVideo()) & is.data.frame(theTracks())) {
+  if (isVideo(theVideo()) & is.data.frame(theTracks())) {
     enable(selector = "a[data-value=2]")
     updateVerticalTabsetPanel(session, "main", selected = "2")
   }
@@ -12,7 +12,7 @@ observe({
 
 # Status
 output$videoStatus2 <- renderUI({
-  if (!Rvision::isVideo(theVideo())) {
+  if (!isVideo(theVideo())) {
     p("Video missing (and required).", class = "bad")
   }
 })
@@ -25,7 +25,7 @@ output$trackStatus2 <- renderUI({
 
 # Display slider
 output$displaySlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
                 min = 0.1, max = 1, step = 0.1)
   }
@@ -33,14 +33,14 @@ output$displaySlider <- renderUI({
 
 # Video slider
 output$videoSlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     if (is.data.frame(theTracks())) {
       sliderInput("videoPos_x", NULL, width = "100%",
                   value = min(theTracks()[, frame]), min = 1,
-                  max = Rvision::nframes(theVideo()), step = 1)
+                  max = nframes(theVideo()), step = 1)
     } else {
       sliderInput("videoPos_x", NULL, width = "100%", value = 1, min = 1,
-                  max = Rvision::nframes(theVideo()), step = 1)
+                  max = nframes(theVideo()), step = 1)
     }
   }
 })
@@ -49,7 +49,7 @@ output$videoSlider <- renderUI({
 play <- reactiveVal(FALSE)
 
 observeEvent(input$playPause_x, {
-  if (!play() & Rvision::isVideo(theVideo())) {
+  if (!play() & isVideo(theVideo())) {
     play(TRUE)
   } else {
     play(FALSE)
@@ -57,14 +57,14 @@ observeEvent(input$playPause_x, {
 })
 
 observeEvent(input$videoSize_x, {
-  theImage(Rvision::readFrame(theVideo(), input$videoPos_x))
+  theImage(readFrame(theVideo(), input$videoPos_x))
 })
 
 observeEvent(input$videoPos_x, {
   if (input$videoPos_x - theVideo()$frame() == 1) {
-    theImage(Rvision::readNext(theVideo()))
+    theImage(readNext(theVideo()))
   } else {
-    theImage(Rvision::readFrame(theVideo(), input$videoPos_x))
+    theImage(readFrame(theVideo(), input$videoPos_x))
   }
 })
 
@@ -94,7 +94,7 @@ observeEvent(input$plusSec_x, {
 refreshDisplay <- reactiveVal(0)
 
 observe({
-  if (Rvision::isImage(theImage()) & is.data.frame(theTracks())) {
+  if (isImage(theImage()) & is.data.frame(theTracks())) {
     isolate( refreshDisplay(refreshDisplay() + 1) )
   }
 })
@@ -108,44 +108,44 @@ observeEvent(refreshDisplay(), {
 
     if (nrow(tmp_tracks) > 0) {
       sc <- max(dim(theImage()) / 720)
-      overlay1 <- Rvision::cloneImage(theImage())
-      overlay2 <- Rvision::cloneImage(theImage())
+      overlay1 <- cloneImage(theImage())
+      overlay2 <- cloneImage(theImage())
 
       if (nrow(tmp_rect) > 0) {
-        Rvision::drawRotatedRectangle(overlay1, tmp_rect$x, tmp_rect$y,
+        drawRotatedRectangle(overlay1, tmp_rect$x, tmp_rect$y,
                                       tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                       color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                       thickness = 1.5 * sc)
-        Rvision::drawRotatedRectangle(overlay2, tmp_rect$x, tmp_rect$y,
+        drawRotatedRectangle(overlay2, tmp_rect$x, tmp_rect$y,
                                       tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                       color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                       thickness = -1)
       }
 
-      tmp_tracks[, Rvision::drawPolyline(overlay2, cbind(x, y), FALSE,
+      tmp_tracks[, drawPolyline(overlay2, cbind(x, y), FALSE,
                                          color = cbPalette[(track_fixed[1] %% 12) + 1],
                                          thickness = 3 * sc),
                  by = track_fixed]
 
-      Rvision::addWeighted(overlay1, overlay2, c(0.5, 0.5), target = "self")
+      addWeighted(overlay1, overlay2, c(0.5, 0.5), target = "self")
 
       if (nrow(tmp_rect) > 0) {
-        Rvision::drawText(overlay1, tmp_rect$track_fixed,
+        drawText(overlay1, tmp_rect$track_fixed,
                           tmp_rect$x - (floor(log10(tmp_rect$track_fixed)) + 1) * 5 * sc,
                           tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
                           color = "white")
       }
 
-      Rvision::display(overlay1, "trackFixer", 5,
+      display(overlay1, "trackFixer", 5,
                        nrow(overlay1) * input$videoSize_x,
                        ncol(overlay1) * input$videoSize_x)
     } else {
-      Rvision::display(theImage(), "trackFixer", 5,
+      display(theImage(), "trackFixer", 5,
                        nrow(theImage()) * input$videoSize_x,
                        ncol(theImage()) * input$videoSize_x)
     }
   } else {
-    Rvision::display(Rvision::zeros(480, 640), "trackFixer", 5, 480, 640)
+    display(zeros(480, 640), "trackFixer", 5, 480, 640)
   }
 })
 

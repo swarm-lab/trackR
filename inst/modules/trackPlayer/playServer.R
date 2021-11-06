@@ -15,7 +15,7 @@ toggleAll <- function(state = "OFF") {
 
 # Enable panel
 observe({
-  if (Rvision::isVideo(theVideo()) & is.data.frame(theTracks())) {
+  if (isVideo(theVideo()) & is.data.frame(theTracks())) {
     enable(selector = "a[data-value=2]")
     updateVerticalTabsetPanel(session, "main", selected = "2")
   }
@@ -24,7 +24,7 @@ observe({
 
 # Display slider
 output$displaySlider <- renderUI({
-  if (Rvision::isVideo(theVideo())) {
+  if (isVideo(theVideo())) {
     sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
                 min = 0.1, max = 1, step = 0.1)
   }
@@ -33,9 +33,9 @@ output$displaySlider <- renderUI({
 
 # Range slider
 output$rangeSlider <- renderUI({
-  if (Rvision::isVideo(theVideo()) & is.data.frame(theTracks())) {
+  if (isVideo(theVideo()) & is.data.frame(theTracks())) {
     sliderInput("rangePos_x", "Video range", width = "100%", min = 1,
-                max = Rvision::nframes(theVideo()),
+                max = nframes(theVideo()),
                 value = range(theTracks()$frame), step = 1)
   }
 })
@@ -45,7 +45,7 @@ output$rangeSlider <- renderUI({
 rangeMem <- c(NA, NA)
 
 output$videoSlider <- renderUI({
-  if (Rvision::isVideo(theVideo()) & !is.null(input$rangePos_x)) {
+  if (isVideo(theVideo()) & !is.null(input$rangePos_x)) {
     if (any(is.na(rangeMem))) {
       rangeMem <<- input$rangePos_x
     }
@@ -76,12 +76,12 @@ theImage <- NULL
 observeEvent(input$videoPos_x, {
   if (isImage(theImage)) {
     if (input$videoPos_x - theVideo()$frame() == 1) {
-      Rvision::readNext(theVideo(), theImage)
+      readNext(theVideo(), theImage)
     } else {
-      Rvision::readFrame(theVideo(), input$videoPos_x, theImage)
+      readFrame(theVideo(), input$videoPos_x, theImage)
     }
   } else {
-    theImage <<- Rvision::readFrame(theVideo(), input$videoPos_x)
+    theImage <<- readFrame(theVideo(), input$videoPos_x)
   }
 
   refreshDisplay(refreshDisplay() + 1)
@@ -92,7 +92,7 @@ observeEvent(input$videoSize_x, {
 })
 
 observeEvent(input$playPause_x, {
-  if (!play() & Rvision::isVideo(theVideo())) {
+  if (!play() & isVideo(theVideo())) {
     play(TRUE)
   } else {
     play(FALSE)
@@ -132,31 +132,33 @@ observeEvent(refreshDisplay(), {
 
     sc <- max(dim(theImage) / 720)
 
-    to_display <- Rvision::cloneImage(theImage)
+    to_display <- cloneImage(theImage)
 
     if (nrow(tmp_tracks) > 0) {
-      overlay <- Rvision::cloneImage(theImage)
+      overlay <- cloneImage(theImage)
 
       if (nrow(tmp_rect) > 0) {
-        Rvision::drawRotatedRectangle(to_display, tmp_rect$x, tmp_rect$y,
+        drawRotatedRectangle(to_display, tmp_rect$x, tmp_rect$y,
                                       tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                       color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                       thickness = 1.5 * sc)
-        Rvision::drawRotatedRectangle(overlay, tmp_rect$x, tmp_rect$y,
+        drawRotatedRectangle(overlay, tmp_rect$x, tmp_rect$y,
                                       tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                       color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                       thickness = -1)
       }
 
-      tmp_tracks[, Rvision::drawPolyline(overlay, cbind(x, y), FALSE,
-                                         color = cbPalette[(track_fixed[1] %% 12) + 1],
-                                         thickness = 3 * sc),
-                 by = track_fixed]
+      if (input$trackToggle_x) {
+        tmp_tracks[, drawPolyline(overlay, cbind(x, y), FALSE,
+                                  color = cbPalette[(track_fixed[1] %% 12) + 1],
+                                  thickness = 3 * sc),
+                   by = track_fixed]
+      }
 
-      Rvision::addWeighted(to_display, overlay, c(0.5, 0.5), target = to_display)
+      addWeighted(to_display, overlay, c(0.5, 0.5), target = to_display)
 
-      if (nrow(tmp_rect) > 0) {
-        Rvision::drawText(to_display, tmp_rect$track_fixed,
+      if (nrow(tmp_rect) > 0 & input$idToggle_x) {
+        drawText(to_display, tmp_rect$track_fixed,
                           tmp_rect$x - (floor(log10(tmp_rect$track_fixed)) + 1) * 5 * sc,
                           tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
                           color = "white")
@@ -164,12 +166,12 @@ observeEvent(refreshDisplay(), {
     }
 
     if (nchar(title$text) > 0) {
-      txt_size <- Rvision::getTextSize(title$text,
+      txt_size <- getTextSize(title$text,
                                        font_face = "duplex",
                                        font_scale = title$scale * sc,
                                        thickness = title$thickness * sc)
 
-      Rvision::drawText(to_display, title$text,
+      drawText(to_display, title$text,
                         x = switch (title$hor_position,
                                     "Left" = 0 + (title$margin_hor / 100) * ncol(to_display),
                                     "Center" = ((ncol(to_display) - txt_size[2]) / 2) +
@@ -191,12 +193,12 @@ observeEvent(refreshDisplay(), {
     }
 
     if (nchar(subtitle$text) > 0) {
-      txt_size <- Rvision::getTextSize(subtitle$text,
+      txt_size <- getTextSize(subtitle$text,
                                        font_face = "duplex",
                                        font_scale = subtitle$scale * sc,
                                        thickness = subtitle$thickness * sc)
 
-      Rvision::drawText(to_display, subtitle$text,
+      drawText(to_display, subtitle$text,
                         x = switch (subtitle$hor_position,
                                     "Left" = 0 + (subtitle$margin_hor / 100) * ncol(to_display),
                                     "Center" = ((ncol(to_display) - txt_size[2]) / 2) +
@@ -218,12 +220,12 @@ observeEvent(refreshDisplay(), {
     }
 
     if (nchar(authors$text) > 0) {
-      txt_size <- Rvision::getTextSize(authors$text,
+      txt_size <- getTextSize(authors$text,
                                        font_face = "duplex",
                                        font_scale = authors$scale * sc,
                                        thickness = authors$thickness * sc)
 
-      Rvision::drawText(to_display, authors$text,
+      drawText(to_display, authors$text,
                         x = switch (authors$hor_position,
                                     "Left" = 0 + (authors$margin_hor / 100) * ncol(to_display),
                                     "Center" = ((ncol(to_display) - txt_size[2]) / 2) +
@@ -246,12 +248,12 @@ observeEvent(refreshDisplay(), {
 
     if (timestamp$display) {
       txt <- hmsf(input$videoPos_x, theVideo()$fps())
-      txt_size <- Rvision::getTextSize(txt,
+      txt_size <- getTextSize(txt,
                                        font_face = "duplex",
                                        font_scale = timestamp$scale * sc,
                                        thickness = timestamp$thickness * sc)
 
-      Rvision::drawText(to_display, txt,
+      drawText(to_display, txt,
                         x = switch (timestamp$hor_position,
                                     "Left" = 0 + (timestamp$margin_hor / 100) * ncol(to_display),
                                     "Center" = ((ncol(to_display) - txt_size[2]) / 2) +
@@ -272,11 +274,11 @@ observeEvent(refreshDisplay(), {
                         font_face = "duplex")
     }
 
-    Rvision::display(to_display, "trackPlayer", 1,
+    display(to_display, "trackPlayer", 1,
                      nrow(to_display) * input$videoSize_x,
                      ncol(to_display) * input$videoSize_x)
   } else {
-    Rvision::display(Rvision::zeros(480, 640), "trackPlayer", 1, 480, 640)
+    display(zeros(480, 640), "trackPlayer", 1, 480, 640)
   }
 })
 
@@ -301,7 +303,7 @@ observeEvent(theTrackVideoPath(), {
     n <- diff(range_pos) + 1
     sc <- max(dim(theImage) / 720)
 
-    vw <- Rvision::videoWriter(theTrackVideoPath(),
+    vw <- videoWriter(theTrackVideoPath(),
                                fourcc = "avc1",
                                fps = theVideo()$fps(),
                                height = theVideo()$nrow(),
@@ -321,34 +323,36 @@ observeEvent(theTrackVideoPath(), {
       tmp_rect <- tmp_tracks[frame == pos, ]
 
       if (i == 1) {
-        to_export <- Rvision::readFrame(theVideo(), range_pos[1])
+        to_export <- readFrame(theVideo(), range_pos[1])
       } else {
-        Rvision::readNext(theVideo(), to_export)
+        readNext(theVideo(), to_export)
       }
 
       if (nrow(tmp_tracks) > 0) {
-        overlay <- Rvision::cloneImage(to_export)
+        overlay <- cloneImage(to_export)
 
         if (nrow(tmp_rect) > 0) {
-          Rvision::drawRotatedRectangle(to_export, tmp_rect$x, tmp_rect$y,
+          drawRotatedRectangle(to_export, tmp_rect$x, tmp_rect$y,
                                         tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                         color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                         thickness = 1.5 * sc)
-          Rvision::drawRotatedRectangle(overlay, tmp_rect$x, tmp_rect$y,
+          drawRotatedRectangle(overlay, tmp_rect$x, tmp_rect$y,
                                         tmp_rect$width, tmp_rect$height, tmp_rect$angle,
                                         color = cbPalette[(tmp_rect$track_fixed %% 12) + 1],
                                         thickness = -1)
         }
 
-        tmp_tracks[, Rvision::drawPolyline(overlay, cbind(x, y), FALSE,
-                                           color = cbPalette[(track_fixed[1] %% 12) + 1],
-                                           thickness = 3 * sc),
-                   by = track_fixed]
+        if (input$trackToggle_x) {
+          tmp_tracks[, drawPolyline(overlay, cbind(x, y), FALSE,
+                                    color = cbPalette[(track_fixed[1] %% 12) + 1],
+                                    thickness = 3 * sc),
+                     by = track_fixed]
+        }
 
-        Rvision::addWeighted(to_export, overlay, c(0.5, 0.5), target = to_export)
+        addWeighted(to_export, overlay, c(0.5, 0.5), target = to_export)
 
-        if (nrow(tmp_rect) > 0) {
-          Rvision::drawText(to_export, tmp_rect$track_fixed,
+        if (nrow(tmp_rect) > 0 & input$idToggle_x) {
+          drawText(to_export, tmp_rect$track_fixed,
                             tmp_rect$x - (floor(log10(tmp_rect$track_fixed)) + 1) * 5 * sc,
                             tmp_rect$y - 5 * sc, font_scale = 0.5 * sc, thickness = 1.5 * sc,
                             color = "white")
@@ -356,12 +360,12 @@ observeEvent(theTrackVideoPath(), {
       }
 
       if (nchar(title$text) > 0) {
-        txt_size <- Rvision::getTextSize(title$text,
+        txt_size <- getTextSize(title$text,
                                          font_face = "duplex",
                                          font_scale = title$scale * sc,
                                          thickness = title$thickness * sc)
 
-        Rvision::drawText(to_export, title$text,
+        drawText(to_export, title$text,
                           x = switch (title$hor_position,
                                       "Left" = 0 + (title$margin_hor / 100) * ncol(to_export),
                                       "Center" = ((ncol(to_export) - txt_size[2]) / 2) +
@@ -383,12 +387,12 @@ observeEvent(theTrackVideoPath(), {
       }
 
       if (nchar(subtitle$text) > 0) {
-        txt_size <- Rvision::getTextSize(subtitle$text,
+        txt_size <- getTextSize(subtitle$text,
                                          font_face = "duplex",
                                          font_scale = subtitle$scale * sc,
                                          thickness = subtitle$thickness * sc)
 
-        Rvision::drawText(to_export, subtitle$text,
+        drawText(to_export, subtitle$text,
                           x = switch (subtitle$hor_position,
                                       "Left" = 0 + (subtitle$margin_hor / 100) * ncol(to_export),
                                       "Center" = ((ncol(to_export) - txt_size[2]) / 2) +
@@ -410,12 +414,12 @@ observeEvent(theTrackVideoPath(), {
       }
 
       if (nchar(authors$text) > 0) {
-        txt_size <- Rvision::getTextSize(authors$text,
+        txt_size <- getTextSize(authors$text,
                                          font_face = "duplex",
                                          font_scale = authors$scale * sc,
                                          thickness = authors$thickness * sc)
 
-        Rvision::drawText(to_export, authors$text,
+        drawText(to_export, authors$text,
                           x = switch (authors$hor_position,
                                       "Left" = 0 + (authors$margin_hor / 100) * ncol(to_export),
                                       "Center" = ((ncol(to_export) - txt_size[2]) / 2) +
@@ -438,12 +442,12 @@ observeEvent(theTrackVideoPath(), {
 
       if (timestamp$display) {
         txt <- hmsf(i, theVideo()$fps())
-        txt_size <- Rvision::getTextSize(txt,
+        txt_size <- getTextSize(txt,
                                          font_face = "duplex",
                                          font_scale = timestamp$scale * sc,
                                          thickness = timestamp$thickness * sc)
 
-        Rvision::drawText(to_export, txt,
+        drawText(to_export, txt,
                           x = switch (timestamp$hor_position,
                                       "Left" = 0 + (timestamp$margin_hor / 100) * ncol(to_export),
                                       "Center" = ((ncol(to_export) - txt_size[2]) / 2) +
@@ -465,7 +469,7 @@ observeEvent(theTrackVideoPath(), {
       }
 
 
-      Rvision::writeFrame(vw, to_export)
+      writeFrame(vw, to_export)
 
       new_check <- floor(100 * i / n)
       if (new_check > old_check) {
@@ -478,7 +482,7 @@ observeEvent(theTrackVideoPath(), {
       }
     }
 
-    Rvision::release(vw)
+    release(vw)
 
     pb$close()
     removeNotification(id = "exporting")

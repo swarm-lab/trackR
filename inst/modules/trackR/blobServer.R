@@ -28,12 +28,13 @@ observeEvent(input$main, {
 })
 
 observeEvent(refreshDisplay(), {
-  if (isVideo(theVideo) & input$blobWidth_x == 0) {
+  if (isVideo(theVideo) & input$blobWidth_x == 0 & input$blobHeight_x == 0 &
+      input$blobArea_x == 0) {
     updateNumericInput(session, "blobWidth_x", value = nrow(theVideo),
                        max = nrow(theVideo))
     updateNumericInput(session, "blobHeight_x", value = ncol(theVideo),
                        max = nrow(theVideo))
-    updateNumericInput(session, "blobArea_x", max = nrow(theVideo) *
+    updateNumericInput(session, "blobArea_x", value = 1, max = nrow(theVideo) *
                          ncol(theVideo))
   }
 })
@@ -241,10 +242,10 @@ observeEvent(refreshDisplay(), {
         ugr <- unique(gr[ix, 2])
         pos <- nz[nz[, 1] %in% gr[ix, 1], 2:3]
         cl <- kbox(pos, centers[ugr, 2:3, drop = FALSE], iter.max = 1000,
-                   split = TRUE, split.width = input$blobWidth_x,
-                   split.height = input$blobHeight_x,
-                   split.density = input$blobDensity_x,
-                   min.size = input$blobArea_x)
+                   split = TRUE, split.width = if (is.na(input$blobWidth_x)) Inf else input$blobWidth_x,
+                   split.height = if (is.na(input$blobHeight_x)) Inf else input$blobHeight_x,
+                   split.density = if (is.na(input$blobDensity_x)) 0 else input$blobDensity_x,
+                   min.size = if (is.na(input$blobArea_x)) 1 else input$blobArea_x)
         shape <- rbind(shape, cl)
       }
 

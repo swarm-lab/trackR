@@ -1,6 +1,5 @@
 # Variables and reactives
 theBackground <- NULL
-
 theBackgroundPath <- reactiveVal()
 refreshBackground <- reactiveVal(0)
 
@@ -128,7 +127,7 @@ observeEvent(input$saveBackground_x, {
   path <- parseSavePath(volumes, input$saveBackground_x)
 
   if (isImage(theBackground) & nrow(path) > 0) {
-    write.Image(theBackground, path$datapath)
+    write.Image(theBackground, path$datapath, TRUE)
     theBackgroundPath(path$datapath)
   }
 })

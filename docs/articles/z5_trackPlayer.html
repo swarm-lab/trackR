@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -47,16 +49,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -82,7 +78,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/swarm-lab/trackR/">
+  <a href="https://github.com/swarm-lab/trackR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -103,59 +99,103 @@
 
       
 
-      </header><script src="z5_trackPlayer_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>5 - Export tracking results as video</h1>
-                        <h4 class="author">Simon Garnier</h4>
+                        <h4 data-toc-skip class="author">Simon
+Garnier</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/master/vignettes/z5_trackPlayer.Rmd"><code>vignettes/z5_trackPlayer.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/HEAD/vignettes/z5_trackPlayer.Rmd" class="external-link"><code>vignettes/z5_trackPlayer.Rmd</code></a></small>
       <div class="hidden name"><code>z5_trackPlayer.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>0 - Introduction</h2>
-<p>Once you have finished tracking a video and fixing any potential error, you can use the <code>trackPlayer</code> app to create a nice, publication-ready video showing the results of the tracking overlaid over the frames. You can launch <code>trackPlayer</code> by typing the following command in the R console:</p>
+<div class="section level2">
+<h2 id="introduction">0 - Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Once you have finished tracking a video and fixing any potential
+error, you can use the <code>trackPlayer</code> app to create a nice,
+publication-ready video showing the results of the tracking overlaid
+over the frames. You can launch <code>trackPlayer</code> by typing the
+following command in the R console:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/trackPlayer.html">trackPlayer</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
-<div id="data-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data-module" class="anchor"></a>1 - Data module</h2>
+<div class="section level2">
+<h2 id="data-module">1 - Data module<a class="anchor" aria-label="anchor" href="#data-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z5/z5_1.png"></p>
-<p>Once <code>trackPlayer</code> has started, it will open two windows: a display window that will later be used to display the video with the tracks overlaid on top (note: this window may be hiding behind other windows) and the window shown here that will display all the app controls.</p>
-<p>The first step is to open the video and track files using the dedicated buttons in the control panel. Each button will open a navigator that you can use to find and select the video that was used during tracking and the CSV file that was produced either by <code>trackR</code> after tracking was completed or by <code>trackFixer</code> after fixing any potential tracking error.</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z5/z5_1.png"></p>
+<p>Once <code>trackPlayer</code> has started, it will open two windows:
+a display window that will later be used to display the video with the
+tracks overlaid on top (note: this window may be hiding behind other
+windows) and the window shown here that will display all the app
+controls.</p>
+<p>The first step is to open the video and track files using the
+dedicated buttons in the control panel. Each button will open a
+navigator that you can use to find and select the video that was used
+during tracking and the CSV file that was produced either by
+<code>trackR</code> after tracking was completed or by
+<code>trackFixer</code> after fixing any potential tracking error.</p>
 </div>
 <hr>
 </div>
-<div id="play-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#play-module" class="anchor"></a>2 - Play module</h2>
+<div class="section level2">
+<h2 id="play-module">2 - Play module<a class="anchor" aria-label="anchor" href="#play-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z5/z5_2.png"></p>
-<p>As soon as the video and track files are opened, <code>trackPlayer</code> will automatically switch to its “Play module” displayed in the image opposite and will show the video in the display window with the tracks overlaid (see image below).</p>
-<p>At the top of the control panel, you will find the video controls that allow you to:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z5/z5_2.png"></p>
+<p>As soon as the video and track files are opened,
+<code>trackPlayer</code> will automatically switch to its “Play module”
+displayed in the image opposite and will show the video in the display
+window with the tracks overlaid (see image below).</p>
+<p>At the top of the control panel, you will find the video controls
+that allow you to:</p>
 <ul>
-<li>Select with the <code>Video range</code> slider the portion of the video that you would like to export.</li>
-<li>Play and pause the video with the <code>Play/pause</code> button or with the space bar of your keyboard.</li>
-<li>Advance or rewind the video by 1 frame with the <code>&gt;</code> and <code>&lt;</code> buttons or with the right and left arrow keys of your keyboard.</li>
-<li>Advance or rewind the video by 1 second with the <code>&gt;&gt;</code> and <code>&lt;&lt;</code> buttons or with the up and down arrow keys of your keyboard.</li>
-<li>Move to any frame of the video with the slider below the video control buttons.</li>
+<li>Select with the <code>Video range</code> slider the portion of the
+video that you would like to export.</li>
+<li>Play and pause the video with the <code>Play/pause</code> button or
+with the space bar of your keyboard.</li>
+<li>Advance or rewind the video by 1 frame with the <code>&gt;</code>
+and <code>&lt;</code> buttons or with the right and left arrow keys of
+your keyboard.</li>
+<li>Advance or rewind the video by 1 second with the
+<code>&gt;&gt;</code> and <code>&lt;&lt;</code> buttons or with the up
+and down arrow keys of your keyboard.</li>
+<li>Move to any frame of the video with the slider below the video
+control buttons.</li>
 </ul>
-<p>Below is a <code>Display size</code> control slider that allows you to change the size of the display window, for instance if the video is too wide for the screen. This does not affect the quality of the exported video.</p>
-<p>Below are four buttons that will allow you to add text and timestamps to the exported video. Clicking on any of these 4 buttons will open a menu with all the necessary controls to set the content, position, size and color of these pieces of text (see image on the left below). Note that title, subtitle, and author list are just suggestions. You can actually use any of these 3 options to add any text you would like. Timestamp, however, will just do that: add an hour:minute:second:frame timestamp at the desired location on the video.</p>
-<p>Finally, at the bottom of the control panel is an <code>Export video</code> button that you can press in order to export an MP4 video showing the results of the tracking overlaid on top of the frame. This video should play well in all presentation programs (e.g. PowerPoint, Apple Keynote), on any website, and as supplementary material for your publications.</p>
+<p>Below is a <code>Display size</code> control slider that allows you
+to change the size of the display window, for instance if the video is
+too wide for the screen. This does not affect the quality of the
+exported video.</p>
+<p>Below are four buttons that will allow you to add text and timestamps
+to the exported video. Clicking on any of these 4 buttons will open a
+menu with all the necessary controls to set the content, position, size
+and color of these pieces of text (see image on the left below). Note
+that title, subtitle, and author list are just suggestions. You can
+actually use any of these 3 options to add any text you would like.
+Timestamp, however, will just do that: add an hour:minute:second:frame
+timestamp at the desired location on the video.</p>
+<p>Finally, at the bottom of the control panel is an
+<code>Export video</code> button that you can press in order to export
+an MP4 video showing the results of the tracking overlaid on top of the
+frame. This video should play well in all presentation programs
+(e.g. PowerPoint, Apple Keynote), on any website, and as supplementary
+material for your publications.</p>
 </div>
-<p><img style="width: 31%;" src="../man/figures/z5/z5_4.png"><img style="width: 69%;" src="../man/figures/z5/z5_3.png"></p>
+<p><img style="width: 31%;" src="../reference/figures/z5/z5_4.png"><img style="width: 69%;" src="../reference/figures/z5/z5_3.png"></p>
 <hr>
-<p>The video used throughout this tutorial was provided by <em>Sridhar, V. H., Roche, D. G., and Gingins, S. (2019). Tracktor: Image-based automated tracking of animal movement and behaviour. Methods Ecol. Evol. 10, 691. <a href="doi:10.1111/2041-210X.13166" class="uri">doi:10.1111/2041-210X.13166</a></em> and used here with permission of the authors.</p>
+<p>The video used throughout this tutorial was provided by <em>Sridhar,
+V. H., Roche, D. G., and Gingins, S. (2019). Tracktor: Image-based
+automated tracking of animal movement and behaviour. Methods Ecol. Evol.
+10, 691. <a href="doi:10.1111/2041-210X.13166" class="uri">doi:10.1111/2041-210X.13166</a></em> and used here with
+permission of the authors.</p>
 </div>
   </div>
 
@@ -170,11 +210,15 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://www.theswarmlab.com">Simon Garnier</a>.</p>
+  <p></p>
+<p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon
+Garnier</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>

@@ -314,8 +314,8 @@ observeEvent(input$mergeTrack_x, {
 observeEvent(input$okMerge, {
   removeModal(session)
 
-  id1 <- as.integer(input$mergeID1)
-  id2 <- as.integer(input$mergeID2)
+  id1 <- as.numeric(input$mergeID1)
+  id2 <- as.numeric(input$mergeID2)
 
   if (!is.na(id1) & !is.na(id2)) {
     idx <- theTracks()$track_fixed == id1 | theTracks()$track_fixed == id2

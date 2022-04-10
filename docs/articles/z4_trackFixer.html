@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -47,16 +49,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -82,7 +78,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/swarm-lab/trackR/">
+  <a href="https://github.com/swarm-lab/trackR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -103,86 +99,160 @@
 
       
 
-      </header><script src="z4_trackFixer_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>4 - Inspect and fix tracking results</h1>
-                        <h4 class="author">Simon Garnier</h4>
+                        <h4 data-toc-skip class="author">Simon
+Garnier</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/master/vignettes/z4_trackFixer.Rmd"><code>vignettes/z4_trackFixer.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/HEAD/vignettes/z4_trackFixer.Rmd" class="external-link"><code>vignettes/z4_trackFixer.Rmd</code></a></small>
       <div class="hidden name"><code>z4_trackFixer.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>0 - Introduction</h2>
-<p>Once you have finished tracking a video, you can manually inspect the results and fix any potential error using the <code>trackFixer</code> app provided with the package. You can launch <code>trackFixer</code> by typing the following command in the R console:</p>
+<div class="section level2">
+<h2 id="introduction">0 - Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Once you have finished tracking a video, you can manually inspect the
+results and fix any potential error using the <code>trackFixer</code>
+app provided with the package. You can launch <code>trackFixer</code> by
+typing the following command in the R console:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/trackFixer.html">trackFixer</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
-<div id="data-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data-module" class="anchor"></a>1 - Data module</h2>
+<div class="section level2">
+<h2 id="data-module">1 - Data module<a class="anchor" aria-label="anchor" href="#data-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z4/z4_1.png"></p>
-<p>Once <code>trackFixer</code> has started, it will open two windows: a display window that will later be used to display the video with the tracks overlaid on top (note: this window may be hiding behind other windows) and the window shown here that will display all the app controls.</p>
-<p>The first step is to open the video and track files using the dedicated buttons in the control panel. Each button will open a navigator that you can use to find and select the video that was used during tracking and the CSV file that was produced by <code>trackR</code> after tracking was completed.</p>
-<p>Note that the CSV file is never modified by <code>trackFixer</code>. Instead, <code>trackFixer</code> will save the tracking corrections to a separate file in order to never destroy the original tracking results.</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z4/z4_1.png"></p>
+<p>Once <code>trackFixer</code> has started, it will open two windows: a
+display window that will later be used to display the video with the
+tracks overlaid on top (note: this window may be hiding behind other
+windows) and the window shown here that will display all the app
+controls.</p>
+<p>The first step is to open the video and track files using the
+dedicated buttons in the control panel. Each button will open a
+navigator that you can use to find and select the video that was used
+during tracking and the CSV file that was produced by
+<code>trackR</code> after tracking was completed.</p>
+<p>Note that the CSV file is never modified by <code>trackFixer</code>.
+Instead, <code>trackFixer</code> will save the tracking corrections to a
+separate file in order to never destroy the original tracking
+results.</p>
 </div>
 <hr>
 </div>
-<div id="fixing-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#fixing-module" class="anchor"></a>2 - Fixing module</h2>
+<div class="section level2">
+<h2 id="fixing-module">2 - Fixing module<a class="anchor" aria-label="anchor" href="#fixing-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z4/z4_2.png"></p>
-<p>As soon as the video and track files are opened, <code>trackfixer</code> will automatically switch to its “Fixing module” displayed in the image opposite and will show the video in the display window with the tracks overlaid (see image below).</p>
-<p>At the bottom of the control panel, there is a <code>Display size</code> control slider that allows you to change the size of the display window, for instance if the video is too wide for the screen.</p>
-<p>At the top of the control panel, you will find the video controls that allow you to:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z4/z4_2.png"></p>
+<p>As soon as the video and track files are opened,
+<code>trackfixer</code> will automatically switch to its “Fixing module”
+displayed in the image opposite and will show the video in the display
+window with the tracks overlaid (see image below).</p>
+<p>At the bottom of the control panel, there is a
+<code>Display size</code> control slider that allows you to change the
+size of the display window, for instance if the video is too wide for
+the screen.</p>
+<p>At the top of the control panel, you will find the video controls
+that allow you to:</p>
 <ul>
-<li>Play and pause the video with the <code>Play/pause</code> button or with the space bar of your keyboard.</li>
-<li>Advance or rewind the video by 1 frame with the <code>&gt;</code> and <code>&lt;</code> buttons or with the right and left arrow keys of your keyboard.</li>
-<li>Advance or rewind the video by 1 second with the <code>&gt;&gt;</code> and <code>&lt;&lt;</code> buttons or with the up and down arrow keys of your keyboard.</li>
-<li>Move to any frame of the video with the slider below the video control buttons.</li>
+<li>Play and pause the video with the <code>Play/pause</code> button or
+with the space bar of your keyboard.</li>
+<li>Advance or rewind the video by 1 frame with the <code>&gt;</code>
+and <code>&lt;</code> buttons or with the right and left arrow keys of
+your keyboard.</li>
+<li>Advance or rewind the video by 1 second with the
+<code>&gt;&gt;</code> and <code>&lt;&lt;</code> buttons or with the up
+and down arrow keys of your keyboard.</li>
+<li>Move to any frame of the video with the slider below the video
+control buttons.</li>
 </ul>
-<p>Below are 6 buttons that allow you to perform a number of correcting operations if you find that <code>trackR</code> made a mistake during tracking:</p>
+<p>Below are 6 buttons that allow you to perform a number of correcting
+operations if you find that <code>trackR</code> made a mistake during
+tracking:</p>
 <ul>
-<li>The <code>Reassign</code> button (or the “q” key of your keyboard) will open the reassignment menu. When the menu has opened, you can use the first dropdown selector to select which track to assign a new number to or to reassign to a previously existing track. You can then type in the input box below the number you would like to assign to the track.</li>
-<li>The <code>Remove</code> button (or the “w” key of your keyboard) will open the removal menu. When the menu has opened, you can use the dropdown selector to select which track to remove.</li>
-<li>The <code>Swap IDs</code> button (or the “e” key of your keyboard) will open the ID swapping menu. When the menu has opened, you can use the 2 dropdown selectors to select which tracks to swap. Note that swapping will occur from that frame on. Previous frames will not be affected and tracks will retain their original ID.</li>
-<li>The <code>Merge IDs</code> button (or the “r” key of your keyboard) will open the ID merging menu. When the menu has opened, you can use the 2 dropdown selectors to select which tracks to merge together. Note that the resulting track will retain the ID of the first selected track.</li>
-<li>The <code>Undo</code> button (or the “a” key of your keyboard) will undo any change made during the fixing session in the reverse order that they have been made.</li>
-<li>The <code>Save</code> button (or the “s” key of your keyboard) will save the modifications that you have made during the fixing session. These modifications are saved in a different file than the one containing the original tracking results to prevent accidental modifications to permanently damage the original results. The modified file will have the same name and be saved at the same location as the original file but with “_fixed” appended to its name. Note that if you interrupt your fixing session before the end of the video, you can resume it by loading the “[original_file_name]_fixed.csv” file instead of the original one. In this case, any new correction will also be saved to the “[original_file_name]_fixed.csv” file.</li>
+<li>The <code>Reassign</code> button (or the “q” key of your keyboard)
+will open the reassignment menu. When the menu has opened, you can use
+the first dropdown selector to select which track to assign a new number
+to or to reassign to a previously existing track. You can then type in
+the input box below the number you would like to assign to the
+track.</li>
+<li>The <code>Remove</code> button (or the “w” key of your keyboard)
+will open the removal menu. When the menu has opened, you can use the
+dropdown selector to select which track to remove.</li>
+<li>The <code>Swap IDs</code> button (or the “e” key of your keyboard)
+will open the ID swapping menu. When the menu has opened, you can use
+the 2 dropdown selectors to select which tracks to swap. Note that
+swapping will occur from that frame on. Previous frames will not be
+affected and tracks will retain their original ID.</li>
+<li>The <code>Merge IDs</code> button (or the “r” key of your keyboard)
+will open the ID merging menu. When the menu has opened, you can use the
+2 dropdown selectors to select which tracks to merge together. Note that
+the resulting track will retain the ID of the first selected track.</li>
+<li>The <code>Undo</code> button (or the “a” key of your keyboard) will
+undo any change made during the fixing session in the reverse order that
+they have been made.</li>
+<li>The <code>Save</code> button (or the “s” key of your keyboard) will
+save the modifications that you have made during the fixing session.
+These modifications are saved in a different file than the one
+containing the original tracking results to prevent accidental
+modifications to permanently damage the original results. The modified
+file will have the same name and be saved at the same location as the
+original file but with “_fixed” appended to its name. Note that if you
+interrupt your fixing session before the end of the video, you can
+resume it by loading the “[original_file_name]_fixed.csv” file instead
+of the original one. In this case, any new correction will also be saved
+to the “[original_file_name]_fixed.csv” file.</li>
 </ul>
-<p>Finally, some basic statistics about the tracks are displayed below the fixing controls. These can be useful to track your progress during a fixing session. For instance, if the statistics table shows that your file contains 10 tracks but you know you only had 8 individuals in your experiment, this is a good indication that some errors remain to be fixed.</p>
+<p>Finally, some basic statistics about the tracks are displayed below
+the fixing controls. These can be useful to track your progress during a
+fixing session. For instance, if the statistics table shows that your
+file contains 10 tracks but you know you only had 8 individuals in your
+experiment, this is a good indication that some errors remain to be
+fixed.</p>
 </div>
 <center>
-<img style="width: 75%;" src="../man/figures/z4/z4_3.png">
+<img style="width: 75%;" src="../reference/figures/z4/z4_3.png">
 </center>
 <hr>
 </div>
-<div id="output-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#output-data" class="anchor"></a>3 - Output data</h2>
-<p>Once you click the <code>Save</code> button in <code>trackFixer</code>, the data that is saved in the “[original_file_name]_fixed.csv” file has the same columns has those saved originally by <code>trackR</code> (see <a href="z3_trackR.html#output">here for more details</a>).</p>
+<div class="section level2">
+<h2 id="output-data">3 - Output data<a class="anchor" aria-label="anchor" href="#output-data"></a>
+</h2>
+<p>Once you click the <code>Save</code> button in
+<code>trackFixer</code>, the data that is saved in the
+“[original_file_name]_fixed.csv” file has the same columns has those
+saved originally by <code>trackR</code> (see <a href="z3_trackR.html#output">here for more details</a>).</p>
 <p>The file will also contain 2 additional columns:</p>
 <ul>
 <li>
-<code>track_fixed</code> is the identity of the tracked object after the corrections have been applied. The <code>track</code> column retains the original, uncorrected identity.</li>
+<code>track_fixed</code> is the identity of the tracked object after
+the corrections have been applied. The <code>track</code> column retains
+the original, uncorrected identity.</li>
 <li>
-<code>ignore</code> indicates whether you can ignore (TRUE) or not (FALSE) the corresponding row when you analyze the data. Ignored rows are those, for instance, from tracks that you have chosen to remove or merge with another track.</li>
+<code>ignore</code> indicates whether you can ignore (TRUE) or not
+(FALSE) the corresponding row when you analyze the data. Ignored rows
+are those, for instance, from tracks that you have chosen to remove or
+merge with another track.</li>
 </ul>
 <p>You can now proceed to the rest of the tutorials.</p>
 <ul>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5 - Export tracking results as video</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5
+- Export tracking results as video</a></li>
 </ul>
 <hr>
-<p>The video used throughout this tutorial was provided by <em>Sridhar, V. H., Roche, D. G., and Gingins, S. (2019). Tracktor: Image-based automated tracking of animal movement and behaviour. Methods Ecol. Evol. 10, 691. <a href="doi:10.1111/2041-210X.13166" class="uri">doi:10.1111/2041-210X.13166</a></em> and used here with permission of the authors.</p>
+<p>The video used throughout this tutorial was provided by <em>Sridhar,
+V. H., Roche, D. G., and Gingins, S. (2019). Tracktor: Image-based
+automated tracking of animal movement and behaviour. Methods Ecol. Evol.
+10, 691. <a href="doi:10.1111/2041-210X.13166" class="uri">doi:10.1111/2041-210X.13166</a></em> and used here with
+permission of the authors.</p>
 </div>
   </div>
 
@@ -197,11 +267,15 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://www.theswarmlab.com">Simon Garnier</a>.</p>
+  <p></p>
+<p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon
+Garnier</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>

@@ -1,5 +1,7 @@
 volumes <- c(Home = fs::path_home(), getVolumes()())
 colNames <- c("x", "y", "n", "frame", "track", "width", "height", "angle")
+colTypes <- rep("numeric", length(colNames))
+names(colTypes) <- colNames
 
 theVideoPath <- reactiveVal()
 theVideo <- reactiveVal()
@@ -62,7 +64,8 @@ shinyFileChoose(input, "trackFile_x", roots = volumes, session = session,
 observeEvent(input$trackFile_x, {
   path <- parseFilePaths(roots = volumes, input$trackFile_x)
   if (nrow(path) > 0) {
-    toCheck <- tryCatch(data.table::fread(path$datapath),
+    toCheck <- tryCatch(
+      data.table::fread(path$datapath, colClasses = colTypes),
                         error = function(e) NA)
 
     if (all(colNames %in% names(toCheck))) {

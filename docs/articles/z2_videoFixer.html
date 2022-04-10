@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -47,16 +49,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -82,7 +78,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/swarm-lab/trackR/">
+  <a href="https://github.com/swarm-lab/trackR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -103,70 +99,121 @@
 
       
 
-      </header><script src="z2_videoFixer_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>2 - Preparing videos (optional)</h1>
-                        <h4 class="author">Simon Garnier</h4>
+                        <h4 data-toc-skip class="author">Simon
+Garnier</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/master/vignettes/z2_videoFixer.Rmd"><code>vignettes/z2_videoFixer.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/HEAD/vignettes/z2_videoFixer.Rmd" class="external-link"><code>vignettes/z2_videoFixer.Rmd</code></a></small>
       <div class="hidden name"><code>z2_videoFixer.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>0 - Introduction</h2>
-<p>Videos can suffer from multiple issues that can make tracking difficult or even prevent it altogether. Two of the most common issues are camera movement and light/color variations. Camera movement is often caused by improper camera support (e.g. ball head too weak for the weight of the camera) or by vibrations or shocks received by the apparatus during the recording (e.g. if the apparatus is accidentally knocked off position by the experimenter). Light and color variations are frequent when recording outdoors or when the apparatus is not properly isolated from external light sources (e.g. when someone opens up a door or turn on and off the lights during an experiment).</p>
+<div class="section level2">
+<h2 id="introduction">0 - Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Videos can suffer from multiple issues that can make tracking
+difficult or even prevent it altogether. Two of the most common issues
+are camera movement and light/color variations. Camera movement is often
+caused by improper camera support (e.g. ball head too weak for the
+weight of the camera) or by vibrations or shocks received by the
+apparatus during the recording (e.g. if the apparatus is accidentally
+knocked off position by the experimenter). Light and color variations
+are frequent when recording outdoors or when the apparatus is not
+properly isolated from external light sources (e.g. when someone opens
+up a door or turn on and off the lights during an experiment).</p>
 <hr>
-<p><code>trackR</code> provides a convenient utility to attempt to fix these common issues: <code><a href="../reference/videoFixer.html">videoFixer()</a></code>. You can launch <code>videoFixer</code> by typing the following command in your R console:</p>
+<p><code>trackR</code> provides a convenient utility to attempt to fix
+these common issues: <code><a href="../reference/videoFixer.html">videoFixer()</a></code>. You can launch
+<code>videoFixer</code> by typing the following command in your R
+console:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/videoFixer.html">videoFixer</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Note that using <code>videoFixer</code> is completely optional. If your videos have none of the aforementioned issues, you can skip this step and move directly to the rest of the tutorials.</p>
+<p>Note that using <code>videoFixer</code> is completely optional. If
+your videos have none of the aforementioned issues, you can skip this
+step and move directly to the rest of the tutorials.</p>
 <hr>
 </div>
-<div id="video-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#video-module" class="anchor"></a>1 - Video module</h2>
+<div class="section level2">
+<h2 id="video-module">1 - Video module<a class="anchor" aria-label="anchor" href="#video-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z2/z2_1.png"></p>
-<p>Once <code>videoFixer</code> has started, it will open two windows: a display window that will later be used to display the video (note: this window may be hiding behind other windows) and the window shown here that will display all the app controls.</p>
-<p>First, you will need to click the “Select video file” button. This will bring up a navigator that you will use to locate the video file that you would like to prepare for tracking. Once you have located the video file in the navigator, click the “Select” button. <code>videoFixer</code> will open the video and display its first image in the display window.</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z2/z2_1.png"></p>
+<p>Once <code>videoFixer</code> has started, it will open two windows: a
+display window that will later be used to display the video (note: this
+window may be hiding behind other windows) and the window shown here
+that will display all the app controls.</p>
+<p>First, you will need to click the “Select video file” button. This
+will bring up a navigator that you will use to locate the video file
+that you would like to prepare for tracking. Once you have located the
+video file in the navigator, click the “Select” button.
+<code>videoFixer</code> will open the video and display its first image
+in the display window.</p>
 </div>
 <hr>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z2/z2_2.png"></p>
-<p>After the video has been opened, the control panel will be updated to look like in the image shown here</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z2/z2_2.png"></p>
+<p>After the video has been opened, the control panel will be updated to
+look like in the image shown here</p>
 <p>The 3 sliders in the control panel are the following:</p>
 <ul>
 <li>
-<code>Display size</code> allows you to change the size of the display window, for instance if the video is too wide for the screen. It does not affect the video quality.</li>
+<code>Display size</code> allows you to change the size of the
+display window, for instance if the video is too wide for the screen. It
+does not affect the video quality.</li>
 <li>
-<code>Select video range</code> allows you to exclude parts of the video (at the beginning and at the end) from the tracking process. This can be useful to ignore, for instance, the beginning of an experiment during which the animals are habituating to the environment.</li>
+<code>Select video range</code> allows you to exclude parts of the
+video (at the beginning and at the end) from the tracking process. This
+can be useful to ignore, for instance, the beginning of an experiment
+during which the animals are habituating to the environment.</li>
 <li>
-<code>Select a reference frame</code> allows you to select a frame from the video that will be used as a reference for adjusting the position and lighting of the other frames in the video. It is generally better to select a frame that shows as much as possible of the area to track and which lighting conditions are as representative as possible of the general lighting conditions in the rest of the video.</li>
+<code>Select a reference frame</code> allows you to select a frame
+from the video that will be used as a reference for adjusting the
+position and lighting of the other frames in the video. It is generally
+better to select a frame that shows as much as possible of the area to
+track and which lighting conditions are as representative as possible of
+the general lighting conditions in the rest of the video.</li>
 </ul>
 </div>
 <hr>
 </div>
-<div id="fixing-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#fixing-module" class="anchor"></a>2 - Fixing module</h2>
+<div class="section level2">
+<h2 id="fixing-module">2 - Fixing module<a class="anchor" aria-label="anchor" href="#fixing-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z2/z2_3.png"></p>
-<p>After you have set the 3 aforementioned sliders to the desired values, click on the tab marked “2” on the right side of the control panel window. This will load the “Fixing module” that looks like the image shown here.</p>
-<p>In this module, you can decide what you would like <code>videoFixer</code> to fix. If your video has lighting issues, turn the “Adjust lighting to match the reference image” switch on. If your video has issues with camera movement, turn the “Correct camera shift to match the reference image” switch on.</p>
-<p>Once this is done, click the “Export video” button. This will open a navigator that will allow you indicate where to save the corrected video. After indicating the name of the new video file, click the “Save video as…” button and <code>videoFixer</code> will start processing the video and attempt to correct its lighting and/or camera movement issue.</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z2/z2_3.png"></p>
+<p>After you have set the 3 aforementioned sliders to the desired
+values, click on the tab marked “2” on the right side of the control
+panel window. This will load the “Fixing module” that looks like the
+image shown here.</p>
+<p>In this module, you can decide what you would like
+<code>videoFixer</code> to fix. If your video has lighting issues, turn
+the “Adjust lighting to match the reference image” switch on. If your
+video has issues with camera movement, turn the “Correct camera shift to
+match the reference image” switch on.</p>
+<p>Once this is done, click the “Export video” button. This will open a
+navigator that will allow you indicate where to save the corrected
+video. After indicating the name of the new video file, click the “Save
+video as…” button and <code>videoFixer</code> will start processing the
+video and attempt to correct its lighting and/or camera movement
+issue.</p>
 </div>
 <hr>
-<p>Once <code>videoFixer</code> has finished processing the video and you have checked the result, you can proceed to the rest of the tutorials.</p>
+<p>Once <code>videoFixer</code> has finished processing the video and
+you have checked the result, you can proceed to the rest of the
+tutorials.</p>
 <ul>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z3_trackR.html">3 - Tracking videos</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html">4 - Inspect and fix tracking results</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5 - Export tracking results as video</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z3_trackR.html">3 -
+Tracking videos</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html">4
+- Inspect and fix tracking results</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5
+- Export tracking results as video</a></li>
 </ul>
 </div>
   </div>
@@ -182,11 +229,15 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://www.theswarmlab.com">Simon Garnier</a>.</p>
+  <p></p>
+<p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon
+Garnier</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>

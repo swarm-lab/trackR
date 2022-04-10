@@ -1,57 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://swarm-lab.github.io/trackR//index.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/404.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/amvee.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/backgrounder.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/ellipse.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/old/z2_video.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/kbox.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/old/z3_background.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/moduleSVR.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/old/z4_mask.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/moduleUI.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/old/z5_blob.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/optimEllipse.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/old/z6_tracking.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/simplerTracker.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/old/z7_settings.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/trackFixer.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z1_install.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/trackPlayer.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z2_video.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/trackR.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//reference/videoFixer.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z3_background.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//articles/z1_install.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z3_trackR.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//articles/z2_videoFixer.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z4_mask.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//articles/z3_trackR.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//articles/z4_trackFixer.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z5_blob.html</loc>
   </url>
   <url>
-    <loc>https://swarm-lab.github.io/trackR//articles/z5_trackPlayer.html</loc>
+    <loc>https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/articles/z6_tracking.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/articles/z7_settings.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/authors.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/index.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/amvee.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/backgrounder.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/ellipse.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/kbox.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/moduleSVR.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/moduleUI.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/optimEllipse.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/simplerTracker.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/trackFixer.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/trackPlayer.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/trackR.html</loc>
+  </url>
+  <url>
+    <loc>https://swarm-lab.github.io/trackR/reference/videoFixer.html</loc>
   </url>
 </urlset>

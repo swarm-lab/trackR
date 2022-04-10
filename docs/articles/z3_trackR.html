@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -47,16 +49,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -82,7 +78,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/swarm-lab/trackR/">
+  <a href="https://github.com/swarm-lab/trackR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -103,196 +99,400 @@
 
       
 
-      </header><script src="z3_trackR_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>3 - Tracking videos</h1>
-                        <h4 class="author">Simon Garnier</h4>
+                        <h4 data-toc-skip class="author">Simon
+Garnier</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/master/vignettes/z3_trackR.Rmd"><code>vignettes/z3_trackR.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/HEAD/vignettes/z3_trackR.Rmd" class="external-link"><code>vignettes/z3_trackR.Rmd</code></a></small>
       <div class="hidden name"><code>z3_trackR.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>0 - Introduction</h2>
-<p>Once you are ready to track a video, you can launch <code>trackR</code> by typing the following command in the R console:</p>
+<div class="section level2">
+<h2 id="introduction">0 - Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Once you are ready to track a video, you can launch
+<code>trackR</code> by typing the following command in the R
+console:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/trackR.html">trackR</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
-<div id="video-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#video-module" class="anchor"></a>1 - Video module</h2>
+<div class="section level2">
+<h2 id="video-module">1 - Video module<a class="anchor" aria-label="anchor" href="#video-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z3/z3_1.png"></p>
-<p>Once <code>trackR</code> has started, it will open two windows: a display window that will later be used to display the video (note: this window may be hiding behind other windows) and the window shown here that will display all the app controls.</p>
-<p>At the bottom of the control window, you will find 3 buttons that will always be present:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z3/z3_1.png"></p>
+<p>Once <code>trackR</code> has started, it will open two windows: a
+display window that will later be used to display the video (note: this
+window may be hiding behind other windows) and the window shown here
+that will display all the app controls.</p>
+<p>At the bottom of the control window, you will find 3 buttons that
+will always be present:</p>
 <ul>
-<li>“Save settings” and “Load settings” will allow you to save and load settings that you have set during the current tracking session or a previous one.</li>
-<li>“Reset trackR” will allow you to reset all of <code>trackR</code>’s settings to their original values.</li>
+<li>“Save settings” and “Load settings” will allow you to save and load
+settings that you have set during the current tracking session or a
+previous one.</li>
+<li>“Reset trackR” will allow you to reset all of <code>trackR</code>’s
+settings to their original values.</li>
 </ul>
-<p>The first thing that you will need to do is click the “Select video file” button. This will bring up a navigator that you will use to locate the video file that you would like to track. Once you have located the video file in the navigator, click the “Select” button. <code>trackR</code> will open the video and display its first image in the display window (see below).</p>
+<p>The first thing that you will need to do is click the “Select video
+file” button. This will bring up a navigator that you will use to locate
+the video file that you would like to track. Once you have located the
+video file in the navigator, click the “Select” button.
+<code>trackR</code> will open the video and display its first image in
+the display window (see below).</p>
 </div>
 <center>
-<img style="width: 75%;" src="../man/figures/z3/z3_2b.png">
+<img style="width: 75%;" src="../reference/figures/z3/z3_2b.png">
 </center>
 <hr>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z3/z3_2a.png"></p>
-<p>Once <code>trackR</code> has opened the video, new controls will appear in the control panel of the “Video Module” (see figure opposite). These new controls are:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z3/z3_2a.png"></p>
+<p>Once <code>trackR</code> has opened the video, new controls will
+appear in the control panel of the “Video Module” (see figure opposite).
+These new controls are:</p>
 <ul>
 <li>
-<code>Video range</code> allows you to exclude parts of the video (at the beginning and at the end) from the tracking process. This can be useful to ignore, for instance, the beginning of an experiment during which the animals are habituating to the environment.</li>
+<code>Video range</code> allows you to exclude parts of the video
+(at the beginning and at the end) from the tracking process. This can be
+useful to ignore, for instance, the beginning of an experiment during
+which the animals are habituating to the environment.</li>
 <li>
-<code>Display size</code> allows you to change the size of the display window, for instance if the video is too wide for the screen. It does not affect the video quality.</li>
+<code>Display size</code> allows you to change the size of the
+display window, for instance if the video is too wide for the screen. It
+does not affect the video quality.</li>
 <li>
-<code>Video quality</code> allows you to reduce the quality of the video (i.e. decrease its resolution) in order to speed up the tracking process but with a possible reduction of the tracking precision, especially if the objects to track are small. Note that the x/y coordinates that will be returned by <code>trackR</code> will match the original resolution of the video.</li>
+<code>Video quality</code> allows you to reduce the quality of the
+video (i.e. decrease its resolution) in order to speed up the tracking
+process but with a possible reduction of the tracking precision,
+especially if the objects to track are small. Note that the x/y
+coordinates that will be returned by <code>trackR</code> will match the
+original resolution of the video.</li>
 <li>
-<code>Frame</code> allows you to navigate through the video. Frame 1 will correspond to the lower bound of <code>Video range</code>, and the last frame will correspond to the upper bound of <code>Video range</code>.</li>
+<code>Frame</code> allows you to navigate through the video. Frame 1
+will correspond to the lower bound of <code>Video range</code>, and the
+last frame will correspond to the upper bound of
+<code>Video range</code>.</li>
 </ul>
-<p>Once you have set the parameters in the “Video module” to your liking, you can move to the “Background module” by clicking on the tab marked “2” on the right side of the control panel.</p>
+<p>Once you have set the parameters in the “Video module” to your
+liking, you can move to the “Background module” by clicking on the tab
+marked “2” on the right side of the control panel.</p>
 </div>
 <hr>
 </div>
-<div id="background-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#background-module" class="anchor"></a>2 - Background module</h2>
+<div class="section level2">
+<h2 id="background-module">2 - Background module<a class="anchor" aria-label="anchor" href="#background-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z3/z3_4a.png"></p>
-<p>When in the “Background module”, you can either choose to load an existing background image (e.g. an image of the empty experimental setup before the start of the experiment) or you can ask <code>trackR</code> to automatically reconstruct that background from the video.</p>
-<p>If you choose to select an existing background image, just click on the “Select existing background” button and use the navigator to locate and select the desired image. You can then skip the rest of this section and go directly to <a href="#mask-module">the next section</a>.</p>
-<p>If you choose to let <code>trackR</code> reconstruct the background from the video, you will first need to decide on two things:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z3/z3_4a.png"></p>
+<p>When in the “Background module”, you can either choose to load an
+existing background image (e.g. an image of the empty experimental setup
+before the start of the experiment) or you can ask <code>trackR</code>
+to automatically reconstruct that background from the video.</p>
+<p>If you choose to select an existing background image, just click on
+the “Select existing background” button and use the navigator to locate
+and select the desired image. You can then skip the rest of this section
+and go directly to <a href="#mask-module">the next section</a>.</p>
+<p>If you choose to let <code>trackR</code> reconstruct the background
+from the video, you will first need to decide on two things:</p>
 <ul>
-<li>The “Background type” which correspond to the algorithm that <code>trackR</code> will use to reconstruct the background. Four algorithms are available:
+<li>The “Background type” which correspond to the algorithm that
+<code>trackR</code> will use to reconstruct the background. Four
+algorithms are available:
 <ul>
-<li>“Mean” computes a background image in which each pixel is the average of the corresponding pixels in the selected video frames. This is a fast algorithm. However it does not always produce good results.</li>
-<li>“Median” computes a background image in which each pixel is the median of the corresponding pixels in the selected video frames. This usually produces a better result than “Mean”, but will take significantly longer to complete.</li>
-<li>“Minimum” computes a background image in which each pixel is the minimum of the corresponding pixels in the selected video frames. This usually produces a good result when the objects to track are lighter than the background.</li>
-<li>“Maximum” computes a background image in which each pixel is the maximum of the corresponding pixels in the selected video frames. This usually produces a good result when the objects to track are darker than the background.</li>
+<li>“Mean” computes a background image in which each pixel is the
+average of the corresponding pixels in the selected video frames. This
+is a fast algorithm. However it does not always produce good
+results.</li>
+<li>“Median” computes a background image in which each pixel is the
+median of the corresponding pixels in the selected video frames. This
+usually produces a better result than “Mean”, but will take
+significantly longer to complete.</li>
+<li>“Minimum” computes a background image in which each pixel is the
+minimum of the corresponding pixels in the selected video frames. This
+usually produces a good result when the objects to track are lighter
+than the background.</li>
+<li>“Maximum” computes a background image in which each pixel is the
+maximum of the corresponding pixels in the selected video frames. This
+usually produces a good result when the objects to track are darker than
+the background.</li>
 </ul>
 </li>
-<li>The “Number of frames for estimating background”. Better results are usually obtained with larger number of frames but the background will be slower to reconstruct.</li>
+<li>The “Number of frames for estimating background”. Better results are
+usually obtained with larger number of frames but the background will be
+slower to reconstruct.</li>
 </ul>
 </div>
 <hr>
-<p>In some occasions, like in the image on the left below, <code>trackR</code> will not reconstruct the background completely. This can happen, for instance, when an object did not move at all during the entirety of the video like it is the case here.</p>
-<p><img style="width: 50%;" src="../man/figures/z3/z3_5a.png"><img style="width: 50%;" src="../man/figures/z3/z3_5b.png"></p>
-<p>You can fix some of these “ghosts” by clicking the “Select ghost for removal” button. This will allow you to draw a polygon around the object to remove from the background by using the left button of your mouse/trackpad. Once you have surrounded the object with a polygon, use the right button of your mouse/trackpad to close the polygon. <code>trackR</code> will then use the pixels surrounding the polygon that you traced to replace the object with its best guess about the color of the background below it.</p>
-<p>Once you are happy with background generated by <code>trackR</code>, you can click the “Save background file” button to save the background image for later (re)use.</p>
+<p>In some occasions, like in the image on the left below,
+<code>trackR</code> will not reconstruct the background completely. This
+can happen, for instance, when an object did not move at all during the
+entirety of the video like it is the case here.</p>
+<p><img style="width: 50%;" src="../reference/figures/z3/z3_5a.png"><img style="width: 50%;" src="../reference/figures/z3/z3_5b.png"></p>
+<p>You can fix some of these “ghosts” by clicking the “Select ghost for
+removal” button. This will allow you to draw a polygon around the object
+to remove from the background by using the left button of your
+mouse/trackpad. Once you have surrounded the object with a polygon, use
+the right button of your mouse/trackpad to close the polygon.
+<code>trackR</code> will then use the pixels surrounding the polygon
+that you traced to replace the object with its best guess about the
+color of the background below it.</p>
+<p>Once you are happy with background generated by <code>trackR</code>,
+you can click the “Save background file” button to save the background
+image for later (re)use.</p>
 <hr>
 </div>
-<div id="mask-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mask-module" class="anchor"></a>3 - Mask module</h2>
+<div class="section level2">
+<h2 id="mask-module">3 - Mask module<a class="anchor" aria-label="anchor" href="#mask-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z3/z3_6a.png"></p>
-<p>The “Mask module” is optional. It should be used if you would like to restrict tracking to specific areas of the image, for instance to exclude the outside of an experimental arena where things may be moving that should not be tracked (e.g. the hands of the experimenter). By default, <code>trackR</code> will use the entirety of the visible frame to perform the tracking.</p>
-<p>The control panel of the “Mask module) allows you to either use an existing mask or to design your own. To use an existing mask, click the”Select existing mask” button and use the navigator to locate and select the desired mask image. A mask image should be a black and white image of the same resolution of the video. White portions of the image will be included in the traffic while black portion will be excluded.</p>
-<p>If you would like to design your own mask (or modify an existing mask that you have loaded in <code>trackR</code>), you can use the following controls:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z3/z3_6a.png"></p>
+<p>The “Mask module” is optional. It should be used if you would like to
+restrict tracking to specific areas of the image, for instance to
+exclude the outside of an experimental arena where things may be moving
+that should not be tracked (e.g. the hands of the experimenter). By
+default, <code>trackR</code> will use the entirety of the visible frame
+to perform the tracking.</p>
+<p>The control panel of the “Mask module) allows you to either use an
+existing mask or to design your own. To use an existing mask, click
+the”Select existing mask” button and use the navigator to locate and
+select the desired mask image. A mask image should be a black and white
+image of the same resolution of the video. White portions of the image
+will be included in the traffic while black portion will be
+excluded.</p>
+<p>If you would like to design your own mask (or modify an existing mask
+that you have loaded in <code>trackR</code>), you can use the following
+controls:</p>
 <ul>
-<li>“Include all” tells <code>trackR</code> to use the entirety of the visible frame to perform the tracking. This is a useful button to reset the mask to its default setting.</li>
-<li>“Exclude all” tells <code>trackR</code> to use none of the visible frame to perform the tracking. This is a useful button to wipe out the mask before adding authorized areas for tracking using the “Add polygon ROI” and “Add ellipse ROI” buttons.</li>
-<li>“Add polygon ROI” allows you to draw a polygon on the mask by using the left button of your mouse/trackpad. Once you are sastified with your polygon, use the right button of your mouse/trackpad to close it. If the “Including” radio button is selected, then the area inside the polygon will be included in the tracking. Otherwise, it will be excluded.</li>
-<li>“Add ellipse ROI” allows you to draw an ellipse on the mask by indicating 5 points along the periphery of the area of interest. Use the left button of your mouse/trackpad for this. Once you have finished adding the 5 points, <code>trackR</code> will compute the ellipse best fitting them. It is recommended to select 5 points that are roughly equidistant along the periphery of the area of interest. If the “Including” radio button is selected, then the area inside the ellipse will be included in the tracking. Otherwise, it will be excluded.</li>
+<li>“Include all” tells <code>trackR</code> to use the entirety of the
+visible frame to perform the tracking. This is a useful button to reset
+the mask to its default setting.</li>
+<li>“Exclude all” tells <code>trackR</code> to use none of the visible
+frame to perform the tracking. This is a useful button to wipe out the
+mask before adding authorized areas for tracking using the “Add polygon
+ROI” and “Add ellipse ROI” buttons.</li>
+<li>“Add polygon ROI” allows you to draw a polygon on the mask by using
+the left button of your mouse/trackpad. Once you are sastified with your
+polygon, use the right button of your mouse/trackpad to close it. If the
+“Including” radio button is selected, then the area inside the polygon
+will be included in the tracking. Otherwise, it will be excluded.</li>
+<li>“Add ellipse ROI” allows you to draw an ellipse on the mask by
+indicating 5 points along the periphery of the area of interest. Use the
+left button of your mouse/trackpad for this. Once you have finished
+adding the 5 points, <code>trackR</code> will compute the ellipse best
+fitting them. It is recommended to select 5 points that are roughly
+equidistant along the periphery of the area of interest. If the
+“Including” radio button is selected, then the area inside the ellipse
+will be included in the tracking. Otherwise, it will be excluded.</li>
 </ul>
-<p>You can combine including/excluding polygons and ellipses to define a mask as complex and detailed as you would like. Included areas will take a slightly greener tint in the display window while excluded areas will take a slightly more red tint (see images below).</p>
-<p>Once you are satisfied with your design, you can save it for later (re)use by clicking the “Save mask file” button.</p>
+<p>You can combine including/excluding polygons and ellipses to define a
+mask as complex and detailed as you would like. Included areas will take
+a slightly greener tint in the display window while excluded areas will
+take a slightly more red tint (see images below).</p>
+<p>Once you are satisfied with your design, you can save it for later
+(re)use by clicking the “Save mask file” button.</p>
 </div>
-<p><img style="width: 50%;" src="../man/figures/z3/z3_6d.png"><img style="width: 50%;" src="../man/figures/z3/z3_6e.png"></p>
+<p><img style="width: 50%;" src="../reference/figures/z3/z3_6d.png"><img style="width: 50%;" src="../reference/figures/z3/z3_6e.png"></p>
 <hr>
 </div>
-<div id="segmentation-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#segmentation-module" class="anchor"></a>4 - Segmentation module</h2>
+<div class="section level2">
+<h2 id="segmentation-module">4 - Segmentation module<a class="anchor" aria-label="anchor" href="#segmentation-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z3/z3_8a.png"></p>
-<p>Segmentation is the process of isolating objects of interests from the background of an image. In order to do so, <code>trackR</code> first needs to know whether it is looking for objects that are darker or lighter than the background. You can do so by ticking the appropriate radio button at the top of the control panel in the “Segmentation module”.</p>
-<p>Once this is done, <code>trackR</code> will need to know how different from the background a pixel must be to be considered a part of one of the objects to track. In order to indicate that information to <code>trackR</code>, you can use the 3 RGB threshold sliders in the control panel. They will allow you to set the threshold differences in each of the 3 color channels of the image (Red, Green, Blue) above which a pixel is considered a part of an object and not a part of the background.</p>
-<p>The objective is to find a set of thresholds that create a good separation between the objects to track and the background. You can see the result of changing the thresholds in the display window: all the parts of the image that are considered an object given the thresholds will be surrounded by a green line (see images below). A good set of thresholds will results in green lines tightly following the edges of the objects to track, like in the second image below. If the green lines surround parts of the background (like in the first image below) then the selected thresholds are not stringent enough and can be increased for better results. On the contrary, if the green lines are missing some or all parts of the objects to track, then the selected thresholds are too stringent and can be decreased for better results.</p>
-<p>You can also let <code>trackR</code> search for good thresholds by clicking the “Automatically select thresholds” button in the control panel. <code>trackR</code> will use a genetic algorithm to look for thresholds that provide good segmentation results in general. You can then tweak manually these suggested thresholds if you want.</p>
-<p>Finally, you can use the “Frame” slider at the bottom of the control panel to look at the result of the segmentation process in different parts of the video. This is recommended to make sure that the selected thresholds give good results throughout the video.</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z3/z3_8a.png"></p>
+<p>Segmentation is the process of isolating objects of interests from
+the background of an image. In order to do so, <code>trackR</code> first
+needs to know whether it is looking for objects that are darker or
+lighter than the background. You can do so by ticking the appropriate
+radio button at the top of the control panel in the “Segmentation
+module”.</p>
+<p>Once this is done, <code>trackR</code> will need to know how
+different from the background a pixel must be to be considered a part of
+one of the objects to track. In order to indicate that information to
+<code>trackR</code>, you can use the 3 RGB threshold sliders in the
+control panel. They will allow you to set the threshold differences in
+each of the 3 color channels of the image (Red, Green, Blue) above which
+a pixel is considered a part of an object and not a part of the
+background.</p>
+<p>The objective is to find a set of thresholds that create a good
+separation between the objects to track and the background. You can see
+the result of changing the thresholds in the display window: all the
+parts of the image that are considered an object given the thresholds
+will be surrounded by a green line (see images below). A good set of
+thresholds will results in green lines tightly following the edges of
+the objects to track, like in the second image below. If the green lines
+surround parts of the background (like in the first image below) then
+the selected thresholds are not stringent enough and can be increased
+for better results. On the contrary, if the green lines are missing some
+or all parts of the objects to track, then the selected thresholds are
+too stringent and can be decreased for better results.</p>
+<p>You can also let <code>trackR</code> search for good thresholds by
+clicking the “Automatically select thresholds” button in the control
+panel. <code>trackR</code> will use a genetic algorithm to look for
+thresholds that provide good segmentation results in general. You can
+then tweak manually these suggested thresholds if you want.</p>
+<p>Finally, you can use the “Frame” slider at the bottom of the control
+panel to look at the result of the segmentation process in different
+parts of the video. This is recommended to make sure that the selected
+thresholds give good results throughout the video.</p>
 </div>
-<p><img style="width: 50%;" src="../man/figures/z3/z3_8b.png"><img style="width: 50%;" src="../man/figures/z3/z3_9b.png"></p>
+<p><img style="width: 50%;" src="../reference/figures/z3/z3_8b.png"><img style="width: 50%;" src="../reference/figures/z3/z3_9b.png"></p>
 <hr>
 </div>
-<div id="separation-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#separation-module" class="anchor"></a>5 - Separation module</h2>
+<div class="section level2">
+<h2 id="separation-module">5 - Separation module<a class="anchor" aria-label="anchor" href="#separation-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z3/z3_10a.png"></p>
-<p>By default, <code>trackR</code> can track objects reliably as long as they do not come in close contact with each other. When that happens, however, <code>trackR</code> will use a number of heuristics to try and separate them. These heuristics are based on various parameters of the objects, namely:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z3/z3_10a.png"></p>
+<p>By default, <code>trackR</code> can track objects reliably as long as
+they do not come in close contact with each other. When that happens,
+however, <code>trackR</code> will use a number of heuristics to try and
+separate them. These heuristics are based on various parameters of the
+objects, namely:</p>
 <ul>
 <li>Their maximum length, in pixels</li>
 <li>Their maximum width, in pixels</li>
 <li>Their maximum surface area, in pixels</li>
-<li>Their density, that is the ratio between their surface area and the surface area of the ellipse that is enclosing the object (objects with a high density resemble better perfect ellipsoids).</li>
+<li>Their density, that is the ratio between their surface area and the
+surface area of the ellipse that is enclosing the object (objects with a
+high density resemble better perfect ellipsoids).</li>
 </ul>
-<p>You can set these parameters manually using the corresponding input boxes in the control panel of the “Separation module”. You can also let <code>trackR</code> search for good values for these parameters by clicking the “Automatically select object parameters” button in the control panel. <code>trackR</code> will look for parameters that provide good separation results in general. You can then tweak manually these suggested parameters if you want.</p>
-<p>Finally, you can use the “Frame” slider at the bottom of the control panel to look at the result of the separation process in different parts of the video. This is recommended to make sure that the selected parameters give good results throughout the video.</p>
+<p>You can set these parameters manually using the corresponding input
+boxes in the control panel of the “Separation module”. You can also let
+<code>trackR</code> search for good values for these parameters by
+clicking the “Automatically select object parameters” button in the
+control panel. <code>trackR</code> will look for parameters that provide
+good separation results in general. You can then tweak manually these
+suggested parameters if you want.</p>
+<p>Finally, you can use the “Frame” slider at the bottom of the control
+panel to look at the result of the separation process in different parts
+of the video. This is recommended to make sure that the selected
+parameters give good results throughout the video.</p>
 </div>
 <center>
-<img style="width: 75%;" src="../man/figures/z3/z3_10b.png">
+<img style="width: 75%;" src="../reference/figures/z3/z3_10b.png">
 </center>
 <hr>
 </div>
-<div id="tracking-module" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tracking-module" class="anchor"></a>6 - Tracking module</h2>
+<div class="section level2">
+<h2 id="tracking-module">6 - Tracking module<a class="anchor" aria-label="anchor" href="#tracking-module"></a>
+</h2>
 <div style="overflow: hidden;">
-<p><img style="float: right; width: 50%;" src="../man/figures/z3/z3_12.png"></p>
-<p>You made it to the tracking module! You are just a few clicks away from starting to track your video.</p>
-<p>The first thing that you can do in this module is set the scaling factor between the coordinates of the objects in the video (in pixels) and their coordinates in the “real world”. This step is optional but can be very useful if you are interested in, later, computing trajectory statistics in real-world units or in comparing trajectory statistics between different replicates of your experiment.</p>
-<p>In order to do this, click the “Set scale” button in the control panel of the “Tracking module”. <code>trackR</code> will ask you to select 2 reference points in the image shown in the display panel (see image on the left below). Once this is done, <code>trackR</code> will ask you to specify the distance between these 2 reference points in real-world units.</p>
-<p>You can also specify a different origin for the real-world coordinates. By default, the origin is set at the bottom-left corner of the image. If you would like to change that, click the “Set origin” button. <code>trackR</code> will ask you to select a point in the image shown in the display panel. Once this is done, this point will become the new origin (i.e. the new [0,0]) of the real-word coordinates.</p>
-<p>Finally, there are a few more controls that you can set before launching the tracking:</p>
+<p><img style="float: right; width: 50%;" src="../reference/figures/z3/z3_12.png"></p>
+<p>You made it to the tracking module! You are just a few clicks away
+from starting to track your video.</p>
+<p>The first thing that you can do in this module is set the scaling
+factor between the coordinates of the objects in the video (in pixels)
+and their coordinates in the “real world”. This step is optional but can
+be very useful if you are interested in, later, computing trajectory
+statistics in real-world units or in comparing trajectory statistics
+between different replicates of your experiment.</p>
+<p>In order to do this, click the “Set scale” button in the control
+panel of the “Tracking module”. <code>trackR</code> will ask you to
+select 2 reference points in the image shown in the display panel (see
+image on the left below). Once this is done, <code>trackR</code> will
+ask you to specify the distance between these 2 reference points in
+real-world units.</p>
+<p>You can also specify a different origin for the real-world
+coordinates. By default, the origin is set at the bottom-left corner of
+the image. If you would like to change that, click the “Set origin”
+button. <code>trackR</code> will ask you to select a point in the image
+shown in the display panel. Once this is done, this point will become
+the new origin (i.e. the new [0,0]) of the real-word coordinates.</p>
+<p>Finally, there are a few more controls that you can set before
+launching the tracking:</p>
 <ul>
 <li>
-<code>Look back</code> controls how many past frames the tracking algorithm should take into account to associate each detected object to a track. This is a useful parameter to take into account if, for instance, the objects tend to disappear for a few frames from time to time.</li>
+<code>Look back</code> controls how many past frames the tracking
+algorithm should take into account to associate each detected object to
+a track. This is a useful parameter to take into account if, for
+instance, the objects tend to disappear for a few frames from time to
+time.</li>
 <li>
-<code>Maximum distance (pixels)</code> controls the maximum distance in pixels that an object can move between two frames to be still considered as belonging to the same track.</li>
+<code>Maximum distance (pixels)</code> controls the maximum distance
+in pixels that an object can move between two frames to be still
+considered as belonging to the same track.</li>
 <li>
-<code>Display tracks during tracking (slower)</code> controls whether the video with the overlaid tracking results is played as the tracking is happening. If it is, this will slow down the tracking process, but this can be used to check that the tracking is working well when looking for the right set of parameters.</li>
+<code>Display tracks during tracking (slower)</code> controls
+whether the video with the overlaid tracking results is played as the
+tracking is happening. If it is, this will slow down the tracking
+process, but this can be used to check that the tracking is working well
+when looking for the right set of parameters.</li>
 </ul>
-<p>Once all is set, you can finally click on the <code>Start tracking</code> button, set a file in the navigator that pops up to store the tracking data, and just let <code>trackR</code> works its magic. The data will be saved as a CSV file and <a href="#output">the next section</a> will detail the content of this file.</p>
+<p>Once all is set, you can finally click on the
+<code>Start tracking</code> button, set a file in the navigator that
+pops up to store the tracking data, and just let <code>trackR</code>
+works its magic. The data will be saved as a CSV file and <a href="#output">the next section</a> will detail the content of this
+file.</p>
 </div>
-<p><img style="width: 50%;" src="../man/figures/z3/z3_13a.png"><img style="width: 50%;" src="../man/figures/z3/z3_13b.png"></p>
+<p><img style="width: 50%;" src="../reference/figures/z3/z3_13a.png"><img style="width: 50%;" src="../reference/figures/z3/z3_13b.png"></p>
 <hr>
 </div>
-<div id="output" class="section level2">
-<h2 class="hasAnchor">
-<a href="#output" class="anchor"></a>7 - Output data</h2>
-<p>Once <code>trackR</code> is done tracking the video, the resulting CSV file will contain between 8 and 12 columns depending on whether you have set a real-world scale and origin in the “Tracking module”. These columns will be the following:</p>
+<div class="section level2">
+<h2 id="output">7 - Output data<a class="anchor" aria-label="anchor" href="#output"></a>
+</h2>
+<p>Once <code>trackR</code> is done tracking the video, the resulting
+CSV file will contain between 8 and 12 columns depending on whether you
+have set a real-world scale and origin in the “Tracking module”. These
+columns will be the following:</p>
 <ul>
 <li>
-<code>frame</code> is the video frame number at which the measurements along the corresponding row have been made.</li>
+<code>frame</code> is the video frame number at which the
+measurements along the corresponding row have been made.</li>
 <li>
-<code>track</code> is the identity of the tracked object as estimated by <code>trackR</code>.</li>
+<code>track</code> is the identity of the tracked object as
+estimated by <code>trackR</code>.</li>
 <li>
-<code>x</code> is the x coordinate of the object location in pixels in the context of the video frame. The origin is set at the bottom-left corner of the frame.</li>
+<code>x</code> is the x coordinate of the object location in pixels
+in the context of the video frame. The origin is set at the bottom-left
+corner of the frame.</li>
 <li>
-<code>y</code> is the y coordinate of the object location in pixels in the context of the video frame. The origin is set at the bottom-left corner of the frame.</li>
+<code>y</code> is the y coordinate of the object location in pixels
+in the context of the video frame. The origin is set at the bottom-left
+corner of the frame.</li>
 <li>
 <code>width</code> is the width in pixels of the object.</li>
 <li>
 <code>height</code> is the height in pixels of the object.</li>
 <li>
-<code>angle</code> is the angle in degrees between the main axis of the object and the y axis.</li>
+<code>angle</code> is the angle in degrees between the main axis of
+the object and the y axis.</li>
 <li>
-<code>n</code> is the number of pixels covered by the object in the image. If you set the <code>Video quality</code> slider in the “Video module” to a value lower than 1, then this number if an approximation.</li>
+<code>n</code> is the number of pixels covered by the object in the
+image. If you set the <code>Video quality</code> slider in the “Video
+module” to a value lower than 1, then this number if an
+approximation.</li>
 </ul>
-<p>Plus, if you have set a real-world scale and origin in the “Tracking module”: + <code>x_[unit]</code> is the x coordinate of the object location in real-world [unit] The origin is set to the real-worl equivalent to that you have defined in the “Tracking module”. + <code>y_[unit]</code> is the y coordinate of the object location in real-world [unit] The origin is set to the real-worl equivalent to that you have defined in the “Tracking module”. + <code>width_[unit]</code> is the width in real-world [unit] of the object. + <code>height_[unit]</code> is the height in real-world [unit] of the object.</p>
+<p>Plus, if you have set a real-world scale and origin in the “Tracking
+module”: + <code>x_[unit]</code> is the x coordinate of the object
+location in real-world [unit] The origin is set to the real-worl
+equivalent to that you have defined in the “Tracking module”. +
+<code>y_[unit]</code> is the y coordinate of the object location in
+real-world [unit] The origin is set to the real-worl equivalent to that
+you have defined in the “Tracking module”. + <code>width_[unit]</code>
+is the width in real-world [unit] of the object. +
+<code>height_[unit]</code> is the height in real-world [unit] of the
+object.</p>
 <p>You can now proceed to the rest of the tutorials.</p>
 <ul>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html">4 - Inspect and fix tracking results</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5 - Export tracking results as video</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html">4
+- Inspect and fix tracking results</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5
+- Export tracking results as video</a></li>
 </ul>
 <hr>
-<p>The video used throughout this tutorial was provided by <em>Sridhar, V. H., Roche, D. G., and Gingins, S. (2019). Tracktor: Image-based automated tracking of animal movement and behaviour. Methods Ecol. Evol. 10, 691. <a href="doi:10.1111/2041-210X.13166" class="uri">doi:10.1111/2041-210X.13166</a></em> and used here with permission of the authors.</p>
+<p>The video used throughout this tutorial was provided by <em>Sridhar,
+V. H., Roche, D. G., and Gingins, S. (2019). Tracktor: Image-based
+automated tracking of animal movement and behaviour. Methods Ecol. Evol.
+10, 691. <a href="doi:10.1111/2041-210X.13166" class="uri">doi:10.1111/2041-210X.13166</a></em> and used here with
+permission of the authors.</p>
 </div>
   </div>
 
@@ -307,11 +507,15 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://www.theswarmlab.com">Simon Garnier</a>.</p>
+  <p></p>
+<p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon
+Garnier</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>

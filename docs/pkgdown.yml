@@ -1,5 +1,5 @@
-pandoc: 2.14.0.3
-pkgdown: 1.6.1
+pandoc: 2.17.1.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   z1_install: z1_install.html
@@ -7,8 +7,8 @@ articles:
   z3_trackR: z3_trackR.html
   z4_trackFixer: z4_trackFixer.html
   z5_trackPlayer: z5_trackPlayer.html
-last_built: 2021-11-06T18:27Z
+last_built: 2022-04-10T21:53Z
 urls:
-  reference: https://swarm-lab.github.io/trackR//reference
-  article: https://swarm-lab.github.io/trackR//articles
+  reference: https://swarm-lab.github.io/trackR/reference
+  article: https://swarm-lab.github.io/trackR/articles
 

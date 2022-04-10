@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -47,16 +49,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -82,7 +78,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/swarm-lab/trackR/">
+  <a href="https://github.com/swarm-lab/trackR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -103,51 +99,77 @@
 
       
 
-      </header><script src="z1_install_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>1 - Installing trackR</h1>
-                        <h4 class="author">Simon Garnier</h4>
+                        <h4 data-toc-skip class="author">Simon
+Garnier</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/master/vignettes/z1_install.Rmd"><code>vignettes/z1_install.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/swarm-lab/trackR/blob/HEAD/vignettes/z1_install.Rmd" class="external-link"><code>vignettes/z1_install.Rmd</code></a></small>
       <div class="hidden name"><code>z1_install.Rmd</code></div>
 
     </div>
 
     
     
-<p>Installing <a href="https://github.com/swarm-lab/trackR"><code>trackR</code></a> should go smoothly on all major operating systems (Mac, Windows, “Ubuntu-like” Linux). There are a few steps to follow before installing the package itself in order to install all the necessary dependencies.</p>
+<p>Installing <a href="https://github.com/swarm-lab/trackR" class="external-link"><code>trackR</code></a>
+should go smoothly on all major operating systems (Mac, Windows,
+“Ubuntu-like” Linux). There are a few steps to follow before installing
+the package itself in order to install all the necessary
+dependencies.</p>
 <p>All installation steps are described below.</p>
 <hr>
 <ul>
-<li><a href="#installing-opencv">1 - Installing <code>OpenCV</code></a></li>
-<li><a href="#installing-trackr">2 - Installing <code>trackR</code></a></li>
+<li><a href="#installing-opencv">1 - Installing
+<code>OpenCV</code></a></li>
+<li><a href="#installing-trackr">2 - Installing
+<code>trackR</code></a></li>
 </ul>
 <hr>
-<div id="installing-opencv" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installing-opencv" class="anchor"></a>1 - Installing <code>OpenCV</code>
+<div class="section level2">
+<h2 id="installing-opencv">1 - Installing <code>OpenCV</code><a class="anchor" aria-label="anchor" href="#installing-opencv"></a>
 </h2>
-<p><code>trackR</code> uses the powerful computer-vision library <a href="https://www.opencv.org"><code>OpenCV</code></a> in order to load and process videos and images. Installing <code>OpenCV</code> can be a daunting task if you are not used to compiling complex software from source. For this reason, we have created <a href="https://CRAN.R-project.org/package=ROpenCVLite"><code>ROpenCVLite</code></a>, a helper <code>R</code> package that will take care of this process for you.</p>
-<p>Please go to <a href="https://swarm-lab.github.io/ROpenCVLite/articles/install.html">https://swarm-lab.github.io/ROpenCVLite/articles/install.html</a> and follow the instructions there to install <code>OpenCV</code> on your system. There are slight differences between the installation processes for Mac, Windows, and Linux, so make sure to follow those that are for your operating system. The installation process should be straightforward (just a few buttons or links to click here and there) but the compilation of OpenCV will take some time (10 to 20 minutes depending on your machine and operating system). Make yourself a nice cup of tea or coffee and relax in the meantime.</p>
-<p>Once you have installed <code>OpenCV</code> via <code>ROpenCVLite</code>, you can follow the rest of the installation instructions for <code>trackR</code> below.</p>
+<p><code>trackR</code> uses the powerful computer-vision library <a href="https://www.opencv.org" class="external-link"><code>OpenCV</code></a> in order to load
+and process videos and images. Installing <code>OpenCV</code> can be a
+daunting task if you are not used to compiling complex software from
+source. For this reason, we have created <a href="https://CRAN.R-project.org/package=ROpenCVLite" class="external-link"><code>ROpenCVLite</code></a>,
+a helper <code>R</code> package that will take care of this process for
+you.</p>
+<p>Please go to <a href="https://swarm-lab.github.io/ROpenCVLite/articles/install.html" class="external-link">https://swarm-lab.github.io/ROpenCVLite/articles/install.html</a>
+and follow the instructions there to install <code>OpenCV</code> on your
+system. There are slight differences between the installation processes
+for Mac, Windows, and Linux, so make sure to follow those that are for
+your operating system. The installation process should be
+straightforward (just a few buttons or links to click here and there)
+but the compilation of OpenCV will take some time (10 to 20 minutes
+depending on your machine and operating system). Make yourself a nice
+cup of tea or coffee and relax in the meantime.</p>
+<p>Once you have installed <code>OpenCV</code> via
+<code>ROpenCVLite</code>, you can follow the rest of the installation
+instructions for <code>trackR</code> below.</p>
 <hr>
 </div>
-<div id="installing-trackr" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installing-trackr" class="anchor"></a>2 - Installing <code>trackR</code>
+<div class="section level2">
+<h2 id="installing-trackr">2 - Installing <code>trackR</code><a class="anchor" aria-label="anchor" href="#installing-trackr"></a>
 </h2>
-<p>Once <code>OpenCV</code> is ready, you can install <code>trackR</code> and the rest of its dependencies by simply typing the following command in your R console:</p>
+<p>Once <code>OpenCV</code> is ready, you can install
+<code>trackR</code> and the rest of its dependencies by simply typing
+the following command in your R console:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"swarm-lab/trackR"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"swarm-lab/trackR"</span><span class="op">)</span></code></pre></div>
 <hr>
 <p>You are now ready to proceed to the rest of the tutorials!</p>
 <ul>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html">2 - Preparing videos (optional)</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z3_trackR.html">3 - Tracking videos</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html">4 - Inspect and fix tracking results</a></li>
-<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5 - Export tracking results as video</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z2_videoFixer.html">2
+- Preparing videos (optional)</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z3_trackR.html">3 -
+Tracking videos</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z4_trackFixer.html">4
+- Inspect and fix tracking results</a></li>
+<li><a href="https://swarm-lab.github.io/trackR/articles/z5_trackPlayer.html">5
+- Export tracking results as video</a></li>
 </ul>
 </div>
   </div>
@@ -163,11 +185,15 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://www.theswarmlab.com">Simon Garnier</a>.</p>
+  <p></p>
+<p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon
+Garnier</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>

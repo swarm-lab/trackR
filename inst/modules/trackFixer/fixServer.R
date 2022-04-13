@@ -218,7 +218,7 @@ observeEvent(input$okRemove, {
   rm_id <- as.numeric(input$removeID)
 
   if (!is.na(rm_id)) {
-    idx <- theTracks()[, track_fixed] == rm_id
+    idx <- theTracks()[, track_fixed] == rm_id & theTracks()[, frame] >= input$videoPos_x
     theTracks()[idx, ignore := TRUE]
     changes[[length(changes) + 1]] <<- list(frame = input$videoPos_x,
                                             type = "remove",

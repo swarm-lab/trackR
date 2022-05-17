@@ -256,20 +256,20 @@ observeEvent(theTracksPath(), {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
-      setcolorder(nz, c("id", "x", "y"))
-      # nz <- nz[, if(.N >= 5) .SD, by = .(id)]
+      setcolorder(nz, c("label", "x", "y"))
+      # nz <- nz[, if(.N >= 5) .SD, by = .(label)]
       # nz <- nz[(x %% speedup) == 0 & (y %% speedup) == 0]
 
       if (is.null(centers)) {
-        centers <- nz[, .(x = mean(x), y = mean(y)), by = .(id)][, 2:3]
+        centers <- nz[, .(x = mean(x), y = mean(y)), by = .(label)][, 2:3]
       }
 
       d <- Rfast::dista(nz[, 2:3], centers)
       nz[, c("k", "kd") := list(Rfast::rowMins(d), Rfast::rowMins(d, value = TRUE))]
       nz[kd > (2 * max_height), "k"] <- NA
-      gr <- unique(nz[, .(id, k)])
-      setorder(gr, id)
-      gr[, new_id := id]
+      gr <- unique(nz[, .(label, k)])
+      setorder(gr, label)
+      gr[, new_id := label]
 
       for (j in 1:nrow(gr)) {
         friends <- gr$new_id[gr$k == gr$k[j]]

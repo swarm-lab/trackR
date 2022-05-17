@@ -104,9 +104,9 @@ observeEvent(input$optimizeBlobs_x, {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
-      setcolorder(nz, c("id", "x", "y"))
-      # nz <- nz[, if(.N >= 5) .SD, by = .(id)]
-      nz_summ <- nz[, as.data.table(kbox(cbind(x, y))), by = .(id)]
+      setcolorder(nz, c("label", "x", "y"))
+      # nz <- nz[, if(.N >= 5) .SD, by = .(label)]
+      nz_summ <- nz[, as.data.table(kbox(cbind(x, y))), by = .(label)]
 
       if (nrow(nz_summ) > 0) {
         nz_summ[, area := (width / 2) * (height / 2) * pi]
@@ -217,14 +217,14 @@ observeEvent(refreshDisplay(), {
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
-      setcolorder(nz, c("id", "x", "y"))
-      centers <- nz[, .(x = mean(x), y = mean(y)), by = .(id)]
+      setcolorder(nz, c("label", "x", "y"))
+      centers <- nz[, .(x = mean(x), y = mean(y)), by = .(label)]
 
       d <- Rfast::dista(nz[, 2:3], centers[, 2:3])
       nz[, k := Rfast::rowMins(d)]
-      gr <- unique(nz[, .(id, k)])
-      setorder(gr, id)
-      gr[, new_id := id]
+      gr <- unique(nz[, .(label, k)])
+      setorder(gr, label)
+      gr[, new_id := label]
 
       for (j in 1:nrow(gr)) {
         friends <- gr$new_id[gr$k == gr$k[j]]

@@ -265,8 +265,8 @@ kbox <- function(x, centers = 1, iter.max = 10, split = FALSE, split.width = Inf
     to_split <- test_width > 1 | test_height > 1 | test_density > 1
 
     if (any(to_split)) {
-      tmp_cl <- CEC::cec(x, cl$nclusters, iter.max = iter.max, param = NULL,
-                         card.min = min.size, nstart = 10, threads = "auto")
+      # tmp_cl <- CEC::cec(x, cl$nclusters, iter.max = iter.max, param = NULL,
+      #                    card.min = min.size, nstart = 10, threads = "auto")
 
       tmp_cl <- tryCatch(
         CEC::cec(x, cl$nclusters, iter.max = iter.max, card.min = min.size, param = NULL,

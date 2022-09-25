@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">trackR</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.5.1</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.5.2</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">amvee</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">amvee</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,10 +87,13 @@
     <dl><dt>x</dt>
 <dd><p>A matrix with two columns corresponding to the x and y positions for
 which to compute the ellipsoid.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector with 5 elements: the x and y coordinated of the center of
+    
+
+<p>A vector with 5 elements: the x and y coordinated of the center of
  the ellipsoid, the width and height of the ellipsoid, and the angle of the
  ellipsoid relative to the y axis.</p>
     </div>
@@ -101,13 +104,13 @@ which to compute the ellipsoid.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ell</span> <span class="op">&lt;-</span> <span class="fu">amvee</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="ellipse.html">ellipse</a></span><span class="op">(</span><span class="va">ell</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ell</span> <span class="op">&lt;-</span> <span class="fu">amvee</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="ellipse.html">ellipse</a></span><span class="op">(</span><span class="va">ell</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, <span class="va">ell</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="amvee-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -118,13 +121,11 @@ which to compute the ellipsoid.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon
-Garnier</a>.</p>
+  <p></p><p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon Garnier</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

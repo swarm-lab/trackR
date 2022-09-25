@@ -31,9 +31,9 @@ ui <- function(request) {
             moduleUI("trackR_lab/video"),
             moduleUI("trackR_lab/background"),
             moduleUI("trackR_lab/mask"),
-            moduleUI("trackR_lab/segmentation"),
-            moduleUI("trackR_lab/blob"),
-            moduleUI("trackR_lab/track")
+            moduleUI("trackR_lab/segmentation") # ,
+            # moduleUI("trackR_lab/blob"),
+            # moduleUI("trackR_lab/track")
           ),
 
           verticalTabsetPanel(
@@ -57,9 +57,9 @@ server <- function(input, output, session) {
 
   moduleSVR("trackR_lab/segmentation")
 
-  moduleSVR("trackR_lab/blob")
+  # moduleSVR("trackR_lab/blob")
 
-  moduleSVR("trackR_lab/track")
+  # moduleSVR("trackR_lab/track")
 
   moduleSVR("trackR_lab/controls")
 

@@ -10,3 +10,5 @@ inst/app/.DS_Store
 scripts
 old
 test
+inst/trackR_lab
+inst/modules/trackR_lab

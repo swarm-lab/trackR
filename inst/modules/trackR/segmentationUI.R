@@ -15,11 +15,6 @@ verticalTabPanel(
 
   actionButton("optimizeThresholds_x", "Automatically select thresholds", width = "100%"),
 
-  # p(style = "padding-bottom: 10px;"),
-  #
-  # sliderInput("thresholdImages_x", "Number of frames for optimizing thresholds:", min = 1, max = 100,
-  #             value = 20, width = "100%"),
-
   hr(class = "hr-text", `data-content` = "Or set them manually"),
 
   sliderInput("redThreshold_x", "RGB thresholds", width = "100%", min = 1, max = 255,

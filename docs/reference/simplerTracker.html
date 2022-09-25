@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">trackR</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.5.1</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.5.2</span>
       </span>
     </div>
 
@@ -81,22 +81,29 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">simplerTracker</span><span class="op">(</span><span class="va">current</span>, <span class="va">past</span>, maxDist <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">simplerTracker</span><span class="op">(</span><span class="va">current</span>, <span class="va">past</span>, maxDist <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>current</dt>
 <dd><p>A data frame with at least 4 columns: x, y, frame, and track.</p></dd>
+
+
 <dt>past</dt>
 <dd><p>A data frame with at least 4 columns: x, y, frame, and track.</p></dd>
+
+
 <dt>maxDist</dt>
 <dd><p>The maximum distance between two successive positions
 belonging to the same trajectory.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame with at least 4 columns: x, y, frame, and track.</p>
+    
+
+<p>A data frame with at least 4 columns: x, y, frame, and track.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -111,13 +118,11 @@ belonging to the same trajectory.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon
-Garnier</a>.</p>
+  <p></p><p>Developed by <a href="http://www.theswarmlab.com" class="external-link">Simon Garnier</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

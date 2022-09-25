@@ -65,7 +65,7 @@ observeEvent(input$optimizeThresholds_x, {
     }
 
     if (input$darkButton_x == "Darker")
-      not(background)
+      not(background, "self")
 
     mask %i/% 255
 
@@ -78,23 +78,23 @@ observeEvent(input$optimizeThresholds_x, {
                         interpolation = "area")
 
       if (input$darkButton_x == "Darker")
-        not(frame)
+        not(frame, target = "self")
 
       frame %i-% background
       frame %i*% mask
-      frame
+      split(frame)
     })
 
     removeNotification(id = "load")
     showNotification("Optimizing thresholds. Please wait.", id = "optim", duration = NULL)
 
-    d <- matrix(apply(sapply(frames, range), 1, max), ncol = 2, byrow = TRUE)
-    d[, 1] <- d[, 1] + 1
-
-    th <- rgenoud::genoud(toOptim, 3, max = TRUE, data.type.int = TRUE,
-                          images = frames, Domains = d, pop.size = 25,
-                          boundary.enforcement = 2, wait.generations	= 3,
-                          print.level = 0)$par
+    th <- as.integer(
+      rowMeans(
+        sapply(frames, function(f) {
+          sapply(f, autothreshold, method = "Otsu")
+        })
+      )
+    )
 
     removeNotification(id = "optim")
     toggleAll("ON")

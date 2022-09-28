@@ -91,7 +91,7 @@ observeEvent(input$optimizeThresholds_x, {
     th <- as.integer(
       rowMeans(
         sapply(frames, function(f) {
-          sapply(f, autothreshold, method = "Otsu")
+          sapply(f, autothreshold, method = input$thresholdMethod_x)
         })
       )
     )

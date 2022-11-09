@@ -232,6 +232,7 @@ observeEvent(theTrackVideoPath(), {
       }
 
       writeFrame(vw, img)
+      rm(img)
 
       new_check <- floor(100 * i / n)
       if (new_check > old_check) {

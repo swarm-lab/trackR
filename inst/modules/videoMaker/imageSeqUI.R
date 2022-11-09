@@ -19,20 +19,20 @@ verticalTabPanel(
 
   htmlOutput("seqSlider"),
 
-  hr(),
-
   tags$table(
     tags$tr(
-      tags$td(htmlOutput("fpsLabel"), style = "width: 5%;"),
-      tags$td(htmlOutput("fpsSelector"),
-              style = "width: 44%;"),
+      tags$td(tags$div(htmlOutput("compressionSelector"), style = "width: 150px; margin: auto;"),
+              style = "width: 49%;"),
       tags$td(),
-      tags$td(htmlOutput("exportButton"),
-              style = "width: 49%;")
+      tags$td(htmlOutput("fpsLabel"), style = "width: 7%;"),
+      tags$td(htmlOutput("fpsSelector"),
+              style = "width: 42%;"),
     ),
 
     class = "settingsTable"
   ),
+
+  htmlOutput("exportButton"),
 
   p()
 )

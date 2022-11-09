@@ -72,7 +72,7 @@ output$seqStatus <- renderUI({
 # Controls
 output$displaySlider <- renderUI({
   if (length(theSequence()) > 0) {
-    sliderInput("displaySize_x", "Display size", width = "100%", value = 1,
+    sliderInput("displaySize_x", "Output rescaling", width = "100%", value = 1,
                 min = 0.1, max = 1, step = 0.1)
   }
 })
@@ -99,12 +99,18 @@ output$seqSlider <- renderUI({
     rangeMem <<- input$rangePos_x
 
     if (test[2] & !test[1]) {
-      sliderInput("seqPos_x", "Frame", width = "100%",
-                  value = diff(input$rangePos_x) + 1,
-                  min = 1, max = diff(input$rangePos_x) + 1, step = 1)
+      tagList(
+        sliderInput("seqPos_x", "Frame", width = "100%",
+                    value = diff(input$rangePos_x) + 1,
+                    min = 1, max = diff(input$rangePos_x) + 1, step = 1),
+        hr()
+      )
     } else {
-      sliderInput("seqPos_x", "Frame", width = "100%",
-                  value = 1, min = 1, max = diff(input$rangePos_x) + 1, step = 1)
+      tagList(
+        sliderInput("seqPos_x", "Frame", width = "100%",
+                    value = 1, min = 1, max = diff(input$rangePos_x) + 1, step = 1),
+        hr()
+      )
     }
   }
 })
@@ -142,10 +148,22 @@ observeEvent(redraw(), {
 
 # Export video
 output$exportButton <- renderUI({
-  if (length(theSequence()) > 0) {
-    shinySaveButton("exportVideo_x", "Export video", "Save video as...",
-                    filetype = "mp4",
-                    class = "fullWidth")
+  if (length(theSequence()) > 0 & !is.null(input$compression_x)) {
+    if (input$compression_x == TRUE) {
+      tagList(
+        hr(),
+        shinySaveButton("exportVideo_x", "Export video", "Save video as...",
+                        filetype = "mp4",
+                        class = "fullWidth")
+      )
+    } else {
+      tagList(
+        hr(),
+        shinySaveButton("exportVideo_x", "Export video", "Save video as...",
+                        filetype = "mkv",
+                        class = "fullWidth")
+      )
+    }
   }
 })
 
@@ -157,7 +175,14 @@ output$fpsLabel <- renderUI({
 
 output$fpsSelector <- renderUI({
   if (length(theSequence()) > 0) {
-    numericInput("fps_x", NULL, 25, 0, NA, 1, "100%")
+    numericInput("fps_x", NULL, 25, 1, NA, 1, "100%")
+  }
+})
+
+output$compressionSelector <- renderUI({
+  if (length(theSequence()) > 0) {
+    materialSwitch(inputId = "compression_x", label = "Compression",
+                   value = TRUE, status = "success")
   }
 })
 
@@ -178,11 +203,19 @@ observeEvent(theTrackVideoPath(), {
     range_pos <- input$rangePos_x
     n <- diff(range_pos) + 1
 
-    vw <- videoWriter(theTrackVideoPath(),
-                      fourcc = "avc1",
-                      fps = input$fps_x,
-                      height = theImage$nrow(),
-                      width = theImage$ncol())
+    if (input$compression_x == TRUE) {
+      vw <- videoWriter(theTrackVideoPath(),
+                        fourcc = "avc1",
+                        fps = input$fps_x,
+                        height = nrow(theImage) * input$displaySize_x,
+                        width = ncol(theImage) * input$displaySize_x)
+    } else {
+      vw <- videoWriter(theTrackVideoPath(),
+                        fourcc = "ffv1",
+                        fps = input$fps_x,
+                        height = nrow(theImage) * input$displaySize_x,
+                        width = ncol(theImage) * input$displaySize_x)
+    }
 
     pb <- Progress$new()
     pb$set(message = "Processing: ", value = 0, detail = "0%")
@@ -192,7 +225,13 @@ observeEvent(theTrackVideoPath(), {
 
     for (i in 1:n) {
       pos <- i + range_pos[1] - 1
-      writeFrame(vw, image(theSequence()[i]))
+      img <- image(theSequence()[i])
+
+      if (input$displaySize_x < 1) {
+        img <- resize(img, fx = input$displaySize_x, fy = input$displaySize_x)
+      }
+
+      writeFrame(vw, img)
 
       new_check <- floor(100 * i / n)
       if (new_check > old_check) {

@@ -1,8 +1,8 @@
 Package: trackR
 Type: Package
 Title: Simple Video Tracking Software
-Version: 0.5.2
-Date: 2022-09-25
+Version: 0.5.3
+Date: 2022-11-09
 Authors@R: c(
     person("Simon", "Garnier", email = "garnier@njit.edu", role = c("aut", "cre"),
       comment = c(ORCID = "0000-0002-3886-3974"))

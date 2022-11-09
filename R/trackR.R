@@ -97,3 +97,28 @@ trackFixer <- function(...) {
 trackPlayer <- function(...) {
   shiny::runApp(paste0(find.package("trackR"), "/trackPlayer"), ...)
 }
+
+
+#' @title Convert Image Sequence to Video
+#'
+#' @description Simple Shiny-based GUI to convert a sequence of images into a
+#'  video compatible with \code{\link{trackR}}.
+#'
+#' @param ... Arguments passed to \link[shiny]{runApp}.
+#'
+#' @return This function does not return anything. A file is saved if the
+#'  export button is used in the app.
+#'
+#' @author Simon Garnier, \email{garnier@@njit.edu}
+#'
+#' @examples
+#' # Run videoMaker in an external window
+#' \dontrun{videoMaker()}
+#'
+#' # Run videoMaker classic inside RStudio
+#' \dontrun{videoMaker(launch.browser = rstudioapi::viewer)}
+#'
+#' @export
+videoMaker <- function(...) {
+  shiny::runApp(paste0(find.package("trackR"), "/videoMaker"), ...)
+}

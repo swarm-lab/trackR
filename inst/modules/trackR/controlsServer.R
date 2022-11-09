@@ -4,7 +4,7 @@ toggleAll <- function(state = "OFF") {
   to_toggle <- grepl("_x", names(input_list))
   input_list <- input_list[to_toggle]
 
-  for(name in names(input_list)) {
+  for (name in names(input_list)) {
     if (state == "OFF") {
       shinyjs::disable(name)
     } else {

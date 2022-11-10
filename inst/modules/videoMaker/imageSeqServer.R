@@ -48,7 +48,8 @@ observeEvent(theSequencePath(), {
   )
   volume <- volumes[ix]
   defaultRoot(names(volumes)[ix])
-  defaultPath(gsub(fs::path(volume), "", theSequencePath()))
+  path <- gsub(basename(theSequencePath()), "", theSequencePath())
+  defaultPath(gsub(fs::path(volume), "", path))
 })
 
 observeEvent(theSequencePath(), {

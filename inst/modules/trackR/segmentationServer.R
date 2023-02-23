@@ -1,16 +1,4 @@
 # Variables and reactives
-toOptim <- function(par, images) {
-  out <- sapply(images, function(image) {
-    bw <- inRange(image, c(par[1:3], 0))
-    md <- medianBlur(bw, 1)
-    md %i*% bw
-    signal <- sum(md)
-    noise <- sum(bw) - signal
-    signal / (noise + 1)
-  })
-
-  sum(out)
-}
 
 
 # Outputs
@@ -19,6 +7,12 @@ output$segmentationStatus <- renderUI({
     p("Video missing (and required).", class = "bad")
   } else if (refreshDisplay() > -1 & !isImage(theBackground)) {
     p("Background missing (and required).", class = "bad")
+  } else if (nrow(theImage) != nrow(theBackground) |
+             ncol(theImage) != ncol(theBackground)) {
+    p("The video and background do not have the same dimensions.", class = "bad")
+  } else if (nrow(theImage) != nrow(theMask) |
+             ncol(theImage) != ncol(theMask)) {
+    p("The video and mask do not have the same dimensions.", class = "bad")
   }
 })
 
@@ -40,7 +34,9 @@ observeEvent(input$main, {
 })
 
 observeEvent(input$optimizeThresholds_x, {
-  if (isVideo(theVideo) & isImage(theBackground)) {
+  if (isVideoStack(theVideo) & isImage(theBackground) &
+      nrow(theImage) == nrow(theBackground) &
+      ncol(theImage) == ncol(theBackground)) {
     toggleAll("OFF")
 
     showNotification("Loading images in memory.", id = "load", duration = NULL)
@@ -49,11 +45,13 @@ observeEvent(input$optimizeThresholds_x, {
 
     background <- cloneImage(theBackground)
 
-    if (!isImage(theMask)) {
-      theMask <<- ones(nrow(theBackground), ncol(theBackground), 1)
-      theMask %i*% 255
+    if (!isImage(theMask) | nrow(theImage) != nrow(theMask) |
+        ncol(theImage) != ncol(theMask)) {
+      mask <- ones(nrow(theBackground), ncol(theBackground), 1)
+      mask %i*% 255
+    } else {
+      mask <- cloneImage(theMask)
     }
-    mask <- cloneImage(theMask)
 
     if (input$videoQuality_x < 1) {
       background <- resize(background, fx = input$videoQuality_x,
@@ -80,7 +78,12 @@ observeEvent(input$optimizeThresholds_x, {
       if (input$darkButton_x == "Darker")
         not(frame, target = "self")
 
-      frame %i-% background
+      if (input$darkButton_x == "A bit of both") {
+        absdiff(frame, background, "self")
+      } else {
+        frame %i-% background
+      }
+
       frame %i*% mask
       split(frame)
     })
@@ -129,14 +132,19 @@ observeEvent(refreshDisplay(), {
       toDisplay <- zeros(nrow(theBackground), ncol(theBackground), 3)
     } else if (!isImage(theBackground)) {
       toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
+    } else if (nrow(theImage) != nrow(theBackground) |
+               ncol(theImage) != ncol(theBackground)) {
+      toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
     } else {
       background <- cloneImage(theBackground)
 
-      if (!isImage(theMask)) {
-        theMask <<- ones(nrow(theBackground), ncol(theBackground), 3)
-        theMask %i*% 255
+      if (!isImage(theMask) | nrow(theImage) != nrow(theMask) |
+          ncol(theImage) != ncol(theMask)) {
+        mask <- ones(nrow(theBackground), ncol(theBackground), 1)
+        mask %i*% 255
+      } else {
+        mask <- cloneImage(theMask)
       }
-      mask <- cloneImage(theMask)
 
       if (input$videoQuality_x < 1) {
         background <- resize(background, fx = input$videoQuality_x,
@@ -156,25 +164,30 @@ observeEvent(refreshDisplay(), {
         image <- resize(image, fx = input$videoQuality_x,
                         fy = input$videoQuality_x, interpolation = "area")
 
-      toDisplay <- cloneImage(image)
-
       if (input$darkButton_x == "Darker")
         not(image, target = "self")
 
-      image %i-% background
+      if (input$darkButton_x == "A bit of both") {
+        absdiff(image, background, "self")
+      } else {
+        image %i-% background
+      }
+
       image %i*% mask
+      toDisplay <- cloneImage(image * (255 / max(max(image))))
 
       sc <- max(dim(image) / 720)
 
       bw <- inRange(image, c(input$blueThreshold_x, input$greenThreshold_x,
                              input$redThreshold_x, 0))
-      boxFilter(bw, target = "self")
+      boxFilter(bw, 1, 1, target = "self")
       bw %i>% 63
       ct <- findContours(bw, method = "none")
 
       avg_rgb <- mean(theImage) / 255
       avg_rgb <- avg_rgb == min(avg_rgb)
-      color <- rgb(avg_rgb[3], avg_rgb[2], avg_rgb[1])
+      # color <- rgb(avg_rgb[3], avg_rgb[2], avg_rgb[1])
+      color <- "green"
 
       drawCircle(toDisplay, ct$contours[, 2], ct$contours[, 3], max(0.5, sc), color, -1)
 

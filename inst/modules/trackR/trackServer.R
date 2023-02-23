@@ -12,6 +12,12 @@ output$trackingStatus <- renderUI({
     p("Video missing (and required).", class = "bad")
   } else if (refreshDisplay() > -1 & !isImage(theBackground)) {
     p("Background missing (and required).", class = "bad")
+  } else if (nrow(theImage) != nrow(theBackground) |
+             ncol(theImage) != ncol(theBackground)) {
+    p("The video and background do not have the same dimensions.", class = "bad")
+  } else if (nrow(theImage) != nrow(theMask) |
+             ncol(theImage) != ncol(theMask)) {
+    p("The video and mask do not have the same dimensions.", class = "bad")
   }
 })
 
@@ -173,7 +179,7 @@ observeEvent(input$computeTracks_x, {
 })
 
 observeEvent(theTracksPath(), {
-  if (isVideo(theVideo) & isImage(theBackground) & length(theTracksPath()) > 0) {
+  if (isVideoStack(theVideo) & isImage(theBackground) & length(theTracksPath()) > 0) {
     toggleAll("OFF")
 
     showNotification("Tracking.", id = "tracking", duration = NULL)
@@ -230,7 +236,9 @@ observeEvent(theTracksPath(), {
     avg_rgb <- avg_rgb == min(avg_rgb)
     color <- rgb(avg_rgb[3], avg_rgb[2], avg_rgb[1])
 
-    setProp(theVideo, "POS_FRAMES", input$rangePos_x[1] - 1)
+    # setProp(theVideo, "POS_FRAMES", input$rangePos_x[1] - 1)
+    # readFrame(theVideo, input$rangePos_x[1] - 1, target = frame)
+    frame(theVideo) <- input$rangePos_x[1] - 1
 
     for (i in 1:n) {
       if (input$videoQuality_x < 1) {
@@ -247,12 +255,18 @@ observeEvent(theTracksPath(), {
       if (input$darkButton_x == "Darker")
         not(proc_frame, target = "self")
 
+      if (input$darkButton_x == "A bit of both") {
+        absdiff(proc_frame, background, "self")
+      } else {
+        proc_frame %i-% background
+      }
+
       proc_frame %i-% background
       proc_frame %i*% mask
       inRange(proc_frame, target = bw, c(input$blueThreshold_x,
                                          input$greenThreshold_x,
                                          input$redThreshold_x, 0))
-      boxFilter(bw, target = "self")
+      boxFilter(bw, 1, 1, target = "self")
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
@@ -310,7 +324,7 @@ observeEvent(theTracksPath(), {
         blobs <- data.table(x = shape[, 1],
                             y = shape[, 2],
                             n = shape[, 6],
-                            frame = theVideo$frame(),
+                            frame = frame(theVideo),
                             id = 1:nrow(shape),
                             track = NA,
                             width = shape[, 3],
@@ -318,7 +332,7 @@ observeEvent(theTracksPath(), {
                             angle = shape[, 5])
 
         if (input$doNotTrack_x == "No") {
-          memory <- memory[frame >= (theVideo$frame() - memory_length)]
+          memory <- memory[frame >= (frame(theVideo) - memory_length)]
           blobs <- simplerTracker(blobs, memory, maxDist = input$maxDist_x)
           newTrack <- is.na(blobs$track)
 

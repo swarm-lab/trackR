@@ -7,8 +7,13 @@ verticalTabPanel(
 
   htmlOutput("videoStatus"),
 
-  shinyFilesButton("videoFile_x", "Select video file",
-                   "Please select a video file", FALSE, class = "fullWidth"),
+  tags$div(
+    class = "panel panel-default",
+    shinyFilesButton("videoFile_x", "Add video(s)", multiple = TRUE,
+                     "Please select video file(s)", FALSE, class = "fullWidth")
+  ),
+
+  htmlOutput("videoList"),
 
   hr(),
 

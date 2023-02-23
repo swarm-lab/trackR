@@ -7,7 +7,16 @@ refreshBackground <- reactiveVal(0)
 # Outputs
 output$backgroundStatus <- renderUI({
   if (refreshDisplay() > -1 & !isImage(theBackground)) {
+    disable(selector = "[data-value='3']")
+    disable(selector = "[data-value='4']")
+    disable(selector = "[data-value='5']")
+    disable(selector = "[data-value='6']")
     p("Background missing (and required).", class = "bad")
+  } else {
+    enable(selector = "[data-value='3']")
+    enable(selector = "[data-value='4']")
+    enable(selector = "[data-value='5']")
+    enable(selector = "[data-value='6']")
   }
 })
 
@@ -38,8 +47,15 @@ observeEvent(refreshBackground(), {
       if (colorspace(toCheck) != "BGR")
         changeColorSpace(toCheck, "BGR", "self")
 
-      theBackground <<- cloneImage(toCheck)
-      refreshDisplay(refreshDisplay() + 1)
+      if (!all(dim(toCheck) == dim(theImage))) {
+        shinyalert("Error:",
+                   "The video and background do not have the same dimensions.",
+                   type = "error", animation = FALSE,
+                   closeOnClickOutside = TRUE)
+        theBackground <<- NULL
+      } else {
+        theBackground <<- cloneImage(toCheck)
+      }
 
       ix <- which.max(
         sapply(
@@ -52,16 +68,19 @@ observeEvent(refreshBackground(), {
             }
           })
       )
+
       volume <- volumes[ix]
       dir <- dirname(theBackgroundPath())
       defaultRoot(names(volumes)[ix])
       defaultPath(gsub(volume, "", dir))
+
+      refreshDisplay(refreshDisplay() + 1)
     }
   }
 })
 
 observeEvent(input$computeBackground_x, {
-  if (isVideo(theVideo)) {
+  if (isVideoStack(theVideo)) {
     toggleAll("OFF")
     theBackground <<- backgrounder(theVideo, n = input$backroundImages_x,
                                    method = input$backgroundType_x,

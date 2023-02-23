@@ -2,6 +2,8 @@ library(shiny)
 library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
+library(shinyalert)
+library(sortable)
 library(data.table)
 library(Rvision)
 

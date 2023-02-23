@@ -1,11 +1,11 @@
 # Variables and reactives
 theMask <- NULL
-
 theMaskPath <- reactiveVal()
 refreshMask <- reactiveVal(0)
 
 
 # Outputs
+
 
 
 # Events
@@ -34,8 +34,16 @@ observeEvent(refreshMask(), {
       if (colorspace(toCheck) != "BGR")
         changeColorSpace(toCheck, "BGR", "self")
 
-      theMask <<- cloneImage(toCheck)
-      refreshDisplay(refreshDisplay() + 1)
+      if (!all(dim(toCheck) == dim(theImage))) {
+        shinyalert("Error:",
+                   "The video and mask do not have the same dimensions.",
+                   type = "error", animation = FALSE,
+                   closeOnClickOutside = TRUE)
+        theMask <<- NULL
+      } else {
+        theMask <<- cloneImage(toCheck)
+      }
+
 
       ix <- which.max(
         sapply(
@@ -52,6 +60,8 @@ observeEvent(refreshMask(), {
       dir <- dirname(theMaskPath())
       defaultRoot(names(volumes)[ix])
       defaultPath(gsub(volume, "", dir))
+
+      refreshDisplay(refreshDisplay() + 1)
     }
   }
 })
@@ -59,10 +69,21 @@ observeEvent(refreshMask(), {
 observeEvent(refreshDisplay(), {
   if (input$main == "3") {
     if (isImage(theMask)) {
-      toDisplay <- ones(nrow(theImage), ncol(theImage), 3)
+      if (isImage(theImage)) {
+        toDisplay <- ones(nrow(theImage), ncol(theImage), 3)
+      } else {
+        toDisplay <- zeros(nrow(theMask), ncol(theMask), 3)
+      }
+
       setTo(toDisplay, changeColorSpace(theMask, "GRAY"), "green", target = "self")
       setTo(toDisplay, invert(changeColorSpace(theMask, "GRAY")), "red", target = "self")
-      addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
+
+      if (isImage(theImage)) {
+        addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
+      } else {
+        addWeighted(toDisplay, zeros(nrow(theMask), ncol(theMask), 3),
+                    c(0.25, 0.75), target = toDisplay)
+      }
     } else if (isImage(theImage)) {
       theMask <<- ones(nrow(theImage), ncol(theImage), 3)
       theMask %i*% 255
@@ -200,7 +221,7 @@ observeEvent(input$saveMask_x, {
   path <- parseSavePath(volumes, input$saveMask_x)
 
   if (isImage(theMask) & nrow(path) > 0) {
-    write.Image(theMask, path$datapath)
+    write.Image(theMask, path$datapath, TRUE)
     theMaskPath(path$datapath)
   }
 })

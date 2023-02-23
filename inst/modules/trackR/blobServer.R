@@ -7,6 +7,12 @@ output$blobStatus <- renderUI({
     p("Video missing (and required).", class = "bad")
   } else if (refreshDisplay() > -1 & !isImage(theBackground)) {
     p("Background missing (and required).", class = "bad")
+  } else if (nrow(theImage) != nrow(theBackground) |
+             ncol(theImage) != ncol(theBackground)) {
+    p("The video and background do not have the same dimensions.", class = "bad")
+  } else if (nrow(theImage) != nrow(theMask) |
+             ncol(theImage) != ncol(theMask)) {
+    p("The video and mask do not have the same dimensions.", class = "bad")
   }
 })
 
@@ -28,7 +34,7 @@ observeEvent(input$main, {
 })
 
 observeEvent(refreshDisplay(), {
-  if (isVideo(theVideo) & input$blobWidth_x == 0 & input$blobHeight_x == 0 &
+  if (isVideoStack(theVideo) & input$blobWidth_x == 0 & input$blobHeight_x == 0 &
       input$blobArea_x == 0) {
     updateNumericInput(session, "blobWidth_x", value = nrow(theVideo),
                        max = nrow(theVideo))
@@ -44,7 +50,7 @@ observeEvent(input$blobHeight_x, {
 })
 
 observeEvent(input$optimizeBlobs_x, {
-  if (isVideo(theVideo) & isImage(theBackground)) {
+  if (isVideoStack(theVideo) & isImage(theBackground)) {
     toggleAll("OFF")
 
     showNotification("Optimizing blob parameters.", id = "optim", duration = NULL)
@@ -84,7 +90,7 @@ observeEvent(input$optimizeBlobs_x, {
     cc_dump <- zeros(nrow(background), ncol(background), 1, "32S")
 
     for (i in 1:n) {
-      frame <- readFrame(theVideo, frame_pos[i])
+      readFrame(theVideo, frame_pos[i], frame)
 
       if (input$videoQuality_x < 1) {
         resize(frame, fx = input$videoQuality_x, fy = input$videoQuality_x,
@@ -96,11 +102,16 @@ observeEvent(input$optimizeBlobs_x, {
       if (input$darkButton_x == "Darker")
         not(proc_frame, target = "self")
 
-      proc_frame %i-% background
+      if (input$darkButton_x == "A bit of both") {
+        absdiff(proc_frame, background, "self")
+      } else {
+        proc_frame %i-% background
+      }
+
       proc_frame %i*% mask
       bw <- inRange(proc_frame, c(input$blueThreshold_x, input$greenThreshold_x,
                                   input$redThreshold_x, 0))
-      boxFilter(bw, target = "self")
+      boxFilter(bw, 1, 1, target = "self")
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
@@ -203,17 +214,21 @@ observeEvent(refreshDisplay(), {
         proc_frame <- frame
       }
 
-      toDisplay <- cloneImage(proc_frame)
-
       if (input$darkButton_x == "Darker")
         not(proc_frame, target = "self")
 
-      proc_frame %i-% background
+      if (input$darkButton_x == "A bit of both") {
+        absdiff(proc_frame, background, "self")
+      } else {
+        proc_frame %i-% background
+      }
+
       proc_frame %i*% mask
+      toDisplay <- cloneImage(proc_frame * (255 / max(max(proc_frame))))
 
       bw <- inRange(proc_frame, c(input$blueThreshold_x, input$greenThreshold_x,
                                   input$redThreshold_x, 0))
-      boxFilter(bw, target = "self")
+      boxFilter(bw, 1, 1, target = "self")
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
@@ -253,7 +268,8 @@ observeEvent(refreshDisplay(), {
 
       avg_rgb <- mean(toDisplay) / 255
       avg_rgb <- avg_rgb == min(avg_rgb)
-      color <- rgb(avg_rgb[3], avg_rgb[2], avg_rgb[1])
+      # color <- rgb(avg_rgb[3], avg_rgb[2], avg_rgb[1])
+      color <- "green"
 
       if (length(shape) > 0) {
         drawRotatedRectangle(toDisplay, shape[, 1], shape[, 2], shape[, 3],

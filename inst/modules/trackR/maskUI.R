@@ -1,48 +1,50 @@
-verticalTabPanel(
-  title = "3",
-  box_height = "100%",
-  p("Mask module", class = "module-title"),
+disabled(
+  verticalTabPanel(
+    title = "3",
+    box_height = "100%",
+    p("Mask module", class = "module-title"),
 
-  hr(),
+    hr(),
 
-  shinyFilesButton("maskFile_x", "Select existing mask",
-                   "Please select a mask file", FALSE, class = "fullWidth"),
+    shinyFilesButton("maskFile_x", "Select existing mask",
+                     "Please select a mask file", FALSE, class = "fullWidth"),
 
-  hr(),
+    hr(),
 
-  tags$table(
-    tags$tr(
-      tags$td(actionButton("includeAll_x", "Include all", width = "100%"),
-              style = "width: 49%;"),
-      tags$td(),
-      tags$td(actionButton("excludeAll_x", "Exclude all", width = "100%"),
-              style = "width: 49%;")
+    tags$table(
+      tags$tr(
+        tags$td(actionButton("includeAll_x", "Include all", width = "100%"),
+                style = "width: 49%;"),
+        tags$td(),
+        tags$td(actionButton("excludeAll_x", "Exclude all", width = "100%"),
+                style = "width: 49%;")
+      ),
+
+      tags$tr(),
+
+      tags$tr(
+        tags$td(actionButton("polyButton_x", "Add polygon ROI", width = "100%"),
+                style = "width: 49%;"),
+        tags$td(),
+        tags$td(actionButton("ellButton_x", "Add ellipse ROI", width = "100%"),
+                style = "width: 49%;")
+      ),
+
+      class = "settingsTable"
     ),
 
-    tags$tr(),
+    p(),
 
-    tags$tr(
-      tags$td(actionButton("polyButton_x", "Add polygon ROI", width = "100%"),
-              style = "width: 49%;"),
-      tags$td(),
-      tags$td(actionButton("ellButton_x", "Add ellipse ROI", width = "100%"),
-              style = "width: 49%;")
-    ),
+    awesomeRadio(inputId = "incButton_x", label = NULL,
+                 choices=c("Including", "Excluding"), selected = "Including",
+                 inline = TRUE, checkbox = TRUE, width = "100%"),
 
-    class = "settingsTable"
-  ),
+    hr(),
 
-  p(),
+    shinySaveButton("saveMask_x", "Save mask file", "Save mask as...",
+                    filetype = list(picture = c("png", "jpg")),
+                    class = "fullWidth"),
 
-  awesomeRadio(inputId = "incButton_x", label = NULL,
-               choices=c("Including", "Excluding"), selected = "Including",
-               inline = TRUE, checkbox = TRUE, width = "100%"),
-
-  hr(),
-
-  shinySaveButton("saveMask_x", "Save mask file", "Save mask as...",
-                  filetype = list(picture = c("png", "jpg")),
-                  class = "fullWidth"),
-
-  p(style = "padding-bottom: 10px;")
+    p(style = "padding-bottom: 10px;")
+  )
 )

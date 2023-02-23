@@ -32,8 +32,8 @@
 #' @export
 backgrounder <- function(video, n = 10, method = "median", prob = 0.025,
                          start = NULL, end = NULL) {
-  if (!Rvision::isVideo(video))
-    stop("This is not a Video object.")
+  if (!Rvision::isVideo(video) & !Rvision::isVideoStack(video))
+    stop("This is not a Video or VideoStack object.")
 
   if (n > Rvision::nframes(video))
     stop("n should be smaller than the total number of frames in the video.")

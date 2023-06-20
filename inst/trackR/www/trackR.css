@@ -124,12 +124,21 @@ hr.hr-text:after {
 }
 
 #shiny-notification-panel {
-  top: 0;
+  top: 20px;
   bottom: unset;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  max-width: 450px;
+  right: 15px;
+  width: 400px;
+}
+
+#displayImg {
+  padding: 10px;
+}
+
+#displayPlt {
+  padding: 10px;
+}
+
+#displayPlt img:first-child {
+  max-width: 100%;
+  height: auto;
 }

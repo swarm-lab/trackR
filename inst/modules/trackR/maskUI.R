@@ -39,6 +39,8 @@ disabled(
                  choices=c("Including", "Excluding"), selected = "Including",
                  inline = TRUE, checkbox = TRUE, width = "100%"),
 
+    numericInput("roi_x", "ROI id", 1, 1, 255, 1, "100%"),
+
     hr(),
 
     shinySaveButton("saveMask_x", "Save mask file", "Save mask as...",

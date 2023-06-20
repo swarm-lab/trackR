@@ -19,7 +19,7 @@ verticalTabPanel(
 
   htmlOutput("rangeSlider"),
 
-  htmlOutput("displaySlider"),
+  # htmlOutput("displaySlider"),
 
   htmlOutput("qualitySlider"),
 

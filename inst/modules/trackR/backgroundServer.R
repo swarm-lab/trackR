@@ -88,28 +88,53 @@ observeEvent(input$computeBackground_x, {
                                    end = input$rangePos_x[2])
     changeBitDepth(theBackground, "8U", target = "self")
     toggleAll("ON")
-    refreshBackground(refreshBackground() + 1)
+    # refreshBackground(refreshBackground() + 1)
     refreshDisplay(refreshDisplay() + 1)
   }
 })
 
+# observeEvent(refreshDisplay(), {
+#   if (input$main == "2") {
+#     if (isImage(theBackground)) {
+#       toDisplay <- theBackground
+#     } else if (isImage(theImage)) {
+#       toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
+#     } else {
+#       toDisplay <- zeros(480, 640, 3)
+#     }
+#
+#     if (is.null(input$videoSize_x)) {
+#       display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
+#     } else {
+#       display(toDisplay, "trackR", 5,
+#               nrow(toDisplay) * input$videoSize_x,
+#               ncol(toDisplay) * input$videoSize_x)
+#     }
+#   }
+# })
+
 observeEvent(refreshDisplay(), {
   if (input$main == "2") {
     if (isImage(theBackground)) {
-      toDisplay <- theBackground
+      suppressMessages(
+        write.Image(resize(theBackground,
+                           fx = input$videoQuality_x,
+                           fy = input$videoQuality_x,
+                           interpolation = "area"),
+                    paste0(tmpDir, "/display.jpg"), TRUE))
     } else if (isImage(theImage)) {
-      toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
+      suppressMessages(
+        write.Image(resize(zeros(nrow(theImage), ncol(theImage), 3),
+                           fx = input$videoQuality_x,
+                           fy = input$videoQuality_x,
+                           interpolation = "area"),
+                    paste0(tmpDir, "/display.jpg"), TRUE))
     } else {
-      toDisplay <- zeros(480, 640, 3)
+      suppressMessages(write.Image(zeros(1080, 1920, 3),
+                                   paste0(tmpDir, "/display.jpg"), TRUE))
     }
 
-    if (is.null(input$videoSize_x)) {
-      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
-    } else {
-      display(toDisplay, "trackR", 5,
-              nrow(toDisplay) * input$videoSize_x,
-              ncol(toDisplay) * input$videoSize_x)
-    }
+    printDisplay(printDisplay() + 1)
   }
 })
 

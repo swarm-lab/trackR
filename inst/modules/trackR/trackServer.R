@@ -261,7 +261,6 @@ observeEvent(theTracksPath(), {
         proc_frame %i-% background
       }
 
-      proc_frame %i-% background
       proc_frame %i*% mask
       inRange(proc_frame, target = bw, c(input$blueThreshold_x,
                                          input$greenThreshold_x,

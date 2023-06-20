@@ -2,6 +2,9 @@
 theMask <- NULL
 theMaskPath <- reactiveVal()
 refreshMask <- reactiveVal(0)
+collectCoords <- reactiveVal(0)
+stopCollection <- reactiveVal(0)
+coords <- NULL
 
 
 # Outputs
@@ -68,6 +71,9 @@ observeEvent(refreshMask(), {
 
 observeEvent(refreshDisplay(), {
   if (input$main == "3") {
+    if (!isImage(theMask) & isImage(theImage))
+      theMask <<- ones(nrow(theImage), ncol(theImage), 3)
+
     if (isImage(theMask)) {
       if (isImage(theImage)) {
         toDisplay <- ones(nrow(theImage), ncol(theImage), 3)
@@ -76,7 +82,7 @@ observeEvent(refreshDisplay(), {
       }
 
       setTo(toDisplay, changeColorSpace(theMask, "GRAY"), "green", target = "self")
-      setTo(toDisplay, invert(changeColorSpace(theMask, "GRAY")), "red", target = "self")
+      setTo(toDisplay, invert(changeColorSpace(theMask * 255, "GRAY")), "red", target = "self")
 
       if (isImage(theImage)) {
         addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
@@ -84,125 +90,165 @@ observeEvent(refreshDisplay(), {
         addWeighted(toDisplay, zeros(nrow(theMask), ncol(theMask), 3),
                     c(0.25, 0.75), target = toDisplay)
       }
-    } else if (isImage(theImage)) {
-      theMask <<- ones(nrow(theImage), ncol(theImage), 3)
-      theMask %i*% 255
-      toDisplay <- ones(nrow(theImage), ncol(theImage), 3)
-      setTo(toDisplay, changeColorSpace(theMask, "GRAY"), "green", target = "self")
-      addWeighted(toDisplay, theImage, c(0.25, 0.75), target = toDisplay)
+
+      sc <- max(dim(toDisplay) / 720)
+      r <- 0.01 * min(nrow(toDisplay), ncol(toDisplay))
+
+      setTo(toDisplay, morph(canny(theMask, 0, 0), "dilate",
+                             k_shape = "ellipse",
+                             k_height = max(1, 0.75 * sc),
+                             k_width = max(1, 0.75 * sc)),
+            "white", target = "self")
+
+      ch1 <- extractChannel(theMask, 1)
+      h <- imhist(ch1, nbins = 257, range = c(0, 256))
+      valid <- h[(h[, 1] > 0) & (h[, 2] > 0), 1]
+
+      com <- lapply(valid, function(val) {
+        cc <- connectedComponents(ch1 == val, stats = FALSE)
+        lapply(1:cc$n, function(lab) {
+          dt <- distanceTransform(border(cc$labels == lab, 1))
+          apply(findNonZero(dt == max(dt)[1]), 2, mean) - 1
+        })
+      })
+
+      lab <- lapply(com, function(l) {
+        lapply(l, function(loc) {
+          pget(theMask, loc[1], loc[2])[1]
+        })
+      })
+
+      mapply(function(com, lab) {
+        mapply(function(com, lab) {
+          drawText(toDisplay, lab,
+                   com[1] - (floor(log10(lab)) + 1) * 5,
+                   com[2] - 5 * sc,
+                   font_scale = 0.5 * sc,
+                   thickness = max(1, 1.5 * sc),
+                   color = "white")
+        }, com = com, lab = lab)
+      }, com = com, lab = lab)
+
+      if (collectCoords() == 1) {
+        if (nrow(coords) > 0) {
+          drawPolyline(toDisplay, coords, closed = TRUE, color = "white", thickness = max(1, 1.5 * sc))
+        }
+      }
+
+      if (collectCoords() > 0) {
+        drawCircle(toDisplay, x = coords[, 1], y = coords[, 2],
+                   radius = r * 1.5, thickness = -1, color = "white")
+        drawCircle(toDisplay, x = coords[, 1], y = coords[, 2],
+                   radius = r, thickness = -1, color = "red")
+      }
+
+      suppressMessages(
+        write.Image(resize(toDisplay,
+                           fx = input$videoQuality_x,
+                           fy = input$videoQuality_x,
+                           interpolation = "area"),
+                    paste0(tmpDir, "/display.jpg"), TRUE))
     } else {
-      toDisplay <- zeros(480, 640, 3)
+      suppressMessages(
+        write.Image(zeros(1080, 1920, 3),
+                    paste0(tmpDir, "/display.jpg"), TRUE))
     }
 
-    if (is.null(input$videoSize_x)) {
-      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
-    } else {
-      display(toDisplay, "trackR", 5,
-              nrow(toDisplay) * input$videoSize_x,
-              ncol(toDisplay) * input$videoSize_x)
-    }
+    printDisplay(printDisplay() + 1)
   }
 })
 
 observeEvent(input$polyButton_x, {
   if (isImage(theMask)) {
-    toggleAll("OFF")
-
-    displayMask <- ones(nrow(theMask), ncol(theMask), 3)
-    setTo(displayMask, changeColorSpace(theMask, "GRAY"), "green", target = "self")
-    setTo(displayMask, invert(changeColorSpace(theMask, "GRAY")), "red", target = "self")
-
-    showNotification("Use left click to draw the ROI. Use right click to close
-                       it and return the result.", id = "mask_notif", duration = NULL,
+    showNotification("Click to draw the polygonal ROI. Double-click to stop.",
+                     id = "mask_notif", duration = NULL,
                      type = "message")
 
-    if (is.null(input$videoSize_x)) {
-      suppressMessages(ROI <- selectROI(displayMask, "trackR", 1, TRUE))
-    } else {
-      suppressMessages(ROI <- selectROI(
-        addWeighted(theImage, displayMask, c(0.75, 0.25)),
-        "trackR", input$videoSize_x, TRUE)
-      )
-    }
-
-    removeNotification(id = "mask_notif")
-
-    if (input$incButton_x == "Including") {
-      setTo(theMask, ROI$mask, "white", target = "self")
-    } else if (input$incButton_x == "Excluding") {
-      setTo(theMask, ROI$mask, "black", target = "self")
-    }
-
-    toggleAll("ON")
-    refreshDisplay(refreshDisplay() + 1)
+    toggleAll("OFF")
+    collectCoords(1)
   }
 })
 
 observeEvent(input$ellButton_x, {
   if (isImage(theMask)) {
-    toggleAll("OFF")
-
-    displayMask <- ones(nrow(theMask), ncol(theMask), 3)
-    setTo(displayMask, changeColorSpace(theMask, "GRAY"), "green", target = "self")
-    setTo(displayMask, invert(changeColorSpace(theMask, "GRAY")), "red", target = "self")
-
-    showNotification("Select 5 points along the periphery of the ellipse/circle to define.",
+    showNotification("Click to select 5 points along the periphery of the
+                     ellipse/circle ROI. Double-click to cancel.",
                      id = "mask_notif", duration = NULL,
                      type = "message")
+    toggleAll("OFF")
+    collectCoords(2)
+  }
+})
 
-    ROI <- data.frame()
+observeEvent(input$plot_click, {
+  if (collectCoords() > 0) {
+    clck <- input$plot_click$coords_img
+    clck$y <- -clck$y + nrow(theMask) + 1
+    coords <<- rbind(coords, unlist(clck))
 
-    if (is.null(input$videoSize_x)) {
-      tmpImage <- cloneImage(displayMask)
-    } else {
-      tmpImage <- addWeighted(theImage, displayMask, c(0.75, 0.25))
+    if (collectCoords() == 2 & nrow(coords) >= 5) {
+      stopCollection(stopCollection() + 1)
     }
 
-    r <- 0.01 * min(nrow(tmpImage), ncol(tmpImage))
+    refreshDisplay(refreshDisplay() + 1)
+  }
+})
 
-    for (i in 1:5) {
-      if (is.null(input$videoSize_x)) {
-        ROI <- rbind(ROI, click(tmpImage, 1, "trackR"))
-        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                   radius = r * 1.5, thickness = -1, color = "white")
-        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                   radius = r, thickness = -1, color = "red")
-        display(tmpImage, window_name = "trackR", delay = 25,
-                height = nrow(tmpImage),  width = ncol(tmpImage))
-      } else {
-        ROI <- rbind(ROI, click(tmpImage, input$videoSize_x, "trackR"))
-        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                   radius = r * 1.5, thickness = -1, color = "white")
-        drawCircle(tmpImage, x = ROI$x[nrow(ROI)], y = ROI$y[nrow(ROI)],
-                   radius = r, thickness = -1, color = "red")
-        display(tmpImage, window_name = "trackR", delay = 25,
-                height = nrow(tmpImage) * input$videoSize_x,
-                width = ncol(tmpImage) * input$videoSize_x)
+observeEvent(input$plot_dblclick, {
+  if (collectCoords() > 0) {
+    stopCollection(stopCollection() + 1)
+  }
+})
+
+observeEvent(stopCollection(), {
+  if (collectCoords() > 0) {
+    sc <- max(dim(theMask) / 720)
+
+    if (collectCoords() == 1) {
+      if (nrow(coords) > 2) {
+        polyMask <- zeros(nrow(theMask), ncol(theMask), 1)
+        fillPoly(polyMask, coords, color = "white")
+
+        if (input$incButton_x == "Including") {
+          setTo(theMask, polyMask, gray(input$roi_x / 255), target = "self")
+        } else if (input$incButton_x == "Excluding") {
+          setTo(theMask, polyMask, "black", target = "self")
+        }
+      }
+    } else {
+      if (nrow(coords) == 5) {
+        ell <- optimEllipse(coords[, 1], coords[, 2])
+        ellMask <- zeros(nrow(theMask), ncol(theMask), 1)
+        drawEllipse(ellMask, ell[1], ell[2], ell[3] / 2, ell[4] / 2, ell[5],
+                    color = "white", thickness = -1)
+
+        if (input$incButton_x == "Including") {
+          setTo(theMask, ellMask, gray(input$roi_x / 255), target = "self")
+        } else if (input$incButton_x == "Excluding") {
+          setTo(theMask, ellMask, "black", target = "self")
+        }
       }
     }
 
     removeNotification(id = "mask_notif")
-
-    ell <- optimEllipse(ROI$x, ROI$y)
-    ellMask <- zeros(nrow(displayMask), ncol(displayMask), 1)
-    drawEllipse(ellMask, ell[1], ell[2], ell[3] / 2, ell[4] / 2, ell[5],
-                color = "white", thickness = -1)
-
-    if (input$incButton_x == "Including") {
-      setTo(theMask, ellMask, "white", target = "self")
-    } else if (input$incButton_x == "Excluding") {
-      setTo(theMask, ellMask, "black", target = "self")
-    }
-
     toggleAll("ON")
+    collectCoords(0)
+    coords <<- NULL
     refreshDisplay(refreshDisplay() + 1)
+  }
+})
+
+observeEvent(input$incButton_x, {
+  if (input$incButton_x == "Including") {
+    shinyjs::enable("roi_x")
+  } else {
+    shinyjs::disable("roi_x")
   }
 })
 
 observeEvent(input$includeAll_x, {
   if (isImage(theMask)) {
     theMask <<- ones(nrow(theMask), ncol(theMask), 3)
-    theMask %i*% 255
     refreshDisplay(refreshDisplay() + 1)
   }
 })

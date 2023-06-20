@@ -8,7 +8,6 @@ library(data.table)
 library(Rvision)
 
 newDisplay("trackR")
-jscode <- "shinyjs.replace = function(url) { location.replace(url); }"
 
 ui <- function(request) {
   shinyUI(
@@ -19,11 +18,21 @@ ui <- function(request) {
       ),
 
       useShinyjs(),
-      extendShinyjs(text = jscode, functions = "replace"),
+      extendShinyjs(text = "shinyjs.replace = function(url) {
+                              location.replace(url);
+                            }", functions = "replace"),
 
-      fluidRow(
-        column(
-          12,
+      div(
+        style = "width: 100%;",
+
+        div(
+          style = "width: calc(100% - 410px); float: left; margin-top: 20px;",
+          class = "vrtc-tab-panel-container",
+          uiOutput("display")
+        ),
+
+        div(
+          style = "width: 400px; margin-left: calc(100% - 400px);",
 
           verticalTabsetPanel(
             id = "main",
@@ -45,7 +54,40 @@ ui <- function(request) {
             moduleUI("trackR/controls")
           )
         )
-      )
+      ),
+
+
+
+      # fluidRow(
+      #   column(
+      #     8,
+      #     panel(heading = "TEST")
+      #   ),
+      #
+      #   column(
+      #     4,
+      #
+      #     verticalTabsetPanel(
+      #       id = "main",
+      #       contentWidth = 11,
+      #       menuSide = "right",
+      #       selected = "1",
+      #       moduleUI("trackR/video"),
+      #       moduleUI("trackR/background"),
+      #       moduleUI("trackR/mask"),
+      #       moduleUI("trackR/segmentation"),
+      #       moduleUI("trackR/blob"),
+      #       moduleUI("trackR/track")
+      #     ),
+      #
+      #     verticalTabsetPanel(
+      #       id = "settings",
+      #       contentWidth = 11,
+      #       menuSide = "right",
+      #       moduleUI("trackR/controls")
+      #     )
+      #   )
+      # )
     )
   )
 }

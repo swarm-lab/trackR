@@ -4,6 +4,7 @@ theVideo <- NULL
 theImage <- NULL
 rangeMem <- c(NA, NA)
 frameMem <- NA
+tmpDir <- tempdir()
 
 theVideoPath <- reactiveVal()
 theFrame <- reactiveVal()
@@ -11,6 +12,7 @@ defaultRoot <- reactiveVal()
 defaultPath <- reactiveVal("")
 refreshVideo <- reactiveVal(0)
 refreshDisplay <- reactiveVal(0)
+printDisplay <- reactiveVal(0)
 
 
 # Outputs
@@ -94,12 +96,12 @@ output$rangeSlider <- renderUI({
   }
 })
 
-output$displaySlider <- renderUI({
-  if (refreshVideo() > 0 & isVideoStack(theVideo)) {
-    sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
-                min = 0.1, max = 1, step = 0.1)
-  }
-})
+# output$displaySlider <- renderUI({
+#   if (refreshVideo() > 0 & isVideoStack(theVideo)) {
+#     sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
+#                 min = 0.1, max = 1, step = 0.1)
+#   }
+# })
 
 output$qualitySlider <- renderUI({
   if (refreshVideo() > 0 & isVideoStack(theVideo)) {
@@ -221,9 +223,9 @@ observeEvent(input$sortedVideos, {
   refreshDisplay(refreshDisplay() + 1)
 })
 
-observeEvent(input$videoSize_x, {
-  refreshDisplay(refreshDisplay() + 1)
-})
+# observeEvent(input$videoSize_x, {
+#   refreshDisplay(refreshDisplay() + 1)
+# })
 
 observeEvent(input$videoQuality_x, {
   refreshDisplay(refreshDisplay() + 1)
@@ -236,23 +238,86 @@ observeEvent(theFrame(), {
   }
 })
 
+# observeEvent(refreshDisplay(), {
+#   if (input$main == "1") {
+#     if (isImage(theImage)) {
+#       toDisplay <- cloneImage(theImage)
+#     } else {
+#       toDisplay <- zeros(480, 640, 3)
+#     }
+#
+#     if (is.null(input$videoSize_x)) {
+#       display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
+#     } else {
+#       display(toDisplay, "trackR", 5,
+#               nrow(toDisplay) * input$videoSize_x,
+#               ncol(toDisplay) * input$videoSize_x)
+#     }
+#   }
+# })
+
 observeEvent(refreshDisplay(), {
   if (input$main == "1") {
     if (isImage(theImage)) {
-      toDisplay <- cloneImage(theImage)
+      if (is.null(input$videoQuality_x)) {
+        suppressMessages(write.Image(theImage, paste0(tmpDir, "/display.jpg"), TRUE))
+      } else {
+        suppressMessages(
+          write.Image(resize(theImage,
+                             fx = input$videoQuality_x,
+                             fy = input$videoQuality_x,
+                             interpolation = "area"),
+                      paste0(tmpDir, "/display.jpg"), TRUE))
+      }
     } else {
-      toDisplay <- zeros(480, 640, 3)
+      suppressMessages(write.Image(zeros(1080, 1920, 3),
+                                   paste0(tmpDir, "/display.jpg"), TRUE))
     }
 
-    if (is.null(input$videoSize_x)) {
-      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
-    } else {
-      display(toDisplay, "trackR", 5,
-              nrow(toDisplay) * input$videoSize_x,
-              ncol(toDisplay) * input$videoSize_x)
-    }
+    printDisplay(printDisplay() + 1)
   }
 })
+
+output$display <- renderUI({
+  if (collectCoords() > 0) {
+    imageOutput("displayImg",
+                height = "auto",
+                click = "plot_click",
+                dblclick = "plot_dblclick")
+  } else {
+    imageOutput("displayImg",
+                height = "auto")
+  }
+})
+
+output$displayImg <- renderImage({
+  if (printDisplay() > 0) {
+    iw <- ncol(theImage)
+    ih <- nrow(theImage)
+    ww <- session$clientData[["output_displayImg_width"]] - 20
+    wh <- (session$clientData[["output_displayImg_width"]] - 20) * ih / iw
+
+    if (collectCoords()) {
+      plot.new()
+      op <- par(mar = rep(0, 4))
+      xlim <- c(1, iw)
+      ylim <- c(1, ih)
+      plot(NA, xlim = xlim + c(-0.5, 0.5), ylim = ylim + c(-0.5, 0.5), asp = 1,
+           xaxt = "n", yaxt = "n", ann = FALSE, bty = "n", xaxs = "i", yaxs = "i")
+      par(op)
+      cm <- shiny:::getCoordmap(NULL, iw, ih)
+      dev.off()
+      list(src = paste0(tempdir(), "/display.jpg"),
+           width = ww,
+           height = wh,
+           coordmap = cm)
+    } else {
+      list(src = paste0(tempdir(), "/display.jpg"),
+           width = ww,
+           height = wh)
+    }
+  }
+}, deleteFile = FALSE)
 
 observeEvent(input$videoPos_x, {
   theFrame(input$videoPos_x)

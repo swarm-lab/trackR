@@ -2,21 +2,18 @@
 theBackground <- NULL
 theBackgroundPath <- reactiveVal()
 refreshBackground <- reactiveVal(0)
+collectGhost <- reactiveVal(0)
+stopGhostCollection <- reactiveVal(0)
+ghostCoords <- NULL
 
 
-# Outputs
+# Status
 output$backgroundStatus <- renderUI({
   if (refreshDisplay() > -1 & !isImage(theBackground)) {
-    disable(selector = "[data-value='3']")
-    disable(selector = "[data-value='4']")
-    disable(selector = "[data-value='5']")
-    disable(selector = "[data-value='6']")
+    toggleTabs(3:6, "OFF")
     p("Background missing (and required).", class = "bad")
   } else {
-    enable(selector = "[data-value='3']")
-    enable(selector = "[data-value='4']")
-    enable(selector = "[data-value='5']")
-    enable(selector = "[data-value='6']")
+    toggleTabs(3, "ON")
   }
 })
 
@@ -81,54 +78,44 @@ observeEvent(refreshBackground(), {
 
 observeEvent(input$computeBackground_x, {
   if (isVideoStack(theVideo)) {
-    toggleAll("OFF")
+    toggleInputs("OFF")
+    toggleTabs(1:6, "OFF")
     theBackground <<- backgrounder(theVideo, n = input$backroundImages_x,
                                    method = input$backgroundType_x,
                                    start = input$rangePos_x[1],
                                    end = input$rangePos_x[2])
     changeBitDepth(theBackground, "8U", target = "self")
-    toggleAll("ON")
-    # refreshBackground(refreshBackground() + 1)
+    toggleInputs("ON")
+    toggleTabs(1:2, "ON")
     refreshDisplay(refreshDisplay() + 1)
   }
 })
 
-# observeEvent(refreshDisplay(), {
-#   if (input$main == "2") {
-#     if (isImage(theBackground)) {
-#       toDisplay <- theBackground
-#     } else if (isImage(theImage)) {
-#       toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
-#     } else {
-#       toDisplay <- zeros(480, 640, 3)
-#     }
-#
-#     if (is.null(input$videoSize_x)) {
-#       display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
-#     } else {
-#       display(toDisplay, "trackR", 5,
-#               nrow(toDisplay) * input$videoSize_x,
-#               ncol(toDisplay) * input$videoSize_x)
-#     }
-#   }
-# })
-
 observeEvent(refreshDisplay(), {
   if (input$main == "2") {
     if (isImage(theBackground)) {
-      suppressMessages(
-        write.Image(resize(theBackground,
-                           fx = input$videoQuality_x,
-                           fy = input$videoQuality_x,
-                           interpolation = "area"),
-                    paste0(tmpDir, "/display.jpg"), TRUE))
+      toDisplay <- cloneImage(theBackground)
+      sc <- max(dim(toDisplay) / 720)
+      r <- 0.01 * min(nrow(toDisplay), ncol(toDisplay))
+
+      if (collectGhost() > 0) {
+        if (nrow(ghostCoords) > 1) {
+          drawPolyline(toDisplay, ghostCoords, closed = TRUE, color = "white",
+                       thickness = max(1, 1.5 * sc))
+        }
+
+        if (nrow(ghostCoords) > 0) {
+          drawCircle(toDisplay, x = ghostCoords[, 1], y = ghostCoords[, 2],
+                     radius = r * 1.5, thickness = -1, color = "white")
+          drawCircle(toDisplay, x = ghostCoords[, 1], y = ghostCoords[, 2],
+                     radius = r, thickness = -1, color = "red")
+        }
+      }
+
+      suppressMessages(write.Image(toDisplay, paste0(tmpDir, "/display.jpg"), TRUE))
     } else if (isImage(theImage)) {
-      suppressMessages(
-        write.Image(resize(zeros(nrow(theImage), ncol(theImage), 3),
-                           fx = input$videoQuality_x,
-                           fy = input$videoQuality_x,
-                           interpolation = "area"),
-                    paste0(tmpDir, "/display.jpg"), TRUE))
+      suppressMessages(write.Image(zeros(nrow(theImage), ncol(theImage), 3),
+                                   paste0(tmpDir, "/display.jpg"), TRUE))
     } else {
       suppressMessages(write.Image(zeros(1080, 1920, 3),
                                    paste0(tmpDir, "/display.jpg"), TRUE))
@@ -140,26 +127,46 @@ observeEvent(refreshDisplay(), {
 
 observeEvent(input$ghostButton_x, {
   if (isImage(theBackground)) {
-    toggleAll("OFF")
+    toggleInputs("OFF")
+    toggleTabs(1:6, "OFF")
 
-    showNotification("Use left click to draw the ROI. Use right click to close
-                       it and return the result.", id = "bg_notif", duration = NULL,
-                     type = "message")
+    showNotification("Click to draw a polygon around the object to remove from
+                     the image. Double-click to stop.", id = "ghost_notif",
+                     duration = NULL, type = "message")
 
-    if (is.null(input$videoSize_x)) {
-      suppressMessages(
-        ROI <- selectROI(theBackground, "trackR", 1, TRUE)
-      )
-    } else {
-      suppressMessages(
-        ROI <- selectROI(theBackground, "trackR", input$videoSize_x, TRUE)
-      )
+    collectGhost(1)
+  }
+})
+
+observeEvent(input$plot_click, {
+  if (collectGhost() > 0) {
+    clck <- input$plot_click$coords_img
+    clck$y <- -clck$y + nrow(theBackground) + 1
+    ghostCoords <<- rbind(ghostCoords, unlist(clck))
+    refreshDisplay(refreshDisplay() + 1)
+  }
+})
+
+observeEvent(input$plot_dblclick, {
+  if (collectGhost() > 0) {
+    stopGhostCollection(stopGhostCollection() + 1)
+  }
+})
+
+observeEvent(stopGhostCollection(), {
+  if (collectGhost() > 0) {
+
+    if (nrow(ghostCoords) > 0) {
+      roi <- zeros(nrow(theBackground), ncol(theBackground), 1)
+      fillPoly(roi, ghostCoords, "white")
+      inpaint(theBackground, roi, method = "Telea", target = "self")
     }
 
-    inpaint(theBackground, ROI$mask, method = "Telea", target = "self")
-
-    removeNotification(id = "bg_notif")
-    toggleAll("ON")
+    removeNotification(id = "ghost_notif")
+    toggleInputs("ON")
+    toggleTabs(1:2, "ON")
+    collectGhost(0)
+    ghostCoords <<- NULL
     refreshDisplay(refreshDisplay() + 1)
   }
 })

@@ -15,28 +15,22 @@ refreshDisplay <- reactiveVal(0)
 printDisplay <- reactiveVal(0)
 
 
-# Outputs
+# Status
 output$videoStatus <- renderUI({
   if (refreshDisplay() > -1 & !isVideoStack(theVideo) &
       length(input$sortedVideos) == 0) {
-    disable(selector = "[data-value='2']")
-    disable(selector = "[data-value='3']")
-    disable(selector = "[data-value='4']")
-    disable(selector = "[data-value='5']")
-    disable(selector = "[data-value='6']")
+    toggleTabs(2:6, "OFF")
     p("Video missing (and required).", class = "bad")
   } else if (!isVideoStack(theVideo)) {
-    disable(selector = "[data-value='2']")
-    disable(selector = "[data-value='3']")
-    disable(selector = "[data-value='4']")
-    disable(selector = "[data-value='5']")
-    disable(selector = "[data-value='6']")
+    toggleTabs(2:6, "OFF")
     p("Incompatible videos.", class = "bad")
   } else {
-    enable(selector = "[data-value='2']")
+    toggleTabs(2, "ON")
   }
 })
 
+
+# UI
 output$videoList <- renderUI({
   if (!is.null(theVideoPath())) {
     tags$div(
@@ -93,20 +87,6 @@ output$rangeSlider <- renderUI({
     sliderInput("rangePos_x", "Video range", width = "100%", min = 1,
                 max = nframes(theVideo),
                 value = c(1, nframes(theVideo)), step = 1)
-  }
-})
-
-# output$displaySlider <- renderUI({
-#   if (refreshVideo() > 0 & isVideoStack(theVideo)) {
-#     sliderInput("videoSize_x", "Display size", width = "100%", value = 1,
-#                 min = 0.1, max = 1, step = 0.1)
-#   }
-# })
-
-output$qualitySlider <- renderUI({
-  if (refreshVideo() > 0 & isVideoStack(theVideo)) {
-    sliderInput("videoQuality_x", "Video quality", width = "100%", value = 1,
-                min = 0.1, max = 1, step = 0.1)
   }
 })
 
@@ -223,14 +203,6 @@ observeEvent(input$sortedVideos, {
   refreshDisplay(refreshDisplay() + 1)
 })
 
-# observeEvent(input$videoSize_x, {
-#   refreshDisplay(refreshDisplay() + 1)
-# })
-
-observeEvent(input$videoQuality_x, {
-  refreshDisplay(refreshDisplay() + 1)
-})
-
 observeEvent(theFrame(), {
   if (!is.null(theFrame())) {
     readFrame(theVideo, theFrame(), theImage)
@@ -238,37 +210,12 @@ observeEvent(theFrame(), {
   }
 })
 
-# observeEvent(refreshDisplay(), {
-#   if (input$main == "1") {
-#     if (isImage(theImage)) {
-#       toDisplay <- cloneImage(theImage)
-#     } else {
-#       toDisplay <- zeros(480, 640, 3)
-#     }
-#
-#     if (is.null(input$videoSize_x)) {
-#       display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
-#     } else {
-#       display(toDisplay, "trackR", 5,
-#               nrow(toDisplay) * input$videoSize_x,
-#               ncol(toDisplay) * input$videoSize_x)
-#     }
-#   }
-# })
 
+# Display
 observeEvent(refreshDisplay(), {
   if (input$main == "1") {
     if (isImage(theImage)) {
-      if (is.null(input$videoQuality_x)) {
-        suppressMessages(write.Image(theImage, paste0(tmpDir, "/display.jpg"), TRUE))
-      } else {
-        suppressMessages(
-          write.Image(resize(theImage,
-                             fx = input$videoQuality_x,
-                             fy = input$videoQuality_x,
-                             interpolation = "area"),
-                      paste0(tmpDir, "/display.jpg"), TRUE))
-      }
+      suppressMessages(write.Image(theImage, paste0(tmpDir, "/display.jpg"), TRUE))
     } else {
       suppressMessages(write.Image(zeros(1080, 1920, 3),
                                    paste0(tmpDir, "/display.jpg"), TRUE))
@@ -279,7 +226,7 @@ observeEvent(refreshDisplay(), {
 })
 
 output$display <- renderUI({
-  if (collectCoords() > 0) {
+  if (collectGhost() | collectMask() | collectScale()) {
     imageOutput("displayImg",
                 height = "auto",
                 click = "plot_click",
@@ -297,7 +244,7 @@ output$displayImg <- renderImage({
     ww <- session$clientData[["output_displayImg_width"]] - 20
     wh <- (session$clientData[["output_displayImg_width"]] - 20) * ih / iw
 
-    if (collectCoords()) {
+    if (collectGhost() | collectMask() | collectScale()) {
       plot.new()
       op <- par(mar = rep(0, 4))
       xlim <- c(1, iw)
@@ -307,12 +254,12 @@ output$displayImg <- renderImage({
       par(op)
       cm <- shiny:::getCoordmap(NULL, iw, ih)
       dev.off()
-      list(src = paste0(tempdir(), "/display.jpg"),
+      list(src = paste0(tmpDir, "/display.jpg"),
            width = ww,
            height = wh,
            coordmap = cm)
     } else {
-      list(src = paste0(tempdir(), "/display.jpg"),
+      list(src = paste0(tmpDir, "/display.jpg"),
            width = ww,
            height = wh)
     }
@@ -342,5 +289,5 @@ onBookmark(function(state) {
 })
 
 onRestore(function(state) {
-  theVideoPath(state$values$theVideoPath[[1]])
+  theVideoPath(as.data.frame(state$values$theVideoPath))
 })

@@ -6,8 +6,6 @@ disabled(
 
     hr(),
 
-    htmlOutput("trackingStatus", container = p, class = "good"),
-
     tags$table(
       tags$tr(
         tags$td(actionButton("scale_x", "Set scale", width = "100%"),

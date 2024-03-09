@@ -1,27 +1,25 @@
 # Variables and reactives
 
 
-# Outputs
-output$segmentationStatus <- renderUI({
-  if (is.null(input$videoSize_x)) {
-    p("Video missing (and required).", class = "bad")
-  } else if (refreshDisplay() > -1 & !isImage(theBackground)) {
-    p("Background missing (and required).", class = "bad")
-  } else if (nrow(theImage) != nrow(theBackground) |
-             ncol(theImage) != ncol(theBackground)) {
-    p("The video and background do not have the same dimensions.", class = "bad")
-  } else if (nrow(theImage) != nrow(theMask) |
-             ncol(theImage) != ncol(theMask)) {
-    p("The video and mask do not have the same dimensions.", class = "bad")
+# Status
+observeEvent(printDisplay(), {
+  if (is.null(input$videoPos2_x)) {
+    toggleTabs(5:6, "OFF")
+  } else {
+    toggleTabs(5, "ON")
   }
 })
 
+
+# UI
 output$videoSlider2 <- renderUI({
   if (!is.null(input$rangePos_x)) {
-    sliderInput("videoPos2_x", "Frame", width = "100%", step = 1,
-                value = frameMem,
-                min = input$rangePos_x[1],
-                max = input$rangePos_x[2])
+    sliderInput("videoPos2_x", "Frame",
+      width = "100%", step = 1,
+      value = frameMem,
+      min = input$rangePos_x[1],
+      max = input$rangePos_x[2]
+    )
   }
 })
 
@@ -35,48 +33,38 @@ observeEvent(input$main, {
 
 observeEvent(input$optimizeThresholds_x, {
   if (isVideoStack(theVideo) & isImage(theBackground) &
-      nrow(theImage) == nrow(theBackground) &
-      ncol(theImage) == ncol(theBackground)) {
-    toggleAll("OFF")
+    nrow(theImage) == nrow(theBackground) &
+    ncol(theImage) == ncol(theBackground)) {
+    toggleInputs("OFF")
+    toggleTabs(1:6, "OFF")
 
     showNotification("Loading images in memory.", id = "load", duration = NULL)
 
-    frame_pos <- round(seq.int(input$rangePos_x[1], input$rangePos_x[2], length.out = 20))
+    frame_pos <- round(seq.int(input$rangePos_x[1], input$rangePos_x[2], 
+      length.out = 20))
 
     background <- cloneImage(theBackground)
+    changeColorSpace(background, "GRAY", "self")
 
     if (!isImage(theMask) | nrow(theImage) != nrow(theMask) |
-        ncol(theImage) != ncol(theMask)) {
-      mask <- ones(nrow(theBackground), ncol(theBackground), 1)
-      mask %i*% 255
+      ncol(theImage) != ncol(theMask)) {
+      mask <- ones(nrow(theBackground), ncol(theBackground), 3)
     } else {
       mask <- cloneImage(theMask)
     }
+    changeColorSpace(mask, "GRAY", "self")
 
-    if (input$videoQuality_x < 1) {
-      background <- resize(background, fx = input$videoQuality_x,
-                           fy = input$videoQuality_x,
-                           interpolation = "area")
-      mask <- resize(mask, fx = input$videoQuality_x,
-                     fy = input$videoQuality_x,
-                     interpolation = "area")
-    }
-
-    if (input$darkButton_x == "Darker")
+    if (input$darkButton_x == "Darker") {
       not(background, "self")
-
-    mask %i/% 255
+    }
 
     frames <- lapply(frame_pos, function(i) {
       frame <- readFrame(theVideo, i)
+      changeColorSpace(frame, "GRAY", "self")
 
-      if (input$videoQuality_x < 1)
-        frame <- resize(frame, fx = input$videoQuality_x,
-                        fy = input$videoQuality_x,
-                        interpolation = "area")
-
-      if (input$darkButton_x == "Darker")
+      if (input$darkButton_x == "Darker") {
         not(frame, target = "self")
+      }
 
       if (input$darkButton_x == "A bit of both") {
         absdiff(frame, background, "self")
@@ -84,27 +72,35 @@ observeEvent(input$optimizeThresholds_x, {
         frame %i-% background
       }
 
+      mask %i>% 0
+      mask %i/% 255
       frame %i*% mask
-      split(frame)
+      # split(frame)
+      frame
     })
 
     removeNotification(id = "load")
-    showNotification("Optimizing thresholds. Please wait.", id = "optim", duration = NULL)
+    showNotification("Optimizing threshold. Please wait.",
+      id = "optim", duration = NULL
+    )
 
     th <- as.integer(
-      rowMeans(
+      mean(
         sapply(frames, function(f) {
-          sapply(f, autothreshold, method = input$thresholdMethod_x)
+          # sapply(f, autothreshold, method = input$thresholdMethod_x)
+          autothreshold(f, method = input$thresholdMethod_x)
         })
       )
     )
 
     removeNotification(id = "optim")
-    toggleAll("ON")
+    toggleInputs("ON")
+    toggleTabs(1:6, "ON")
 
-    updateSliderInput(session, "blueThreshold_x", value = th[1])
-    updateSliderInput(session, "greenThreshold_x", value = th[2])
-    updateSliderInput(session, "redThreshold_x", value = th[3])
+    updateSliderInput(session, "threshold_x", value = th[1])
+    # updateSliderInput(session, "blueThreshold_x", value = th[1])
+    # updateSliderInput(session, "greenThreshold_x", value = th[2])
+    # updateSliderInput(session, "redThreshold_x", value = th[3])
   }
 })
 
@@ -127,45 +123,56 @@ observeEvent(input$darkButton_x, {
 observeEvent(refreshDisplay(), {
   if (input$main == "4") {
     if (!isImage(theImage) & !isImage(theBackground)) {
-      toDisplay <- zeros(480, 640, 3)
+      suppressMessages(
+        write.Image(
+          zeros(1080, 1920, 3),
+          paste0(tmpDir, "/display.jpg"), TRUE
+        )
+      )
     } else if (!isImage(theImage)) {
-      toDisplay <- zeros(nrow(theBackground), ncol(theBackground), 3)
+      suppressMessages(
+        write.Image(
+          zeros(nrow(theBackground), ncol(theBackground), 3),
+          paste0(tmpDir, "/display.jpg"), TRUE
+        )
+      )
     } else if (!isImage(theBackground)) {
-      toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
+      suppressMessages(
+        write.Image(
+          zeros(nrow(theImage), ncol(theImage), 3),
+          paste0(tmpDir, "/display.jpg"), TRUE
+        )
+      )
     } else if (nrow(theImage) != nrow(theBackground) |
-               ncol(theImage) != ncol(theBackground)) {
-      toDisplay <- zeros(nrow(theImage), ncol(theImage), 3)
+      ncol(theImage) != ncol(theBackground)) {
+      suppressMessages(
+        write.Image(
+          zeros(nrow(theImage), ncol(theImage), 3),
+          paste0(tmpDir, "/display.jpg"), TRUE
+        )
+      )
     } else {
       background <- cloneImage(theBackground)
+      changeColorSpace(background, "GRAY", "self")
 
       if (!isImage(theMask) | nrow(theImage) != nrow(theMask) |
-          ncol(theImage) != ncol(theMask)) {
+        ncol(theImage) != ncol(theMask)) {
         mask <- ones(nrow(theBackground), ncol(theBackground), 1)
-        mask %i*% 255
       } else {
         mask <- cloneImage(theMask)
       }
+      changeColorSpace(mask, "GRAY", "self")
 
-      if (input$videoQuality_x < 1) {
-        background <- resize(background, fx = input$videoQuality_x,
-                             fy = input$videoQuality_x, interpolation = "area")
-        mask <- resize(mask, fx = input$videoQuality_x, fy = input$videoQuality_x,
-                       interpolation = "area")
+      if (input$darkButton_x == "Darker") {
+        not(background, target = "self")
       }
 
-      if (input$darkButton_x == "Darker")
-        not(background, target = "self")
-
-      mask %i/% 255
-
       image <- cloneImage(theImage)
+      changeColorSpace(image, "GRAY", "self")
 
-      if (input$videoQuality_x < 1)
-        image <- resize(image, fx = input$videoQuality_x,
-                        fy = input$videoQuality_x, interpolation = "area")
-
-      if (input$darkButton_x == "Darker")
+      if (input$darkButton_x == "Darker") {
         not(image, target = "self")
+      }
 
       if (input$darkButton_x == "A bit of both") {
         absdiff(image, background, "self")
@@ -173,33 +180,34 @@ observeEvent(refreshDisplay(), {
         image %i-% background
       }
 
+      mask %i>% 0
+      mask %i/% 255
       image %i*% mask
-      toDisplay <- cloneImage(image * (255 / max(max(image))))
 
-      sc <- max(dim(image) / 720)
+      to_display <- cloneImage(image * (255 / max(max(image))))
+      changeColorSpace(to_display, "BGR", "self")
 
-      bw <- inRange(image, c(input$blueThreshold_x, input$greenThreshold_x,
-                             input$redThreshold_x, 0))
+      # bw <- inRange(image, c(
+      #   input$blueThreshold_x, input$greenThreshold_x,
+      #   input$redThreshold_x, 0
+      # ))
+      bw <- image >= input$threshold_x
       boxFilter(bw, 1, 1, target = "self")
       bw %i>% 63
       ct <- findContours(bw, method = "none")
 
-      avg_rgb <- mean(theImage) / 255
-      avg_rgb <- avg_rgb == min(avg_rgb)
-      # color <- rgb(avg_rgb[3], avg_rgb[2], avg_rgb[1])
+      sc <- max(dim(image) / 720)
       color <- "green"
-
-      drawCircle(toDisplay, ct$contours[, 2], ct$contours[, 3], max(0.5, sc), color, -1)
-
+      drawCircle(
+        to_display, ct$contours[, 2], ct$contours[, 3],
+        max(0.5, sc), color, -1
+      )
+      suppressMessages(
+        write.Image(to_display, paste0(tmpDir, "/display.jpg"), TRUE)
+      )
     }
 
-    if (is.null(input$videoSize_x)) {
-      display(toDisplay, "trackR", 5, nrow(toDisplay), ncol(toDisplay))
-    } else {
-      display(toDisplay, "trackR", 5,
-              nrow(theImage) * input$videoSize_x,
-              ncol(theImage) * input$videoSize_x)
-    }
+    printDisplay(printDisplay() + 1)
   }
 })
 
@@ -207,8 +215,9 @@ observeEvent(input$videoPos2_x, {
   if (input$main == "4") {
     updateSliderInput(session, "videoPos_x", value = input$videoPos2_x)
 
-    if (!is.null(input$videoPos3_x))
+    if (!is.null(input$videoPos3_x)) {
       updateSliderInput(session, "videoPos3_x", value = input$videoPos2_x)
+    }
   }
 
   refreshDisplay(refreshDisplay() + 1)

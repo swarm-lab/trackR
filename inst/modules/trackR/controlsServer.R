@@ -1,5 +1,5 @@
 # Toggle UI on and off during long operations
-toggleAll <- function(state = "OFF") {
+toggleInputs <- function(state = "OFF") {
   input_list <- reactiveValuesToList(input)
   to_toggle <- grepl("_x", names(input_list))
   input_list <- input_list[to_toggle]
@@ -12,6 +12,19 @@ toggleAll <- function(state = "OFF") {
     }
   }
 }
+
+toggleTabs <- function(tabs = NULL, state = "OFF") {
+  tab_list <- paste0("[data-value='", tabs, "']")
+
+  for (tab in tabs) {
+    if (state == "OFF") {
+      disable(selector = paste0("[data-value='", tab, "']"))
+    } else {
+      enable(selector = paste0("[data-value='", tab, "']"))
+    }
+  }
+}
+
 
 # Save settings
 shinyFileSave(input, "saveSettings_x", roots = volumes, session = session,

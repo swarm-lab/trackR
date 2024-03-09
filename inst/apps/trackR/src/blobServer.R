@@ -1,9 +1,8 @@
-# Variables and reactives
-
-
-# Status
-observeEvent(printDisplay(), {
-  if (is.null(input$videoPos3_x)) {
+#--------------------------------------------------------------
+# Status Outputs
+#--------------------------------------------------------------
+observeEvent(print_display(), {
+  if (is.null(input$video_pos3_x)) {
     toggleTabs(6, "OFF")
     disable(selector = "[data-value='6']")
   } else {
@@ -12,48 +11,54 @@ observeEvent(printDisplay(), {
 })
 
 
-# UI
-output$videoSlider3 <- renderUI({
-  if (!is.null(input$rangePos_x)) {
-    sliderInput("videoPos3_x", "Frame",
+#--------------------------------------------------------------
+# UI Outputs
+#--------------------------------------------------------------
+output$video_slider3 <- renderUI({
+  if (!is.null(input$range_pos_x)) {
+    sliderInput("video_pos3_x", "Frame",
       width = "100%", step = 1,
-      value = frameMem,
-      min = input$rangePos_x[1],
-      max = input$rangePos_x[2]
+      value = frame_mem,
+      min = input$range_pos_x[1],
+      max = input$range_pos_x[2]
     )
   }
 })
 
 
+#--------------------------------------------------------------
 # Events
+#--------------------------------------------------------------
 observeEvent(input$main, {
   if (input$main == "5") {
-    refreshDisplay(refreshDisplay() + 1)
+    refresh_display(refresh_display() + 1)
   }
 })
 
-observeEvent(refreshDisplay(), {
-  if (isVideoStack(theVideo) & input$blobWidth_x == 0 &
-    input$blobHeight_x == 0 & input$blobArea_x == 0) {
-    updateNumericInput(session, "blobWidth_x",
-      value = nrow(theVideo),
-      max = nrow(theVideo)
+observeEvent(refresh_display(), {
+  if (isVideoStack(the_video) & input$blob_width_x == 0 &
+    input$blob_height_x == 0 & input$blob_area_x == 0) {
+    updateNumericInput(session, "blob_width_x",
+      value = nrow(the_video),
+      max = nrow(the_video)
     )
-    updateNumericInput(session, "blobHeight_x",
-      value = ncol(theVideo),
-      max = nrow(theVideo)
+    updateNumericInput(session, "blob_height_x",
+      value = ncol(the_video),
+      max = nrow(the_video)
     )
-    updateNumericInput(session, "blobArea_x", value = 1, max = nrow(theVideo) *
-      ncol(theVideo))
+    updateNumericInput(session, "blob_area_x",
+      value = 1,
+      max = nrow(the_video) * ncol(the_video)
+    )
   }
 })
 
-observeEvent(input$blobHeight_x, {
-  updateNumericInput(session, "blobWidth_x", max = input$blobHeight_x)
+observeEvent(input$blob_height_x, {
+  updateNumericInput(session, "blob_width_x", max = input$blob_height_x)
 })
 
-observeEvent(input$optimizeBlobs_x, {
-  if (isVideoStack(theVideo) & isImage(theBackground)) {
+observeEvent(input$optimize_blobs_x, {
+  if (isVideoStack(the_video) & isImage(the_background)) {
     toggleInputs("OFF")
     toggleTabs(1:6, "OFF")
 
@@ -62,7 +67,7 @@ observeEvent(input$optimizeBlobs_x, {
       duration = NULL
     )
 
-    frame_pos <- round(seq.int(input$rangePos_x[1], input$rangePos_x[2],
+    frame_pos <- round(seq.int(input$range_pos_x[1], input$range_pos_x[2],
       length.out = 100
     ))
     tot_summ <- NULL
@@ -74,16 +79,16 @@ observeEvent(input$optimizeBlobs_x, {
     old_frame <- 1
     old_time <- Sys.time()
 
-    background <- cloneImage(theBackground)
+    background <- cloneImage(the_background)
     changeColorSpace(background, "GRAY", "self")
 
-    if (!isImage(theMask)) {
-      theMask <<- ones(nrow(theBackground), ncol(theBackground), 3)
+    if (!isImage(the_mask)) {
+      the_mask <<- ones(nrow(the_background), ncol(the_background), 3)
     }
-    mask <- cloneImage(theMask)
+    mask <- cloneImage(the_mask)
     changeColorSpace(mask, "GRAY", "self")
 
-    if (input$darkButton_x == "Darker") {
+    if (input$dark_button_x == "Darker") {
       not(background, target = "self")
     }
 
@@ -96,31 +101,26 @@ observeEvent(input$optimizeBlobs_x, {
     cc_dump <- zeros(nrow(background), ncol(background), 1, "32S")
 
     for (i in 1:n) {
-      readFrame(theVideo, frame_pos[i], frame)
+      readFrame(the_video, frame_pos[i], frame)
       changeColorSpace(frame, "GRAY", proc_frame)
 
-      if (input$darkButton_x == "Darker") {
+      if (input$dark_button_x == "Darker") {
         not(proc_frame, target = "self")
       }
 
-      if (input$darkButton_x == "A bit of both") {
+      if (input$dark_button_x == "A bit of both") {
         absdiff(proc_frame, background, "self")
       } else {
         proc_frame %i-% background
       }
 
       proc_frame %i*% mask
-      # bw <- inRange(proc_frame, c(
-      #   input$blueThreshold_x, input$greenThreshold_x,
-      #   input$redThreshold_x, 0
-      # ))
       compare(proc_frame, input$threshold_x, ">=", bw)
       boxFilter(bw, 1, 1, target = "self")
       bw %i>% 63
 
       nz <- as.data.table(connectedComponents(bw, 8, target = cc_dump)$table)
       setcolorder(nz, c("label", "x", "y"))
-      # nz <- nz[, if(.N >= 5) .SD, by = .(label)]
       nz_summ <- nz[, as.data.table(kbox(cbind(x, y))), by = .(label)]
 
       if (nrow(nz_summ) > 0) {
@@ -158,83 +158,83 @@ observeEvent(input$optimizeBlobs_x, {
     toggleInputs("ON")
     toggleTabs(1:5, "ON")
 
-    updateNumericInput(session, "blobWidth_x",
+    updateNumericInput(session, "blob_width_x",
       value = round(1.05 * max(tot_summ[outlier == FALSE, width]))
     )
-    updateNumericInput(session, "blobHeight_x",
+    updateNumericInput(session, "blob_height_x",
       value = round(1.05 * max(tot_summ[outlier == FALSE, height]))
     )
-    updateNumericInput(session, "blobArea_x",
+    updateNumericInput(session, "blob_area_x",
       value = round(0.95 * min(tot_summ[outlier == FALSE, n]))
     )
-    updateNumericInput(session, "blobDensity_x",
+    updateNumericInput(session, "blob_density_x",
       value = round(0.95 * min(tot_summ[outlier == FALSE, density]), 3)
     )
   }
 })
 
-observeEvent(input$blobWidth_x, {
-  refreshDisplay(refreshDisplay() + 1)
+observeEvent(input$blob_width_x, {
+  refresh_display(refresh_display() + 1)
 })
 
-observeEvent(input$blobHeight_x, {
-  refreshDisplay(refreshDisplay() + 1)
+observeEvent(input$blob_height_x, {
+  refresh_display(refresh_display() + 1)
 })
 
-observeEvent(input$blobArea_x, {
-  refreshDisplay(refreshDisplay() + 1)
+observeEvent(input$blob_area_x, {
+  refresh_display(refresh_display() + 1)
 })
 
-observeEvent(input$blobDensity_x, {
-  refreshDisplay(refreshDisplay() + 1)
+observeEvent(input$blob_density_x, {
+  refresh_display(refresh_display() + 1)
 })
 
-observeEvent(refreshDisplay(), {
+observeEvent(refresh_display(), {
   if (input$main == "5") {
-    if (!isImage(theImage) & !isImage(theBackground)) {
+    if (!isImage(the_image) & !isImage(the_background)) {
       suppressMessages(
         write.Image(
           zeros(1080, 1920, 3),
-          paste0(tmpDir, "/display.jpg"), TRUE
+          paste0(tmp_dir, "/display.jpg"), TRUE
         )
       )
-    } else if (!isImage(theImage)) {
+    } else if (!isImage(the_image)) {
       suppressMessages(
         write.Image(
-          zeros(nrow(theBackground), ncol(theBackground), 3),
-          paste0(tmpDir, "/display.jpg"), TRUE
+          zeros(nrow(the_background), ncol(the_background), 3),
+          paste0(tmp_dir, "/display.jpg"), TRUE
         )
       )
-    } else if (!isImage(theBackground)) {
+    } else if (!isImage(the_background)) {
       suppressMessages(
         write.Image(
-          zeros(nrow(theImage), ncol(theImage), 3),
-          paste0(tmpDir, "/display.jpg"), TRUE
+          zeros(nrow(the_image), ncol(the_image), 3),
+          paste0(tmp_dir, "/display.jpg"), TRUE
         )
       )
     } else {
-      background <- cloneImage(theBackground)
+      background <- cloneImage(the_background)
       changeColorSpace(background, "GRAY", "self")
 
-      if (!isImage(theMask)) {
-        theMask <<- ones(nrow(theBackground), ncol(theBackground), 3)
+      if (!isImage(the_mask)) {
+        the_mask <<- ones(nrow(the_background), ncol(the_background), 3)
       }
-      mask <- cloneImage(theMask)
+      mask <- cloneImage(the_mask)
       changeColorSpace(mask, "GRAY", "self")
 
-      if (input$darkButton_x == "Darker") {
+      if (input$dark_button_x == "Darker") {
         not(background, target = "self")
       }
 
-      frame <- cloneImage(theImage)
+      frame <- cloneImage(the_image)
       proc_frame <- changeColorSpace(frame, "GRAY")
       cc_dump <- zeros(nrow(background), ncol(background), 1, "32S")
 
-      if (input$darkButton_x == "Darker") {
+      if (input$dark_button_x == "Darker") {
         not(proc_frame, target = "self")
       }
 
-      if (input$darkButton_x == "A bit of both") {
+      if (input$dark_button_x == "A bit of both") {
         absdiff(proc_frame, background, "self")
       } else {
         proc_frame %i-% background
@@ -244,11 +244,6 @@ observeEvent(refreshDisplay(), {
       mask %i/% 255
       proc_frame %i*% mask
       to_display <- cloneImage(frame * (255 / max(max(frame))))
-
-      # bw <- inRange(proc_frame, c(
-      #   input$blueThreshold_x, input$greenThreshold_x,
-      #   input$redThreshold_x, 0
-      # ))
       bw <- compare(proc_frame, input$threshold_x, ">=")
       boxFilter(bw, 1, 1, target = "self")
       bw %i>% 63
@@ -263,7 +258,7 @@ observeEvent(refreshDisplay(), {
       setorder(gr, label)
       gr[, new_id := label]
 
-      for (j in 1:nrow(gr)) {
+      for (j in seq_len(nrow(gr))) {
         friends <- gr$new_id[gr$k == gr$k[j]]
         gr$new_id[gr$new_id %in% friends] <- gr$new_id[j]
       }
@@ -280,10 +275,11 @@ observeEvent(refreshDisplay(), {
         pos <- nz[nz[, 1] %in% gr[ix, 1], 2:3]
         cl <- kbox(pos, centers[ugr, 2:3, drop = FALSE],
           iter.max = 1000,
-          split = TRUE, split.width = if (is.na(input$blobWidth_x)) Inf else input$blobWidth_x,
-          split.height = if (is.na(input$blobHeight_x)) Inf else input$blobHeight_x,
-          split.density = if (is.na(input$blobDensity_x)) 0 else input$blobDensity_x,
-          min.size = if (is.na(input$blobArea_x)) 1 else input$blobArea_x
+          split = TRUE,
+          split.width = if (is.na(input$blob_width_x)) Inf else input$blob_width_x,
+          split.height = if (is.na(input$blob_height_x)) Inf else input$blob_height_x,
+          split.density = if (is.na(input$blob_density_x)) 0 else input$blob_density_x,
+          min.size = if (is.na(input$blob_area_x)) 1 else input$blob_area_x
         )
         shape <- rbind(shape, cl)
       }
@@ -318,25 +314,29 @@ observeEvent(refreshDisplay(), {
         thickness = max(1, sc), color = color
       )
 
-      suppressMessages(write.Image(to_display, paste0(tmpDir, "/display.jpg"), TRUE))
+      suppressMessages(
+        write.Image(to_display, paste0(tmp_dir, "/display.jpg"), TRUE)
+      )
     }
 
-    printDisplay(printDisplay() + 1)
+    print_display(print_display() + 1)
   }
 })
 
-observeEvent(input$videoPos3_x, {
+observeEvent(input$video_pos3_x, {
   if (input$main == "5") {
-    updateSliderInput(session, "videoPos_x", value = input$videoPos3_x)
+    updateSliderInput(session, "video_pos_x", value = input$video_pos3_x)
 
-    if (!is.null(input$videoPos2_x)) {
-      updateSliderInput(session, "videoPos2_x", value = input$videoPos3_x)
+    if (!is.null(input$video_pos2_x)) {
+      updateSliderInput(session, "video_pos2_x", value = input$video_pos3_x)
     }
   }
 
-  refreshDisplay(refreshDisplay() + 1)
+  refresh_display(refresh_display() + 1)
 })
 
 
-# Bookmark
-setBookmarkExclude(c(session$getBookmarkExclude(), "optimizeBlobs_x"))
+#--------------------------------------------------------------
+# Bookmarking
+#--------------------------------------------------------------
+setBookmarkExclude(c(session$getBookmarkExclude(), "optimize_blobs_x"))

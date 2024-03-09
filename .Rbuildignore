@@ -11,3 +11,4 @@ logo.*
 pkgdown
 old
 ^\.github$
+test

@@ -5,19 +5,19 @@ verticalTabPanel(
 
   hr(),
 
-  htmlOutput("videoStatus"),
+  htmlOutput("video_status"),
 
   tags$div(
     class = "panel panel-default",
-    shinyFilesButton("videoFile_x", "Add video(s)", multiple = TRUE,
+    shinyFilesButton("video_file_x", "Add video(s)", multiple = TRUE,
                      "Please select video file(s)", FALSE, class = "fullWidth")
   ),
 
-  htmlOutput("videoList"),
+  htmlOutput("video_list"),
 
   hr(),
 
-  htmlOutput("rangeSlider"),
+  htmlOutput("range_slider"),
 
-  htmlOutput("videoSlider")
+  htmlOutput("video_slider")
 )

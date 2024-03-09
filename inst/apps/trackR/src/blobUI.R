@@ -6,24 +6,24 @@ disabled(
 
     hr(),
 
-    actionButton("optimizeBlobs_x", "Automatically select object parameters", width = "100%"),
+    actionButton("optimize_blobs_x", "Automatically select object parameters", width = "100%"),
 
     hr(class = "hr-text", `data-content` = "Or set them manually"),
 
-    numericInput("blobWidth_x", "Maximum width (in pixels)", 0,
+    numericInput("blob_width_x", "Maximum width (in pixels)", 0,
                  min = 1, max = Inf, step = 1, width = "100%"),
 
-    numericInput("blobHeight_x", "Maximum height (in pixels)", 0,
+    numericInput("blob_height_x", "Maximum height (in pixels)", 0,
                  min = 1, max = Inf, step = 1, width = "100%"),
 
-    numericInput("blobArea_x", "Minimum area (in pixels)", 0,
+    numericInput("blob_area_x", "Minimum area (in pixels)", 0,
                  min = 1, max = Inf, step = 1, width = "100%"),
 
-    numericInput("blobDensity_x", "Minimum density [0-1]", 0,
+    numericInput("blob_density_x", "Minimum density [0-1]", 0,
                  min = 0, max = 1, step = 0.01, width = "100%"),
 
     hr(),
 
-    htmlOutput("videoSlider3")
+    htmlOutput("video_slider3")
   )
 )

@@ -17,8 +17,9 @@
 moduleUI <- function(module) {
   base <- system.file("modules", package = "trackR")
 
-  if (!file.exists(paste0(base, "/", module, "UI.R")))
+  if (!file.exists(paste0(base, "/", module, "UI.R"))) {
     stop("Unknown module.")
+  }
 
   source(paste0(base, "/", module, "UI.R"), local = TRUE)$value
 }
@@ -43,8 +44,27 @@ moduleUI <- function(module) {
 moduleSVR <- function(module) {
   base <- system.file("modules", package = "trackR")
 
-  if (!file.exists(paste0(base, "/", module, "Server.R")))
+  if (!file.exists(paste0(base, "/", module, "Server.R"))) {
     stop("Unknown module.")
+  }
 
   source(paste0(base, "/", module, "Server.R"), local = parent.frame(n = 1))
+}
+
+
+#' @export
+load_module <- function(app_folder, module, type = "UI") {
+  to_load <- paste0(app_folder, "/src/", module, type, ".R")
+
+  if (!file.exists(to_load)) {
+    stop("Unknown module.")
+  }
+
+  if (type == "UI") {
+    source(to_load, local = TRUE)$value
+  } else if (type == "Server") {
+    source(to_load, local = parent.frame(n = 1))
+  } else {
+    stop("Invalid type.")
+  }
 }

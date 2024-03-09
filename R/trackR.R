@@ -44,7 +44,7 @@ videoFixer <- function(...) {
 #'
 #' @export
 trackR <- function(...) {
-  shiny::runApp(paste0(find.package("trackR"), "/trackR"), ...)
+  shiny::runApp(paste0(find.package("trackR"), "/apps/trackR"), ...)
 }
 
 

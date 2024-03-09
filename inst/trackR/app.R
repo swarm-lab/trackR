@@ -7,8 +7,6 @@ library(sortable)
 library(data.table)
 library(Rvision)
 
-newDisplay("trackR")
-
 ui <- function(request) {
   shinyUI(
     fluidPage(
@@ -26,7 +24,11 @@ ui <- function(request) {
         style = "width: 100%;",
 
         div(
-          style = "width: calc(100% - 410px); float: left; margin-top: 20px;",
+          style = "width: min(100vh, calc(100% - 410px)); 
+            float: left; 
+            margin-top: 20px; 
+            margin-left: calc((calc(100% - 410px) - 
+              min(100vh, calc(100% - 410px))) / 2)",
           class = "vrtc-tab-panel-container",
           uiOutput("display")
         ),
@@ -55,39 +57,6 @@ ui <- function(request) {
           )
         )
       ),
-
-
-
-      # fluidRow(
-      #   column(
-      #     8,
-      #     panel(heading = "TEST")
-      #   ),
-      #
-      #   column(
-      #     4,
-      #
-      #     verticalTabsetPanel(
-      #       id = "main",
-      #       contentWidth = 11,
-      #       menuSide = "right",
-      #       selected = "1",
-      #       moduleUI("trackR/video"),
-      #       moduleUI("trackR/background"),
-      #       moduleUI("trackR/mask"),
-      #       moduleUI("trackR/segmentation"),
-      #       moduleUI("trackR/blob"),
-      #       moduleUI("trackR/track")
-      #     ),
-      #
-      #     verticalTabsetPanel(
-      #       id = "settings",
-      #       contentWidth = 11,
-      #       menuSide = "right",
-      #       moduleUI("trackR/controls")
-      #     )
-      #   )
-      # )
     )
   )
 }

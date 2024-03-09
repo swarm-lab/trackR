@@ -2,13 +2,19 @@
 theMask <- NULL
 theMaskPath <- reactiveVal()
 refreshMask <- reactiveVal(0)
-collectCoords <- reactiveVal(0)
-stopCollection <- reactiveVal(0)
-coords <- NULL
+collectMask <- reactiveVal(0)
+stopMaskCollection <- reactiveVal(0)
+maskCoords <- NULL
 
 
-# Outputs
-
+# Status
+observeEvent(printDisplay(), {
+  if (!isImage(theMask)) {
+    toggleTabs(4:6, "OFF")
+  } else {
+    toggleTabs(4, "ON")
+  }
+})
 
 
 # Events
@@ -129,29 +135,23 @@ observeEvent(refreshDisplay(), {
         }, com = com, lab = lab)
       }, com = com, lab = lab)
 
-      if (collectCoords() == 1) {
-        if (nrow(coords) > 0) {
-          drawPolyline(toDisplay, coords, closed = TRUE, color = "white", thickness = max(1, 1.5 * sc))
+      if (collectMask() == 1) {
+        if (nrow(maskCoords) > 0) {
+          drawPolyline(toDisplay, maskCoords, closed = TRUE, color = "white", thickness = max(1, 1.5 * sc))
         }
       }
 
-      if (collectCoords() > 0) {
-        drawCircle(toDisplay, x = coords[, 1], y = coords[, 2],
+      if (collectMask() > 0) {
+        drawCircle(toDisplay, x = maskCoords[, 1], y = maskCoords[, 2],
                    radius = r * 1.5, thickness = -1, color = "white")
-        drawCircle(toDisplay, x = coords[, 1], y = coords[, 2],
+        drawCircle(toDisplay, x = maskCoords[, 1], y = maskCoords[, 2],
                    radius = r, thickness = -1, color = "red")
       }
 
-      suppressMessages(
-        write.Image(resize(toDisplay,
-                           fx = input$videoQuality_x,
-                           fy = input$videoQuality_x,
-                           interpolation = "area"),
-                    paste0(tmpDir, "/display.jpg"), TRUE))
+      suppressMessages(write.Image(toDisplay, paste0(tmpDir, "/display.jpg"), TRUE))
     } else {
-      suppressMessages(
-        write.Image(zeros(1080, 1920, 3),
-                    paste0(tmpDir, "/display.jpg"), TRUE))
+      suppressMessages(write.Image(zeros(1080, 1920, 3),
+                                   paste0(tmpDir, "/display.jpg"), TRUE))
     }
 
     printDisplay(printDisplay() + 1)
@@ -160,12 +160,13 @@ observeEvent(refreshDisplay(), {
 
 observeEvent(input$polyButton_x, {
   if (isImage(theMask)) {
+    toggleInputs("OFF")
+    toggleTabs(1:6, "OFF")
     showNotification("Click to draw the polygonal ROI. Double-click to stop.",
                      id = "mask_notif", duration = NULL,
                      type = "message")
 
-    toggleAll("OFF")
-    collectCoords(1)
+    collectMask(1)
   }
 })
 
@@ -175,19 +176,20 @@ observeEvent(input$ellButton_x, {
                      ellipse/circle ROI. Double-click to cancel.",
                      id = "mask_notif", duration = NULL,
                      type = "message")
-    toggleAll("OFF")
-    collectCoords(2)
+    toggleInputs("OFF")
+    toggleTabs(1:6, "OFF")
+    collectMask(2)
   }
 })
 
 observeEvent(input$plot_click, {
-  if (collectCoords() > 0) {
+  if (collectMask() > 0) {
     clck <- input$plot_click$coords_img
     clck$y <- -clck$y + nrow(theMask) + 1
-    coords <<- rbind(coords, unlist(clck))
+    maskCoords <<- rbind(maskCoords, unlist(clck))
 
-    if (collectCoords() == 2 & nrow(coords) >= 5) {
-      stopCollection(stopCollection() + 1)
+    if (collectMask() == 2 & nrow(maskCoords) >= 5) {
+      stopMaskCollection(stopMaskCollection() + 1)
     }
 
     refreshDisplay(refreshDisplay() + 1)
@@ -195,19 +197,17 @@ observeEvent(input$plot_click, {
 })
 
 observeEvent(input$plot_dblclick, {
-  if (collectCoords() > 0) {
-    stopCollection(stopCollection() + 1)
+  if (collectMask() > 0) {
+    stopMaskCollection(stopMaskCollection() + 1)
   }
 })
 
-observeEvent(stopCollection(), {
-  if (collectCoords() > 0) {
-    sc <- max(dim(theMask) / 720)
-
-    if (collectCoords() == 1) {
-      if (nrow(coords) > 2) {
+observeEvent(stopMaskCollection(), {
+  if (collectMask() > 0) {
+    if (collectMask() == 1) {
+      if (nrow(maskCoords) > 2) {
         polyMask <- zeros(nrow(theMask), ncol(theMask), 1)
-        fillPoly(polyMask, coords, color = "white")
+        fillPoly(polyMask, maskCoords, color = "white")
 
         if (input$incButton_x == "Including") {
           setTo(theMask, polyMask, gray(input$roi_x / 255), target = "self")
@@ -216,8 +216,8 @@ observeEvent(stopCollection(), {
         }
       }
     } else {
-      if (nrow(coords) == 5) {
-        ell <- optimEllipse(coords[, 1], coords[, 2])
+      if (nrow(maskCoords) == 5) {
+        ell <- optimEllipse(maskCoords[, 1], maskCoords[, 2])
         ellMask <- zeros(nrow(theMask), ncol(theMask), 1)
         drawEllipse(ellMask, ell[1], ell[2], ell[3] / 2, ell[4] / 2, ell[5],
                     color = "white", thickness = -1)
@@ -231,9 +231,10 @@ observeEvent(stopCollection(), {
     }
 
     removeNotification(id = "mask_notif")
-    toggleAll("ON")
-    collectCoords(0)
-    coords <<- NULL
+    toggleInputs("ON")
+    toggleTabs(1:3, "ON")
+    collectMask(0)
+    maskCoords <<- NULL
     refreshDisplay(refreshDisplay() + 1)
   }
 })

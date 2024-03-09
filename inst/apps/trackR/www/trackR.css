@@ -1,0 +1,144 @@
+.vrtc-tab-panel-menu.vrtc-tab-panel-menu-right {
+  width: 50px;
+  float: right;
+}
+
+.vrtc-tab-panel.tab-content {
+  width: calc(100% - 50px);
+  float: left;
+  padding-right: 20px;
+  padding-left: 0;
+}
+
+.vrtc-tab-panel-container {
+  width: 100%;
+  height: 100%;
+  float: left;
+}
+
+.bad {
+  color: white;
+  background-color: #461311;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.good {
+  color: white;
+  background-color: #114628;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.halfWidth {
+  width: 50%;
+}
+
+.settingsTable {
+  width: 100%;
+}
+
+.settingsTable td:empty {
+  width: 10px;
+}
+
+.settingsTable tr:empty {
+  height: 10px;
+}
+
+.vrtc-tab-panel.tab-settings {
+    width: 100%;
+    float: left;
+    padding-right: 20px;
+    padding-left: 0;
+}
+
+div.vrtc-tab-panel-settings {
+    background-color: #ffffff;
+    /* border: 1px solid #eeeeee; */
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.module-title {
+  line-height: 41px;
+  color: #ffffff;
+  font-size: 24px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #22478a;
+  border-radius: 4px;
+}
+
+.irs-single, .irs-bar-edge, .irs-bar, .irs-from, .irs-to {
+  background-color: #22478a!important;
+  border-top-color: #22478a!important;
+  border-bottom-color: #22478a!important;
+}
+
+hr.hr-text {
+  border: none;
+  height: 1px;
+  background: #f0f0f0;
+}
+
+hr.hr-text:after {
+  content: attr(data-content);
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  padding: 1rem;
+  background-color: white;
+}
+
+#dark_button_x {
+  text-align: center;
+}
+
+#show_tracks_x {
+  text-align: center;
+}
+
+#do_not_track_x {
+  text-align: center;
+}
+
+#settings-tabbable .col-sm-1.vrtc-tab-panel-menu.vrtc-tab-panel-menu-right {
+  display: none;
+}
+
+#inc_button_x.awesome-bootstrap-radio {
+  text-align: center;
+}
+
+.shiny-notification {
+  overflow-wrap: break-word;
+  opacity: 1;
+}
+
+#shiny-notification-panel {
+  top: 20px;
+  bottom: unset;
+  right: 15px;
+  width: 400px;
+}
+
+#displayImg {
+  padding: 10px;
+}
+
+#displayPlt {
+  padding: 10px;
+}
+
+#displayPlt img:first-child {
+  max-width: 100%;
+  height: auto;
+}

@@ -11,7 +11,6 @@ library(sortable)
 library(data.table)
 library(Rvision)
 library(stringr)
-library(trackR)
 
 
 #--------------------------------------------------------------

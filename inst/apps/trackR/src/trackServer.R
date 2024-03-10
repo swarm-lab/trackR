@@ -208,11 +208,11 @@ observeEvent(refresh_display(), {
 
       if (collect_scale() == 2) {
         drawCircle(to_display,
-          x = scale[, 1], y = scale[, 2],
+          x = scale_coords[, 1], y = scale_coords[, 2],
           radius = r * 1.5, thickness = -1, color = color1
         )
         drawCircle(to_display,
-          x = scale[, 1], y = scale[, 2],
+          x = scale_coords[, 1], y = scale_coords[, 2],
           radius = r, thickness = -1, color = color2
         )
       }
